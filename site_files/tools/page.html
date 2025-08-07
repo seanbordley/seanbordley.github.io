@@ -1,162 +1,285 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Glowing Orb</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sean Bordley</title>
+    <link rel="icon" href="/site_files/media/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Basic styles to make the canvas fill the screen */
-        body, html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #000;
+        html, body {
             height: 100%;
-            width: 100%;
+            margin: 0;
         }
-        /* Style for the canvas element */
-        canvas {
-            display: block;
-            cursor: none; /* Hide the default cursor */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000; /* Pure black background */
+            overflow-x: hidden;
+            color: #d1d5db; /* Default text color (gray-300) */
+        }
+        main {
+            position: relative;
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        /* Container for the new content */
+        .content-container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .content-title {
+            font-size: 3rem; /* 48px */
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem; /* Adjusted spacing for subtitle */
+        }
+
+        /* New Subtitle Style */
+        .content-subtitle {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 400;
+            color: #9ca3af; /* gray-400 */
+            margin-bottom: 2.5rem; /* Spacing below subtitle */
+        }
+
+        .content-body {
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.75; /* 28px */
+            color: #d1d5db; /* gray-300 */
+            text-align: left; /* Align body text to the left for readability */
+        }
+        .content-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styling for embedded media */
+        .content-body img,
+        .content-body .video-wrapper {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.75rem; /* 12px */
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: block; /* Changed to block for better centering control */
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* YouTube-like video container for aspect ratio */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        /* === SOCIAL ICONS CSS (MATCHING LATEST USER CODE) === */
+        /* Social Icons Container - Base/Mobile */
+        .social-icons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            background-color: rgba(0,0,0,0.7);
+            gap: 5vmin;
+        }
+        .social-icon {
+            font-size: 12vmin;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            gap: 5vmin; 
+            opacity: .8;
+        }
+
+        .resume-icon { color: #FF0000; }
+        .email-icon { color: #FFA500; }
+        .github-icon { color: #008000; }
+        .linkedin-icon { color: #0A66C2; }
+        .imdb-icon { color: #FFFF00; }
+        .file-icon { color: #800080; }
+
+        @media (hover: hover) {
+            .social-icon {
+                transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+            }
+            .social-icon:hover {
+                transform: scale(1.1);
+            }
+            .resume-icon:hover { opacity: 1; }
+            .email-icon:hover { opacity: 1; }
+            .github-icon:hover { opacity: 1; }
+            .linkedin-icon:hover { opacity: 1; }
+            .imdb-icon:hover { opacity: 1; }
+            .file-icon:hover { opacity: 1; }
+        }
+        
+        /* Desktop Icon Layout Override */
+        @media (min-width: 701px) {
+            .social-icons {
+                position: fixed;
+                top: 50%;
+                left: 1.5rem;
+                right: auto;
+                bottom: auto;
+                width: auto;
+                transform: translateY(-50%);
+                flex-direction: column;
+                background-color: transparent;
+                padding: 0;
+                gap: 2.5vmin;
+            }
+            .social-icon { font-size: 6vmin; }
+        }
+        /* === END OF SOCIAL ICONS CSS === */
+
+
+        /* Orientation Lock Message */
+        #orientation-lock-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            color: blue;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #orientation-lock-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: rotate-animation 1.5s ease-in-out infinite;
+        }
+        @keyframes rotate-animation {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
+        /* --- Responsive Design --- */
+        
+        /* Mobile layout adjustments */
+        @media (max-width: 700px) {
+            body {
+                overflow-y: auto;
+            }
+            .content-container {
+                padding: 1rem;
+            }
+            .content-title {
+                font-size: 2.25rem; /* 36px */
+            }
+            .content-subtitle {
+                font-size: 1.1rem;
+            }
+            .content-body {
+                font-size: 1rem; /* 16px */
+            }
+        }
+
+        /* Landscape lock on small devices */
+        @media (max-width: 705px) and (orientation: landscape) {
+            #main-content, .social-icons {
+                display: none;
+            }
+            #orientation-lock-message {
+                display: flex;
+            }
         }
     </style>
 </head>
-<body>
-    <canvas id="interactiveCanvas"></canvas>
+<body class="text-slate-300">
+    
+    <div class="social-icons">
+        <a href="/site_files/Sean_Bordley_Resume.pdf" target="_blank" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+            <i class="fas fa-file-alt"></i>
+        </a>
+        <a href="mailto:seanbordley@gmail.com" class="social-icon email-icon" title="Email">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://www.imdb.com/name/nm4282305/" target="_blank" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
+            <i class="fab fa-imdb"></i>
+        </a>
+        <a href="https://github.com/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
+            <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
+            <i class="fas fa-folder"></i>
+        </a>
+    </div>
+
+    <!-- Orientation Lock Message -->
+    <div id="orientation-lock-message">
+        <div>
+            <i class="fas fa-mobile-alt"></i>
+            <p>Please rotate your device to portrait mode for the best experience.</p>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <div class="content-container">
+            <h1 class="content-title">Welcome to the New Page Layout</h1>
+            <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
+            <div class="content-body">
+                <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
+
+                <!-- How to embed an image -->
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
+                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+
+                <!-- How to embed a video -->
+                <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
+            </div>
+        </div>
+    </main>
 
     <script>
-        // --- Canvas and Context Setup ---
-        const canvas = document.getElementById('interactiveCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // --- State Variables ---
-        // An object to hold the pointer's coordinates, initialized to null
-        const pointer = {
-            x: null,
-            y: null,
-        };
-
-        // A flag to track if the user is actively touching the screen
-        let isTouching = false;
-
-        // --- Orb Configuration ---
-        const orbConfig = {
-            radius: 30, // The outer radius of the glow
-            gradientInnerRadius: 5, // The radius of the bright core
-            colorStops: {
-                inner: 'rgba(100, 180, 255, 0.7)', // Dimmer blue core
-                middle: 'rgba(40, 120, 220, 0.4)', // Dimmer medium blue glow
-                outer: 'rgba(0, 50, 150, 0)'      // Transparent outer edge
-            }
-        };
-
-        // --- Functions ---
-
-        /**
-         * Sets the canvas dimensions to fill the browser window.
-         * This function is called on load and on window resize.
-         */
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-
-        /**
-         * Updates the pointer's position from a mouse or touch event.
-         * @param {MouseEvent | TouchEvent} event - The browser event.
-         */
-        function updatePointerPosition(event) {
-            // Use the first touch point if it's a touch event
-            if (event.touches && event.touches.length > 0) {
-                pointer.x = event.touches[0].clientX;
-                pointer.y = event.touches[0].clientY;
-            } else { // Otherwise, use the mouse event's coordinates
-                pointer.x = event.clientX;
-                pointer.y = event.clientY;
-            }
-        }
-
-        /**
-         * The main animation loop, called on every frame.
-         */
-        function animate() {
-            // Create a trailing effect by drawing a semi-transparent black rectangle
-            // over the whole canvas each frame. The lower the alpha, the longer the trail.
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw the orb only if the pointer has a position (is on screen)
-            if (pointer.x !== null) {
-                // Create a radial gradient for the glowing effect
-                const gradient = ctx.createRadialGradient(
-                    pointer.x,
-                    pointer.y,
-                    orbConfig.gradientInnerRadius,
-                    pointer.x,
-                    pointer.y,
-                    orbConfig.radius
-                );
-
-                // Add the color stops to the gradient
-                gradient.addColorStop(0, orbConfig.colorStops.inner);
-                gradient.addColorStop(0.5, orbConfig.colorStops.middle);
-                gradient.addColorStop(1, orbConfig.colorStops.outer);
-
-                // Draw the orb
-                ctx.beginPath();
-                ctx.arc(pointer.x, pointer.y, orbConfig.radius, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-            }
-
-            // Request the next animation frame to create a smooth loop
-            requestAnimationFrame(animate);
-        }
-
-        // --- Event Listeners ---
-
-        // Set initial canvas size
-        window.addEventListener('load', resizeCanvas);
-        // Adjust canvas size if the window is resized
-        window.addEventListener('resize', resizeCanvas);
-
-        // --- Mouse Events ---
-        // Update pointer on mouse move to show the orb. This makes it work without a click.
-        canvas.addEventListener('mousemove', (event) => {
-            updatePointerPosition(event);
-        });
-
-        // Hide the orb when the mouse leaves the canvas
-        canvas.addEventListener('mouseleave', () => {
-            pointer.x = null;
-            pointer.y = null;
-        });
-
-        // --- Touch Events ---
-        // Show the orb and start tracking on touch start
-        canvas.addEventListener('touchstart', (event) => {
-            event.preventDefault(); // Prevent mouse event emulation and other defaults
-            isTouching = true;
-            updatePointerPosition(event);
-        }, { passive: false });
-
-        // Move the orb on touch drag
-        canvas.addEventListener('touchmove', (event) => {
-            event.preventDefault(); // Prevent scrolling
-            if (isTouching) {
-                updatePointerPosition(event);
-            }
-        }, { passive: false });
-
-        // Hide the orb on touch end
-        canvas.addEventListener('touchend', () => {
-            isTouching = false;
-            pointer.x = null;
-            pointer.y = null;
-        });
-
-        // --- Start the Animation ---
-        animate();
+        // No JavaScript is needed for this new static layout, 
+        // but the script tag is here in case you want to add interactivity later.
+        
+        // The CSS handles showing/hiding the orientation lock message automatically.
     </script>
+
 </body>
 </html>
