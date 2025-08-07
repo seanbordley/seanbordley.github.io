@@ -36,11 +36,9 @@
             height: 79.2vmin;
             max-width: 585px;
             max-height: 585px;
-            /* MODIFIED: Added transition for fading */
             transition: opacity 0.3s ease;
         }
 
-        /* NEW: Class to hide the hexagon container */
         .hexagon-showcase-container.is-hidden {
             opacity: 0;
             pointer-events: none;
@@ -402,6 +400,12 @@
             display: block;
             margin-bottom: 0.5rem;
         }
+        #form-success-message {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            color: green;
+        }
     </style>
 </head>
 <body class="text-slate-300">
@@ -482,17 +486,21 @@
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
             <h2>CONTACT</h2>
-            <form action="https://formspree.io/f/xqalgbnj" method="POST">
-                <label>
-                    Your email:
-                    <input type="email" name="email">
-                </label>
-                <label>
-                    Your message:
-                    <textarea name="message"></textarea>
-                </label>
-                <!-- your other form fields go here -->
-                <button type="submit">Send</button>
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+                <div id="form-content">
+                    <label>
+                        Your email:
+                        <input type="email" name="email">
+                    </label>
+                    <label>
+                        Your message:
+                        <textarea name="message"></textarea>
+                    </label>
+                    <button type="submit">Send</button>
+                </div>
+                <div id="form-success-message" style="display: none;">
+                    <p style="text-align: center; font-size: 1.2rem; color: green;">Thank you! Your message has been sent.</p>
+                </div>
             </form>
         </div>
     </div>
@@ -507,6 +515,9 @@
         const contactModalOverlay = document.getElementById('contact-modal-overlay');
         const closeModalButton = document.getElementById('close-modal-button');
         const hexagonContainer = document.getElementById('showcase');
+        const contactForm = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('form-success-message');
         let enlargeTimeout;
         let lastHoveredProject = null;
 
@@ -516,16 +527,44 @@
             hexagonContainer.classList.add('is-hidden');
         });
 
-        closeModalButton.addEventListener('click', () => {
+        const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
             hexagonContainer.classList.remove('is-hidden');
-        });
+            // Reset the form after a short delay
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.display = 'block';
+                successMessage.style.display = 'none';
+            }, 300);
+        };
 
+        closeModalButton.addEventListener('click', closeModal);
         contactModalOverlay.addEventListener('click', (e) => {
             if (e.target === contactModalOverlay) {
-                contactModalOverlay.classList.remove('is-visible');
-                hexagonContainer.classList.remove('is-hidden');
+                closeModal();
             }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000); // Close modal after 2 seconds
+                } else {
+                    alert('Oops! There was a problem submitting your form.');
+                }
+            }).catch(error => {
+                alert('Oops! There was a problem submitting your form.');
+            });
         });
 
         const resetAllProjects = () => {
