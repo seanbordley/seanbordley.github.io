@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sean Bordley</title>
-    <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -30,6 +29,12 @@
             justify-content: center;
             padding: 2rem;
             box-sizing: border-box;
+            transition: opacity 0.3s ease;
+        }
+
+        main.is-hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Container for the new content */
@@ -95,8 +100,7 @@
         }
 
 
-        /* === SOCIAL ICONS CSS (MATCHING LATEST USER CODE) === */
-        /* Social Icons Container - Base/Mobile */
+        /* === SOCIAL ICONS CSS === */
         .social-icons {
             position: fixed;
             bottom: 0;
@@ -109,17 +113,17 @@
             justify-content: center;
             padding: 0.5rem 1rem;
             background-color: rgba(0,0,0,0.7);
-            gap: 5vmin;
+            gap:5vmin;
         }
         .social-icon {
-            font-size: 12vmin;
+            font-size:12vmin;
             transition: color 0.3s ease, opacity 0.3s ease;
             z-index: 1000;
             display: flex;
             flex-direction: column; 
             align-items: center;
-            gap: 5vmin; 
-            opacity: .8;
+            gap:6vmin; 
+            opacity: .8
         }
 
         .resume-icon { color: #FF0000; }
@@ -144,7 +148,6 @@
             .file-icon:hover { opacity: 1; }
         }
         
-        /* Desktop Icon Layout Override */
         @media (min-width: 701px) {
             .social-icons {
                 position: fixed;
@@ -161,6 +164,7 @@
             }
             .social-icon { font-size: 6vmin; }
         }
+        
         /* === END OF SOCIAL ICONS CSS === */
 
 
@@ -171,7 +175,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             background-color: #000;
-            color: blue;
+            color: white;
             z-index: 9999;
             flex-direction: column;
             justify-content: center;
@@ -191,7 +195,6 @@
 
         /* --- Responsive Design --- */
         
-        /* Mobile layout adjustments */
         @media (max-width: 700px) {
             body {
                 overflow-y: auto;
@@ -210,8 +213,7 @@
             }
         }
 
-        /* Landscape lock on small devices */
-        @media (max-width: 705px) and (orientation: landscape) {
+        @media (max-width: 850px) and (orientation: landscape) {
             #main-content, .social-icons {
                 display: none;
             }
@@ -219,15 +221,85 @@
                 display: flex;
             }
         }
+
+        /* === CONTACT FORM STYLES === */
+        .contact-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .contact-modal-overlay.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .contact-modal {
+            background-color: #777777;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            color: black;
+        }
+        .contact-modal .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+        .contact-modal h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .contact-modal input, .contact-modal textarea, .contact-modal button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Inter', sans-serif;
+            color: black;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        .contact-modal button {
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .contact-modal label {
+            display: block;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        #form-success-message {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            color: blue;
+        }
     </style>
 </head>
 <body class="text-slate-300">
     
     <div class="social-icons">
-        <a href="/site_files/Sean_Bordley_Resume.pdf" target="_blank" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+        <a href="https://drive.google.com/file/d/1RY7-WOEjWvIRHaRgmtH2eaMTanenqI7F/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
         </a>
-        <a href="mailto:seanbordley@gmail.com" class="social-icon email-icon" title="Email">
+        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
             <i class="fas fa-envelope"></i>
         </a>
         <a href="https://www.imdb.com/name/nm4282305/" target="_blank" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
@@ -270,15 +342,100 @@
                 </div>
                 
                 <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
+                
+                <hr class="border-gray-700 my-8">
+
+                <p>Curious to see more? Dive into a broader collection of my work by clicking the file folder icon to explore my project drive.</p>
+                
+                <p>Have a question or a project in mind? I'd love to connect. Feel free to send me an email—let's start a conversation.</p>
             </div>
         </div>
     </main>
 
+    <!-- Contact Form Modal -->
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
+        <div class="contact-modal">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <h2>CONTACT</h2>
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+                <div id="form-content">
+                    <label for="email">Your email:</label>
+                    <input type="email" id="email" name="email" required>
+                    
+                    <label for="message">Your message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    
+                    <button type="submit">Send</button>
+                </div>
+                <div id="form-success-message">
+                    <p>THANK YOU!</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // No JavaScript is needed for this new static layout, 
-        // but the script tag is here in case you want to add interactivity later.
+        const mainContent = document.getElementById('main-content');
+        const emailIconButton = document.getElementById('email-icon-button');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const contactForm = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('form-success-message');
+
+        emailIconButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactModalOverlay.classList.add('is-visible');
+            mainContent.classList.add('is-hidden');
+        });
+
+        const closeModal = () => {
+            contactModalOverlay.classList.remove('is-visible');
+            mainContent.classList.remove('is-hidden');
+            // Reset the form after a short delay for the transition to finish
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.display = 'block';
+                successMessage.style.display = 'none';
+            }, 300);
+        };
+
+        closeModalButton.addEventListener('click', closeModal);
         
-        // The CSS handles showing/hiding the orientation lock message automatically.
+        contactModalOverlay.addEventListener('click', (e) => {
+            // Close the modal if the overlay (the background) is clicked
+            if (e.target === contactModalOverlay) {
+                closeModal();
+            }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000); // Close modal after 2 seconds
+                } else {
+                    response.json().then(data => {
+                        if (Object.hasOwn(data, 'errors')) {
+                            alert(data["errors"].map(error => error["message"]).join(", "));
+                        } else {
+                            alert('Oops! There was a problem submitting your form.');
+                        }
+                    })
+                }
+            }).catch(error => {
+                alert('Oops! There was a problem submitting your form.');
+            });
+        });
     </script>
 
 </body>
