@@ -36,6 +36,14 @@
             height: 79.2vmin;
             max-width: 585px;
             max-height: 585px;
+            /* MODIFIED: Added transition for fading */
+            transition: opacity 0.3s ease;
+        }
+
+        /* NEW: Class to hide the hexagon container */
+        .hexagon-showcase-container.is-hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* The user's photo in the center */
@@ -176,7 +184,7 @@
         #project-subtitle-display {
             display: block;
             font-size: 1.5vmin;
-            font-weight: 400;
+            font-weight: 700;
             color: blue;
             margin-top: -.6vmin;
         }
@@ -301,6 +309,7 @@
             }
             #project-subtitle-display {
                 font-size:4vmin;
+                font-weight: 700;
             }
         }
         
@@ -331,6 +340,68 @@
                 display: flex;
             }
         }
+
+        /* Contact Form Modal Styles */
+        .contact-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .contact-modal-overlay.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .contact-modal {
+            background-color: #353535;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            color: black;
+        }
+        .contact-modal .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #333;
+        }
+        .contact-modal h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .contact-modal input, .contact-modal textarea, .contact-modal button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Inter', sans-serif;
+            color: black;
+            background-color: white;
+        }
+        .contact-modal button {
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .contact-modal label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body class="text-slate-300">
@@ -339,7 +410,7 @@
         <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
         </a>
-        <a href="mailto:seanbordley@gmail.com" class="social-icon email-icon" title="Email">
+        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
             <i class="fas fa-envelope"></i>
         </a>
         <a href="https://www.imdb.com/name/nm4282305/" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
@@ -406,14 +477,56 @@
         </div>
     </main>
 
+    <!-- Contact Form Modal -->
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
+        <div class="contact-modal">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <h2>CONTACT</h2>
+            <form action="https://formspree.io/f/xqalgbnj" method="POST">
+                <label>
+                    Your email:
+                    <input type="email" name="email">
+                </label>
+                <label>
+                    Your message:
+                    <textarea name="message"></textarea>
+                </label>
+                <!-- your other form fields go here -->
+                <button type="submit">Send</button>
+            </form>
+        </div>
+    </div>
+
     <script>
         const showcase = document.getElementById('showcase');
         const projects = Array.from(showcase.querySelectorAll('.project-card'));
         const mainContent = document.getElementById('main-content');
         const titleDisplay = document.getElementById('project-title-display');
         const mainTitleDisplay = document.getElementById('project-main-title');
+        const emailIconButton = document.getElementById('email-icon-button');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const hexagonContainer = document.getElementById('showcase');
         let enlargeTimeout;
         let lastHoveredProject = null;
+
+        emailIconButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactModalOverlay.classList.add('is-visible');
+            hexagonContainer.classList.add('is-hidden');
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            contactModalOverlay.classList.remove('is-visible');
+            hexagonContainer.classList.remove('is-hidden');
+        });
+
+        contactModalOverlay.addEventListener('click', (e) => {
+            if (e.target === contactModalOverlay) {
+                contactModalOverlay.classList.remove('is-visible');
+                hexagonContainer.classList.remove('is-hidden');
+            }
+        });
 
         const resetAllProjects = () => {
             clearTimeout(enlargeTimeout);
