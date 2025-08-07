@@ -287,8 +287,10 @@
         }
         #form-success-message {
             display: none;
-            text-align: center;
-            font-size: 1.2rem;
+        }
+        #form-success-message p {
+            text-align: center; 
+            font-size: 8vmin; 
             color: blue;
         }
     </style>
@@ -356,15 +358,17 @@
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
-            <h2>CONTACT</h2>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
                 <div id="form-content">
-                    <label for="email">Your email:</label>
-                    <input type="email" id="email" name="email" required>
-                    
-                    <label for="message">Your message:</label>
-                    <textarea id="message" name="message" required></textarea>
-                    
+                    <h2>CONTACT</h2>
+                    <label>
+                        Your email:
+                        <input type="email" name="email">
+                    </label>
+                    <label>
+                        Your message:
+                        <textarea name="message"></textarea>
+                    </label>
                     <button type="submit">Send</button>
                 </div>
                 <div id="form-success-message">
