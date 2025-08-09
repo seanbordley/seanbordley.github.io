@@ -202,18 +202,17 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            padding: 0.5rem 1rem;
+            padding: 1vmin 2vmin;
             background-color: rgba(0,0,0,0.7);
-            gap:5vmin;
+            gap:4vmin;
         }
         .social-icon {
-            font-size:12vmin;
+            font-size:8vmin;
             transition: color 0.3s ease, opacity 0.3s ease;
             z-index: 1000;
             display: flex;
             flex-direction: column; 
             align-items: center;
-            gap:6vmin; 
             opacity: .8
         }
 
@@ -259,8 +258,8 @@
             text-align: center;
         }
         #orientation-lock-message i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 4vmin;
+            margin-bottom: 1.5vmin;
             animation: rotate-animation 1.5s ease-in-out infinite;
         }
         @keyframes rotate-animation {
@@ -316,7 +315,7 @@
              .social-icons {
                 position: fixed;
                 top: 50%;
-                left: 1.5rem;
+                left: 2.5vmin;
                 right: auto;
                 bottom: auto;
                 width: auto;
@@ -360,7 +359,7 @@
             pointer-events: auto;
         }
         .contact-modal {
-            background-color: #777777;
+            background-color: #cccccc;
             padding: 3vmin;
             border-radius: 10px;
             width: 90%;
@@ -370,8 +369,8 @@
         }
         .contact-modal .close-button {
             position: absolute;
-            top: .5vmin;
-            right: 2vmin;
+            top: 1.5vmin;
+            right: 2.5vmin;
             font-size: 4vmin;
             cursor: pointer;
             color: #333;
@@ -382,8 +381,8 @@
         }
         .contact-modal input, .contact-modal textarea, .contact-modal button {
             width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
+            padding: 1.2vmin;
+            margin-bottom: 1.5vmin;
             border-radius: 5px;
             border: 1px solid #ccc;
             font-family: 'Inter', sans-serif;
@@ -398,12 +397,12 @@
         }
         .contact-modal label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8vmin;
         }
         #form-success-message {
             display: none;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 2vmin;
             color: green;
         }
     </style>
@@ -411,7 +410,7 @@
 <body class="text-slate-300">
     
     <div class="social-icons">
-        <a href="/site_files/Sean_Bordley_Resume.pdf" target="_blank" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
         </a>
         <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
@@ -485,6 +484,7 @@
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
+            <h2>CONTACT</h2>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
                 <div id="form-content">
                     <label>
