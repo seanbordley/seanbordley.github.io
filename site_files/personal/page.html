@@ -1,17 +1,16 @@
-<!DOCTYPE html>
+        <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sean Bordley</title>
-    <link rel="icon" href="https://placehold.co/32x32/000000/FFFFFF?text=SB">
+    <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* General body and layout styles */
         html, body {
             height: 100%;
             margin: 0;
@@ -19,171 +18,90 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #000000; /* Pure black background */
-            overflow: hidden; /* Suppresses all scrolling */
+            overflow-x: hidden;
+            color: #d1d5db; /* Default text color (gray-300) */
         }
         main {
             position: relative;
             width: 100%;
-            height: 100%;
-        }
-
-        /* Main container for the interactive hexagon layout */
-        .hexagon-showcase-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 79.2vmin; 
-            height: 79.2vmin;
-            max-width: 585px;
-            max-height: 585px;
-        }
-
-        /* The user's photo in the center (initially hidden) */
-        .center-photo {
-            position: absolute;
-            width: 25.61vmin; 
-            height: 29.44vmin; 
-            max-width: 189px;
-            max-height: 218px;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1; /* Behind the projects */
-            transition: opacity 0.5s ease;
-            background-color: blue; 
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            min-height: 100%;
             display: flex;
-            justify-content: center;
             align-items: center;
-            opacity: 0;
-        }
-        .center-photo img {
-            width: 96%;
-            height: 96%;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            justify-content: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            transition: opacity 0.3s ease;
         }
 
-        /* Individual project card styling */
-        .project-card {
+        main.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Container for the new content */
+        .content-container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .content-title {
+            font-size: 3rem; /* 48px */
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem; /* Adjusted spacing for subtitle */
+        }
+
+        /* New Subtitle Style */
+        .content-subtitle {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 400;
+            color: #9ca3af; /* gray-400 */
+            margin-bottom: 2.5rem; /* Spacing below subtitle */
+        }
+
+        .content-body {
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.75; /* 28px */
+            color: #d1d5db; /* gray-300 */
+            text-align: left; /* Align body text to the left for readability */
+        }
+        .content-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styling for embedded media */
+        .content-body img,
+        .content-body .video-wrapper {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.75rem; /* 12px */
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: block; /* Changed to block for better centering control */
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* YouTube-like video container for aspect ratio */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        .video-wrapper iframe {
             position: absolute;
-            width: 24.56vmin; 
-            height: 28.19vmin; 
-            max-width: 198px;
-            max-height: 228px;
-            top: 50%;
-            left: 50%;
-            /* Negative margins to center the hexagon based on its own size */
-            margin-top: -14.1vmin;  /* half of height */
-            margin-left: -12.28vmin; /* half of width */
-            z-index: 5; /* In front of the center photo */
-            opacity: .7; 
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
-            backface-visibility: hidden; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #1a1a1a; /* Dark grey for placeholder */
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-        
-        .project-card img {
-            width: 96%;
-            height: 96%;
-            object-fit: cover;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: none;
-        }
-
-        /* Positioning for the 6 surrounding hexagons, with the 7th being central */
-        .project-card:nth-of-type(1) { transform: rotate(30deg)   translateY(-26.02vmin) rotate(0deg); }
-        .project-card:nth-of-type(2) { transform: rotate(90deg)  translateY(-26.02vmin) rotate(-60deg); }
-        .project-card:nth-of-type(3) { transform: rotate(120deg) translateY(-26.02vmin) rotate(-120deg); }
-        .project-card:nth-of-type(4) { transform: rotate(180deg) translateY(-26.02vmin) rotate(-180deg); }
-        .project-card:nth-of-type(5) { transform: rotate(240deg) translateY(-26.02vmin) rotate(-240deg); }
-        .project-card:nth-of-type(6) { transform: rotate(300deg) translateY(-26.02vmin) rotate(-300deg); }
-        /* The 7th .project-card is not transformed, so it remains in the center by default. */
-
-
-        /* --- JS-Controlled Animation States --- */
-        .project-card.is-faded {
-            opacity: 0.3; 
-            z-index: 4;
-            transition: opacity 0.4s ease;
-        }
-        .hexagon-showcase-container.is-active .center-photo {
-            opacity: 0;
-            transition: none;
-        }
-        
-        .hexagon-showcase-container.is-focused .project-card:not(.is-enlarged),
-        .hexagon-showcase-container.is-focused .center-photo {
-            opacity: 0;
-        }
-
-        .project-card.is-central {
-            transform: translate(0, 0) scale(1.05);
-            z-index: 10;
-        }
-        .project-card.is-enlarged {
-            transform: translate(0, 0) scale(2.8);
-            z-index: 15;
-            background-color: transparent;
-            clip-path: inset(0% round 20px);
-            overflow: visible;
-        }
-
-        .project-card.is-enlarged img {
-            clip-path: inset(0% round 20px);
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
         }
 
-        .project-card.is-enlarged .project-overlay {
-            display: none !important; 
-        }
 
-        .project-overlay {
-            position: absolute; top:0; left:0; right:0; bottom:0;
-            background: rgba(0, 0, 0, 0.1); 
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-        
-        /* Styling for the fixed project title display */
-        #project-title-display {
-            position: fixed;
-            top: 1%;
-            left: 50%;
-            transform: translate(-50%, 0);
-            color: #4d4dff; /* A nice blue */
-            font-size: 4vmin;
-            font-weight: 700;
-            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
-            opacity: 0;
-            white-space: nowrap;
-            transition: opacity 0.4s ease-out;
-            z-index: 100;
-            pointer-events: none;
-            text-align: center;
-        }
-
-        /* Styling for the subtitle */
-        #project-subtitle-display {
-            display: block;
-            font-size: 1.5vmin;
-            font-weight: 400;
-            color: #b3b3ff; /* Lighter blue */
-            margin-top: -.6vmin;
-        }
-
-        #project-title-display.is-visible {
-            opacity: .9;
-        }
-
-        /* Social Icons Container */
+        /* === SOCIAL ICONS CSS === */
         .social-icons {
             position: fixed;
             bottom: 0;
@@ -194,7 +112,7 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            padding: 0.5rem 1rem;
+            padding: 0.8vmin 1.6vmin; /* Converted from rem */
             background-color: rgba(0,0,0,0.7);
             gap:5vmin;
         }
@@ -222,23 +140,43 @@
             }
             .social-icon:hover {
                 transform: scale(1.1);
-                opacity: 1;
             }
-            .project-card:hover .project-overlay {
-                opacity: 1;
-            }
+            .resume-icon:hover { opacity: 1; }
+            .email-icon:hover { opacity: 1; }
+            .github-icon:hover { opacity: 1; }
+            .linkedin-icon:hover { opacity: 1; }
+            .imdb-icon:hover { opacity: 1; }
+            .file-icon:hover { opacity: 1; }
         }
+        
+        @media (min-width: 701px) {
+            .social-icons {
+                position: fixed;
+                top: 50%;
+                left: 2.4vmin; /* Converted from rem */
+                right: auto;
+                bottom: auto;
+                width: auto;
+                transform: translateY(-50%);
+                flex-direction: column;
+                background-color: transparent;
+                padding: 0;
+                gap: 2.5vmin;
+            }
+            .social-icon { font-size: 6vmin; }
+        }
+        
+        /* === END OF SOCIAL ICONS CSS === */
+
 
         /* Orientation Lock Message */
         #orientation-lock-message {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background-color: #000;
-            color: #4d4dff;
+            color: blue;
             z-index: 9999;
             flex-direction: column;
             justify-content: center;
@@ -246,7 +184,7 @@
             text-align: center;
         }
         #orientation-lock-message i {
-            font-size: 3rem;
+            font-size: 4rem;
             margin-bottom: 1rem;
             animation: rotate-animation 1.5s ease-in-out infinite;
         }
@@ -256,66 +194,30 @@
             100% { transform: rotate(-90deg); }
         }
 
-
-        /* Responsive adjustments for smaller screens */
-        @media (max-width: 700px) {
-            .hexagon-showcase-container {
-                width: 80vmin; 
-                height: 80vmin;
-            }
-            .center-photo {
-                width: 27.1vmin; 
-                height: 31.1vmin;
-            }
-            .project-card {
-                width: 27.1vmin; 
-                height: 31.1vmin; 
-                margin-top: -15.55vmin; 
-                margin-left: -13.55vmin; 
-            }
-            .project-card:nth-of-type(1) { transform: rotate(0deg)   translateY(-28.5vmin) rotate(0deg); }
-            .project-card:nth-of-type(2) { transform: rotate(60deg)  translateY(-28.5vmin) rotate(-60deg); }
-            .project-card:nth-of-type(3) { transform: rotate(120deg) translateY(-28.5vmin) rotate(-120deg); }
-            .project-card:nth-of-type(4) { transform: rotate(180deg) translateY(-28.5vmin) rotate(-180deg); }
-            .project-card:nth-of-type(5) { transform: rotate(240deg) translateY(-28.5vmin) rotate(-240deg); }
-            .project-card:nth-of-type(6) { transform: rotate(300deg) translateY(-28.5vmin) rotate(-300deg); }
-            
-           .project-card.is-enlarged {
-                transform: translate(0, 0) scale(3.1);
-            }
-
-            #project-title-display {
-                font-size: 14vmin;
-                top:5%;
-                left: 50%;
-                transform: translate(-50%, 0);
-                text-align: center;
-            }
-            #project-subtitle-display {
-                font-size:4vmin;
-            }
-        }
+        /* --- Responsive Design --- */
         
-        /* Desktop Icon Layout */
-        @media (min-width: 701px) {
-             .social-icons {
-                position: fixed;
-                top: 50%;
-                left: 1.5rem;
-                right: auto;
-                bottom: auto;
-                width: auto;
-                transform: translateY(-50%);
-                flex-direction: column;
-                background-color: transparent;
-                padding: 0;
-                gap: 2.5vmin;
-             }
-             .social-icon { font-size: 6vmin; }
+        @media (max-width: 700px) {
+            body {
+                overflow-y: auto;
+            }
+            .content-container {
+                padding: 1rem;
+            }
+            .content-title {
+                font-size: 2.25rem; /* 36px */
+            }
+            .content-subtitle {
+                font-size: 1.1rem;
+            }
+            .content-body {
+                font-size: 1rem; /* 16px */
+            }
+             .contact-label {
+                display: none;
+            }
         }
 
-        /* Media query for landscape orientation on mobile */
-        @media (max-width: 705px) and (orientation: landscape) {
+        @media (max-width: 850px) and (orientation: landscape) {
             #main-content, .social-icons {
                 display: none;
             }
@@ -323,27 +225,100 @@
                 display: flex;
             }
         }
+
+        /* === CONTACT FORM STYLES === */
+        .contact-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .contact-modal-overlay.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .contact-modal {
+            background-color: #777777;
+            padding: 3vmin;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            color: black;
+        }
+        .contact-modal .close-button {
+            position: absolute;
+            top: .5vmin;
+            right: 2vmin;
+            font-size: 4vmin;
+            cursor: pointer;
+            color: #333;
+        }
+        .contact-modal h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .contact-modal input, .contact-modal textarea, .contact-modal button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Inter', sans-serif;
+            color: black;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        .contact-modal button {
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .contact-modal label {
+            display: block;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        #form-success-message {
+            display: none;
+        }
+        #form-success-message p {
+            text-align: center; 
+            font-size: 5vmin; 
+            color: blue;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="text-slate-300">
     
     <div class="social-icons">
-        <a href="#" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
         </a>
-        <a href="mailto:email@example.com" class="social-icon email-icon" title="Email">
+        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
             <i class="fas fa-envelope"></i>
         </a>
-        <a href="#" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
+        <a href="https://www.imdb.com/name/nm4282305/" target="_blank" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
             <i class="fab fa-imdb"></i>
         </a>
-        <a href="#" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
+        <a href="https://github.com/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
             <i class="fab fa-github"></i>
         </a>
-        <a href="#" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
+        <a href="https://www.linkedin.com/in/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
             <i class="fab fa-linkedin"></i>
         </a>
-        <a href="#" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
+        <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
             <i class="fas fa-folder"></i>
         </a>
     </div>
@@ -352,177 +327,112 @@
     <div id="orientation-lock-message">
         <div>
             <i class="fas fa-mobile-alt"></i>
-            <p>Please rotate your device to portrait mode.</p>
+            <p>Please rotate your device to portrait mode for the best experience.</p>
         </div>
     </div>
 
     <main id="main-content">
-        <div class="hexagon-showcase-container" id="showcase">
-            <!-- This div is for a potential photo, but is not used in the initial state -->
-            <div class="center-photo">
-                <img src="" alt="" class="w-full h-full object-cover">
+        <div class="content-container">
+            <h1 class="content-title">Welcome to the New Page Layout</h1>
+            <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
+            <div class="content-body">
+                <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
+
+                <!-- How to embed an image -->
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
+                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+
+                <!-- How to embed a video -->
+                <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
+                
+                <hr class="border-blue-700 my-8">
+                <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
-            
-            <!-- The first 6 project cards form the outer ring -->
-            <a href="#" class="project-card" data-title="SYSTEMS">
-                <img src="https://placehold.co/200x230/333/fff?text=Systems" alt="Systems Project" onerror="this.onerror=null;this.src='https://placehold.co/200x230/333/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-            <a href="#" class="project-card" data-title="FIXTURES">
-                <img src="https://placehold.co/200x230/444/fff?text=Fixtures" alt="Fixtures Project" onerror="this.onerror=null;this.src='https://placehold.co/200x230/444/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-            <a href="#" class="project-card" data-title="PARTS">
-                <img src="https://placehold.co/200x230/555/fff?text=Parts" alt="Parts Project" onerror="this.onerror=null;this.src='https://placehold.co/200x230/555/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-            <a href="#" class="project-card" data-title="TOOLS">
-                <img src="https://placehold.co/200x230/666/fff?text=Tools" alt="Tools Project" onerror="this.onerror=null;this.src='https://placehold.co/200x230/666/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-            <a href="#" class="project-card" data-title="FILM">
-                <img src="https://placehold.co/200x230/777/fff?text=Film" alt="Film Project" onerror="this.onerror=null;this.src='https://placehold.co/200x230/777/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-            <a href="#" class="project-card" data-title="PERSONAL">
-                <img src="https://placehold.co/200x230/888/fff?text=Personal" alt="Personal Project" onerror="this.onerror=null;this.src='https://placehold.co/200x230/888/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-            <!-- The 7th project card is the central one -->
-             <a href="#" class="project-card" data-title="ABOUT">
-                <img src="https://placehold.co/200x230/999/fff?text=About" alt="About Me" onerror="this.onerror=null;this.src='https://placehold.co/200x230/999/fff?text=Error';">
-                <div class="project-overlay"></div>
-            </a>
-        </div>
-        <!-- This is the dedicated container for the title -->
-        <div id="project-title-display">
-            <span id="project-main-title"></span>
-            <span id="project-subtitle-display">(CLICK PICTURE FOR MORE)</span>
         </div>
     </main>
 
+    <!-- Contact Form Modal -->
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
+        <div class="contact-modal">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+                <div id="form-content">
+                    <label class="contact-label">
+                        Your email:
+                        <input type="email" name="email">
+                    </label>
+                    <label class="contact-label">
+                        Your message:
+                        <textarea name="message"></textarea>
+                    </label>
+                    <button type="submit">Send</button>
+                </div>
+                <div id="form-success-message">
+                    <p>Thank you!</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const showcase = document.getElementById('showcase');
-            if (!showcase) return;
+        const mainContent = document.getElementById('main-content');
+        const emailIconButton = document.getElementById('email-icon-button');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const contactForm = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('form-success-message');
 
-            const projects = Array.from(showcase.querySelectorAll('.project-card'));
-            const mainContent = document.getElementById('main-content');
-            const titleDisplay = document.getElementById('project-title-display');
-            const mainTitleDisplay = document.getElementById('project-main-title');
-            let enlargeTimeout;
-            let lastHoveredProject = null;
+        emailIconButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactModalOverlay.classList.add('is-visible');
+            mainContent.classList.add('is-hidden');
+        });
 
-            // Function to reset all project states
-            const resetAllProjects = () => {
-                clearTimeout(enlargeTimeout);
-                showcase.classList.remove('is-active', 'is-focused');
-                projects.forEach(p => {
-                    p.classList.remove('is-faded', 'is-central', 'is-enlarged');
-                });
-                titleDisplay.classList.remove('is-visible');
-            };
+        const closeModal = () => {
+            contactModalOverlay.classList.remove('is-visible');
+            mainContent.classList.remove('is-hidden');
+            // Reset the form after a short delay
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.display = 'block';
+                successMessage.style.display = 'none';
+            }, 300);
+        };
 
-            // Check if the device supports hover (i.e., is a desktop)
-            const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-            if (!isDesktop) {
-                // --- Mobile/Touch Logic ---
-                projects.forEach(project => {
-                    project.addEventListener('click', function(e) {
-                        // If the project is already enlarged, let the link work
-                        if (this.classList.contains('is-enlarged')) {
-                            return; 
-                        }
-                        
-                        e.preventDefault(); 
-
-                        const isAlreadyCentral = this.classList.contains('is-central');
-                        
-                        resetAllProjects();
-
-                        if (!isAlreadyCentral) {
-                            showcase.classList.add('is-active');
-                            projects.forEach(p => {
-                                if (p !== this) p.classList.add('is-faded');
-                            });
-                            this.classList.add('is-central');
-
-                            // Enlarge after a short delay
-                            enlargeTimeout = setTimeout(() => {
-                                this.classList.add('is-enlarged');
-                                showcase.classList.add('is-focused');
-                                const title = this.dataset.title;
-                                if (title) {
-                                    mainTitleDisplay.textContent = title;
-                                    titleDisplay.classList.add('is-visible');
-                                }
-                            }, 100);
-                        }
-                    });
-                });
-
-                // Reset when clicking outside the showcase area
-                mainContent.addEventListener('click', function(e) {
-                    if (!showcase.contains(e.target)) {
-                        resetAllProjects();
-                    }
-                }, true);
-
-            } else {
-                // --- Desktop/Hover Logic ---
-                projects.forEach(project => {
-                    project.addEventListener('mouseenter', function() {
-                        if (document.querySelector('.project-card.is-enlarged')) return;
-
-                        projects.forEach(p => p.classList.remove('is-central'));
-                        
-                        showcase.classList.add('is-active');
-                        projects.forEach(p => {
-                            if (p !== this) p.classList.add('is-faded');
-                        });
-                        this.classList.remove('is-faded');
-                        
-                        const title = this.dataset.title;
-                        if (title) {
-                            mainTitleDisplay.textContent = title;
-                            titleDisplay.classList.add('is-visible');
-                        }
-                    });
-
-                    project.addEventListener('click', function(e) {
-                        if (this.classList.contains('is-enlarged')) {
-                            return; // Allow link to work
-                        }
-                        
-                        e.preventDefault();
-                        
-                        projects.forEach(p => {
-                            if (p !== this) {
-                                 p.classList.remove('is-central', 'is-enlarged');
-                            }
-                        });
-
-                        this.classList.add('is-central');
-                        this.classList.add('is-enlarged');
-                        showcase.classList.add('is-focused');
-                    });
-                });
-
-                // Reset when mouse leaves the showcase area (if not focused)
-                showcase.addEventListener('mouseleave', () => {
-                    if (!document.querySelector('.project-card.is-enlarged')) {
-                        resetAllProjects();
-                    }
-                });
-
-                // Reset when clicking outside the showcase area
-                mainContent.addEventListener('click', function(e) {
-                    if (!showcase.contains(e.target)) {
-                        resetAllProjects();
-                    }
-                }, true);
+        closeModalButton.addEventListener('click', closeModal);
+        contactModalOverlay.addEventListener('click', (e) => {
+            if (e.target === contactModalOverlay) {
+                closeModal();
             }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    this.reset(); // Clear the form fields
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000); // Close modal after 2 seconds
+                } else {
+                    alert('Oops! There was a problem submitting your form.');
+                }
+            }).catch(error => {
+                alert('Oops! There was a problem submitting your form.');
+            });
         });
     </script>
 
