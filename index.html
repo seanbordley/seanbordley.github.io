@@ -587,6 +587,11 @@
             // --- Mobile/Touch Logic ---
             projects.forEach(project => {
                 project.addEventListener('click', function(e) {
+                    const swipeDistance = Math.abs(touchEndX - touchStartX);
+                    if (swipeDistance > 20) { // Threshold to differentiate tap from swipe
+                        return;
+                    }
+
                     if (this.classList.contains('is-enlarged')) {
                         return; 
                     }
@@ -644,29 +649,31 @@
                 }
             });
             // --- New Swipe-to-Dismiss Logic ---
-const handleSwipe = () => {
-    const isEnlarged = document.querySelector('.project-card.is-enlarged');
-    if (!isEnlarged) return;
+            const handleSwipe = () => {
+                const isEnlarged = document.querySelector('.project-card.is-enlarged');
+                if (!isEnlarged) return;
 
-    const swipeDistanceX = Math.abs(touchEndX - touchStartX);
-    const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+                const swipeDistanceX = Math.abs(touchEndX - touchStartX);
+                const swipeDistanceY = Math.abs(touchEndY - touchStartY);
 
-    // If swipe is more than 50px, dismiss the image
-    if (swipeDistanceX > 50 || swipeDistanceY > 50) {
-        resetAllProjects();
-    }
-};
+                // If swipe is more than 50px, dismiss the image
+                if (swipeDistanceX > 50 || swipeDistanceY > 50) {
+                    resetAllProjects();
+                }
+            };
 
-mainContent.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-    touchStartY = e.changedTouches[0].screenY;
-}, false);
+            mainContent.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+                touchEndX = e.changedTouches[0].screenX; // Reset endX on new touch
+                touchEndY = e.changedTouches[0].screenY; // Reset endY on new touch
+            }, false);
 
-mainContent.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-    handleSwipe();
-}, false);
+            mainContent.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                touchEndY = e.changedTouches[0].screenY;
+                handleSwipe();
+            }, false);
 
             mainContent.addEventListener('click', function(e) {
                 if (!showcase.contains(e.target)) {
