@@ -259,8 +259,8 @@
             text-align: center;
         }
         #orientation-lock-message i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+            font-size: 6vmin;
+            margin-bottom: 2vmin;
             animation: rotate-animation 1.5s ease-in-out infinite;
         }
         @keyframes rotate-animation {
@@ -520,6 +520,10 @@
         const successMessage = document.getElementById('form-success-message');
         let enlargeTimeout;
         let lastHoveredProject = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
 
         emailIconButton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -639,7 +643,30 @@
                     titleDisplay.classList.remove('is-visible');
                 }
             });
+            // --- New Swipe-to-Dismiss Logic ---
+const handleSwipe = () => {
+    const isEnlarged = document.querySelector('.project-card.is-enlarged');
+    if (!isEnlarged) return;
 
+    const swipeDistanceX = Math.abs(touchEndX - touchStartX);
+    const swipeDistanceY = Math.abs(touchEndY - touchStartY);
+
+    // If swipe is more than 50px, dismiss the image
+    if (swipeDistanceX > 50 || swipeDistanceY > 50) {
+        resetAllProjects();
+    }
+};
+
+mainContent.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, false);
+
+mainContent.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    handleSwipe();
+}, false);
 
             mainContent.addEventListener('click', function(e) {
                 if (!showcase.contains(e.target)) {
@@ -703,3 +730,4 @@
 
 </body>
 </html>
+```eof
