@@ -77,15 +77,31 @@
                 <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
                 <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
 
+                <!-- Sun -->
+                <circle id="sun" r="8" fill="#FFD700" stroke="orange" stroke-width="1"/>
                 <!-- Shadow -->
-                <circle id="shadow" cx="100" cy="100" r="20" fill="black" fill-opacity="0.2"/>
-                <!-- Chair -->
-                <text id="chair" x="100" y="100" font-size="20" text-anchor="middle" dominant-baseline="central">&#x1F924;</text> <!-- 🪑 is not supported everywhere, using 🤤 instead -->
+                <circle id="shadow" cx="100" cy="100" r="20" fill="#3b82f6" fill-opacity="0.4"/>
                 <!-- Umbrella -->
-                <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(59 130 246 / 0.5)" stroke="rgb(59 130 246)" stroke-width="1.5"/>
+                <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
             </svg>
             <div id="night-message" class="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-lg font-semibold hidden">
                 <p>It's nighttime!</p>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="flex justify-center items-center space-x-4 text-xs text-gray-600 dark:text-gray-400">
+            <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-yellow-400 border border-orange-500"></span>
+                <span>Sun</span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-gray-400/50 border border-gray-500"></span>
+                <span>Umbrella</span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-blue-500/40"></span>
+                <span>Shade</span>
             </div>
         </div>
 
@@ -129,7 +145,7 @@
 
             const umbrellaSVG = document.getElementById('umbrella');
             const shadowSVG = document.getElementById('shadow');
-            const chairSVG = document.getElementById('chair');
+            const sunSVG = document.getElementById('sun');
             const nightMessage = document.getElementById('night-message');
             
             const coordsDisplay = document.getElementById('coords');
@@ -186,13 +202,13 @@
                 if (sunPosition.altitude <= 0) {
                     nightMessage.classList.remove('hidden');
                     shadowSVG.classList.add('hidden');
-                    chairSVG.classList.add('hidden');
+                    sunSVG.classList.add('hidden');
                     return;
                 }
                 
                 nightMessage.classList.add('hidden');
                 shadowSVG.classList.remove('hidden');
-                chairSVG.classList.remove('hidden');
+                sunSVG.classList.remove('hidden');
 
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
 
@@ -205,10 +221,17 @@
                 const shadowX = 100 + shadowOffset * Math.cos(shadowAngle);
                 const shadowY = 100 - shadowOffset * Math.sin(shadowAngle); // Subtract for SVG y-inversion
 
+                // Calculate sun's position for visualization
+                // Map altitude (0 to PI/2) to a distance from the center (95 to 10)
+                const sunDistance = 95 - (sunPosition.altitude / (Math.PI / 2)) * 85;
+                const sunX = 100 + sunDistance * Math.cos(cartesianAzimuth);
+                const sunY = 100 - sunDistance * Math.sin(cartesianAzimuth);
+
+                sunSVG.setAttribute('cx', sunX);
+                sunSVG.setAttribute('cy', sunY);
+
                 shadowSVG.setAttribute('cx', shadowX);
                 shadowSVG.setAttribute('cy', shadowY);
-                chairSVG.setAttribute('x', shadowX);
-                chairSVG.setAttribute('y', shadowY);
             }
 
             // --- GEOLOCATION ---
@@ -278,3 +301,4 @@
     </script>
 </body>
 </html>
+

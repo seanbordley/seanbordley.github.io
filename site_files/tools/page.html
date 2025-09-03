@@ -1,304 +1,467 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shade Finder</title>
+    <title>Sean Bordley</title>
+    <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #000000; /* Pure black background */
+            overflow-x: hidden;
+            color: #d1d5db; /* Default text color (gray-300) */
         }
-        .slider-thumb::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #3b82f6;
-            cursor: pointer;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        main {
+            position: relative;
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            box-sizing: border-box;
+            transition: opacity 0.3s ease;
         }
-        .slider-thumb::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #3b82f6;
-            cursor: pointer;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+
+        main.is-hidden {
+            opacity: 0;
+            pointer-events: none;
         }
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+
+        /* Container for the new content */
+        .content-container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            padding: 2rem;
         }
-        @keyframes spin {
+
+        .content-title {
+            font-size: 3rem; /* 48px */
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem; /* Adjusted spacing for subtitle */
+        }
+
+        /* New Subtitle Style */
+        .content-subtitle {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 400;
+            color: #9ca3af; /* gray-400 */
+            margin-bottom: 2.5rem; /* Spacing below subtitle */
+        }
+
+        .content-body {
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.75; /* 28px */
+            color: #d1d5db; /* gray-300 */
+            text-align: left; /* Align body text to the left for readability */
+        }
+        .content-body p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styling for embedded media */
+        .content-body img,
+        .content-body .video-wrapper {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.75rem; /* 12px */
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: block; /* Changed to block for better centering control */
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        /* YouTube-like video container for aspect ratio */
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+
+        /* === SOCIAL ICONS CSS === */
+        .social-icons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 0.8vmin 1.6vmin; /* Converted from rem */
+            background-color: rgba(0,0,0,0.7);
+            gap:5vmin;
+        }
+        .social-icon {
+            font-size:12vmin;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            gap:6vmin; 
+            opacity: 1
+        }
+
+        .resume-icon { color: #FF0000; }
+        .email-icon { color: #FFA500; }
+        .github-icon { color: #008000; }
+        .linkedin-icon { color: #0A66C2; }
+        .imdb-icon { color: #FFFF00; }
+        .file-icon { color: #800080; }
+
+        @media (hover: hover) {
+            .social-icon {
+                transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+            }
+            .social-icon:hover {
+                transform: scale(1.1);
+            }
+            .resume-icon:hover { opacity: .8; }
+            .email-icon:hover { opacity: .8; }
+            .github-icon:hover { opacity: .8; }
+            .linkedin-icon:hover { opacity: .8; }
+            .imdb-icon:hover { opacity: .8; }
+            .file-icon:hover { opacity: .8; }
+        }
+        
+        @media (min-width: 701px) {
+            .social-icons {
+                position: fixed;
+                top: 50%;
+                left: 2.4vmin; /* Converted from rem */
+                right: auto;
+                bottom: auto;
+                width: auto;
+                transform: translateY(-50%);
+                flex-direction: column;
+                background-color: transparent;
+                padding: 0;
+                gap: 2.5vmin;
+            }
+            .social-icon { font-size: 6vmin; }
+        }
+        
+        /* === END OF SOCIAL ICONS CSS === */
+
+
+        /* Orientation Lock Message */
+        #orientation-lock-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            color: blue;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #orientation-lock-message i {
+            font-size: 6vmin;
+            margin-bottom: 2vmin;
+            animation: rotate-animation 1.5s ease-in-out infinite;
+        }
+        @keyframes rotate-animation {
             0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
+        /* --- Responsive Design --- */
+        
+        @media (max-width: 700px) {
+            body {
+                overflow-y: auto;
+            }
+            .content-container {
+                padding: 1rem;
+            }
+            .content-title {
+                font-size: 2.25rem; /* 36px */
+            }
+            .content-subtitle {
+                font-size: 1.1rem;
+            }
+            .content-body {
+                font-size: 1rem; /* 16px */
+            }
+             .contact-label {
+                display: none;
+            }
+        }
+
+        @media (max-width: 850px) and (orientation: landscape) {
+            #main-content, .social-icons {
+                display: none;
+            }
+            #orientation-lock-message {
+                display: flex;
+            }
+        }
+
+        /* === CONTACT FORM STYLES === */
+        .contact-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .contact-modal-overlay.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .contact-modal {
+            background-color: #777777;
+            padding: 3vmin;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            color: black;
+        }
+        .contact-modal .close-button {
+            position: absolute;
+            top: .5vmin;
+            right: 2vmin;
+            font-size: 4vmin;
+            cursor: pointer;
+            color: #333;
+        }
+        .contact-modal h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .contact-modal input, .contact-modal textarea, .contact-modal button {
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Inter', sans-serif;
+            color: black;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        .contact-modal button {
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .contact-modal label {
+            display: block;
+            margin-bottom: 0.5rem;
+            text-align: left;
+        }
+        #form-success-message {
+            display: none;
+        }
+        #form-success-message p {
+            text-align: center; 
+            font-size: 5vmin; 
+            color: blue;
+            font-weight: bold;
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
-        <!-- Header -->
-        <div class="text-center">
-            <h1 class="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400">Shade Finder</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-1">Find the perfect spot to relax.</p>
+<body class="text-slate-300">
+    
+    <div class="social-icons">
+        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+            <i class="fas fa-file-alt"></i>
+        </a>
+        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://www.imdb.com/name/nm4282305/" target="_blank" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
+            <i class="fab fa-imdb"></i>
+        </a>
+        <a href="https://github.com/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
+            <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
+            <i class="fas fa-folder"></i>
+        </a>
+    </div>
+
+    <!-- Orientation Lock Message -->
+    <div id="orientation-lock-message">
+        <div>
+            <i class="fas fa-mobile-alt"></i>
+            <p>Please rotate your device to portrait mode for the best experience.</p>
         </div>
+    </div>
 
-        <!-- Location Section -->
-        <div id="location-section" class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div id="loader" class="loader mx-auto"></div>
-            <div id="location-content" class="hidden">
-                 <p class="text-sm">Your Location:</p>
-                 <p class="font-semibold" id="coords">Fetching...</p>
-                 <button id="getLocationBtn" class="mt-2 text-xs text-blue-500 hover:underline">Refresh Location</button>
-            </div>
-             <p id="error-message" class="text-red-500 text-sm hidden"></p>
-        </div>
+    <main id="main-content">
+        <div class="content-container">
+            <h1 class="content-title">Welcome to the New Page Layout</h1>
+            <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
+            <div class="content-body">
+                <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
-        <!-- Visualization -->
-        <div class="relative w-full aspect-square bg-green-100 dark:bg-green-900/50 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-             <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full">
-                <!-- Compass Rose -->
-                <text x="96" y="15" font-size="8" fill="currentColor" class="opacity-50 font-semibold">N</text>
-                <text x="96" y="190" font-size="8" fill="currentColor" class="opacity-50 font-semibold">S</text>
-                <text x="10" y="104" font-size="8" fill="currentColor" class="opacity-50 font-semibold">W</text>
-                <text x="182" y="104" font-size="8" fill="currentColor" class="opacity-50 font-semibold">E</text>
-                <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                <!-- How to embed an image -->
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
+                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
-                <!-- Sun -->
-                <circle id="sun" r="8" fill="#FFD700" stroke="orange" stroke-width="1"/>
-                <!-- Shadow -->
-                <circle id="shadow" cx="100" cy="100" r="20" fill="#3b82f6" fill-opacity="0.4"/>
-                <!-- Umbrella -->
-                <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
-            </svg>
-            <div id="night-message" class="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-lg font-semibold hidden">
-                <p>It's nighttime!</p>
-            </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="flex justify-center items-center space-x-4 text-xs text-gray-600 dark:text-gray-400">
-            <div class="flex items-center space-x-1.5">
-                <span class="w-3 h-3 rounded-full bg-yellow-400 border border-orange-500"></span>
-                <span>Sun</span>
-            </div>
-            <div class="flex items-center space-x-1.5">
-                <span class="w-3 h-3 rounded-full bg-gray-400/50 border border-gray-500"></span>
-                <span>Umbrella</span>
-            </div>
-            <div class="flex items-center space-x-1.5">
-                <span class="w-3 h-3 rounded-full bg-blue-500/40"></span>
-                <span>Shade</span>
+                <!-- How to embed a video -->
+                <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
+                
+                <hr class="border-blue-700 my-8">
+                <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
         </div>
+    </main>
 
-        <!-- Controls -->
-        <div class="space-y-4">
-            <!-- Umbrella Height -->
-            <div>
-                <label for="height" class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <span>Umbrella Height</span>
-                    <span id="heightValue" class="font-bold text-blue-600 dark:text-blue-400">7 ft</span>
-                </label>
-                <input id="height" type="range" min="4" max="10" value="7" step="0.5" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
-            </div>
-            <!-- Umbrella Diameter -->
-            <div>
-                <label for="diameter" class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <span>Umbrella Diameter</span>
-                    <span id="diameterValue" class="font-bold text-blue-600 dark:text-blue-400">9 ft</span>
-                </label>
-                <input id="diameter" type="range" min="4" max="15" value="9" step="1" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
-            </div>
-            <!-- Time of Day -->
-            <div>
-                <label for="time" class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <span>Time of Day</span>
-                    <span id="timeValue" class="font-bold text-blue-600 dark:text-blue-400">12:00 PM</span>
-                </label>
-                <input id="time" type="range" min="0" max="1439" value="720" step="15" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
-            </div>
+    <!-- Contact Form Modal -->
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
+        <div class="contact-modal">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+                <div id="form-content">
+                    <label class="contact-label">
+                        Your email:
+                        <input type="email" name="email">
+                    </label>
+                    <label class="contact-label">
+                        Your message:
+                        <textarea name="message"></textarea>
+                    </label>
+                    <button type="submit">Send</button>
+                </div>
+                <div id="form-success-message">
+                    <p>Thank you!</p>
+                </div>
+            </form>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const heightSlider = document.getElementById('height');
-            const heightValue = document.getElementById('heightValue');
-            const diameterSlider = document.getElementById('diameter');
-            const diameterValue = document.getElementById('diameterValue');
-            const timeSlider = document.getElementById('time');
-            const timeValue = document.getElementById('timeValue');
+        const mainContent = document.getElementById('main-content');
+        const emailIconButton = document.getElementById('email-icon-button');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const contactForm = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('form-success-message');
 
-            const umbrellaSVG = document.getElementById('umbrella');
-            const shadowSVG = document.getElementById('shadow');
-            const sunSVG = document.getElementById('sun');
-            const nightMessage = document.getElementById('night-message');
-            
-            const coordsDisplay = document.getElementById('coords');
-            const getLocationBtn = document.getElementById('getLocationBtn');
-            const loader = document.getElementById('loader');
-            const locationContent = document.getElementById('location-content');
-            const errorMessage = document.getElementById('error-message');
+        emailIconButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactModalOverlay.classList.add('is-visible');
+            mainContent.classList.add('is-hidden');
+        });
 
-            let userLat = 34.0522; // Default to Los Angeles
-            let userLon = -118.2437;
-            const FEET_TO_METERS = 0.3048;
-            const VIEWBOX_SIZE = 200; // SVG viewBox is 200x200
-            
-            // --- UI UPDATE FUNCTIONS ---
-            function updateSliderValue(slider, display, unit, isTime = false) {
-                if (isTime) {
-                    const totalMinutes = parseInt(slider.value);
-                    const hours = Math.floor(totalMinutes / 60) % 24;
-                    const minutes = totalMinutes % 60;
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    const displayHours = hours % 12 === 0 ? 12 : hours % 12;
-                    const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
-                    display.textContent = `${displayHours}:${displayMinutes} ${ampm}`;
+        const closeModal = () => {
+            contactModalOverlay.classList.remove('is-visible');
+            mainContent.classList.remove('is-hidden');
+            // Reset the form after a short delay
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.display = 'block';
+                successMessage.style.display = 'none';
+            }, 300);
+        };
+
+        closeModalButton.addEventListener('click', closeModal);
+        contactModalOverlay.addEventListener('click', (e) => {
+            if (e.target === contactModalOverlay) {
+                closeModal();
+            }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    this.reset(); // Clear the form fields
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000); // Close modal after 2 seconds
                 } else {
-                    display.textContent = `${slider.value} ${unit}`;
+                    alert('Oops! There was a problem submitting your form.');
                 }
-            }
-
-            // --- CORE CALCULATION & DRAWING ---
-            function calculateAndDraw() {
-                if (!userLat || !userLon) return;
-
-                const heightInFeet = parseFloat(heightSlider.value);
-                const diameterInFeet = parseFloat(diameterSlider.value);
-                
-                // Scale factor to fit the umbrella and its shadow in the viewbox
-                const maxPossibleShadow = (10 / Math.tan(0.1)); // Max height at low sun angle
-                const scale = VIEWBOX_SIZE / ((15 * 2) + maxPossibleShadow); // Base on max diameter
-
-                const radiusInFeet = diameterInFeet / 2;
-                const radiusScaled = radiusInFeet * scale;
-                
-                umbrellaSVG.setAttribute('r', radiusScaled);
-                shadowSVG.setAttribute('r', radiusScaled);
-                
-                const totalMinutes = parseInt(timeSlider.value);
-                const now = new Date();
-                now.setHours(Math.floor(totalMinutes / 60));
-                now.setMinutes(totalMinutes % 60);
-
-                const sunPosition = SunCalc.getPosition(now, userLat, userLon);
-                
-                // Sun is below the horizon
-                if (sunPosition.altitude <= 0) {
-                    nightMessage.classList.remove('hidden');
-                    shadowSVG.classList.add('hidden');
-                    sunSVG.classList.add('hidden');
-                    return;
-                }
-                
-                nightMessage.classList.add('hidden');
-                shadowSVG.classList.remove('hidden');
-                sunSVG.classList.remove('hidden');
-
-                const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
-
-                // SunCalc azimuth: 0 is South, positive clockwise.
-                // Convert to standard Cartesian angle: 0 is East (right), positive counter-clockwise.
-                // SVG coordinates: y-axis is inverted.
-                const cartesianAzimuth = sunPosition.azimuth + Math.PI / 2;
-                const shadowAngle = cartesianAzimuth + Math.PI; // Opposite direction for shadow
-                
-                const shadowX = 100 + shadowOffset * Math.cos(shadowAngle);
-                const shadowY = 100 - shadowOffset * Math.sin(shadowAngle); // Subtract for SVG y-inversion
-
-                // Calculate sun's position for visualization
-                // Map altitude (0 to PI/2) to a distance from the center (95 to 10)
-                const sunDistance = 95 - (sunPosition.altitude / (Math.PI / 2)) * 85;
-                const sunX = 100 + sunDistance * Math.cos(cartesianAzimuth);
-                const sunY = 100 - sunDistance * Math.sin(cartesianAzimuth);
-
-                sunSVG.setAttribute('cx', sunX);
-                sunSVG.setAttribute('cy', sunY);
-
-                shadowSVG.setAttribute('cx', shadowX);
-                shadowSVG.setAttribute('cy', shadowY);
-            }
-
-            // --- GEOLOCATION ---
-            function getLocation() {
-                loader.style.display = 'block';
-                locationContent.classList.add('hidden');
-                errorMessage.classList.add('hidden');
-
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            userLat = position.coords.latitude;
-                            userLon = position.coords.longitude;
-                            coordsDisplay.textContent = `${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
-                            loader.style.display = 'none';
-                            locationContent.classList.remove('hidden');
-                            calculateAndDraw();
-                        },
-                        () => {
-                            handleLocationError("Could not get location. Using default.");
-                        }
-                    );
-                } else {
-                    handleLocationError("Geolocation not supported. Using default.");
-                }
-            }
-
-            function handleLocationError(message) {
-                 coordsDisplay.textContent = `${userLat.toFixed(4)}, ${userLon.toFixed(4)} (Default)`;
-                 errorMessage.textContent = message;
-                 errorMessage.classList.remove('hidden');
-                 loader.style.display = 'none';
-                 locationContent.classList.remove('hidden');
-                 calculateAndDraw();
-            }
-
-            // --- EVENT LISTENERS ---
-            heightSlider.addEventListener('input', () => {
-                updateSliderValue(heightSlider, heightValue, 'ft');
-                calculateAndDraw();
+            }).catch(error => {
+                alert('Oops! There was a problem submitting your form.');
             });
-            diameterSlider.addEventListener('input', () => {
-                updateSliderValue(diameterSlider, diameterValue, 'ft');
-                calculateAndDraw();
-            });
-            timeSlider.addEventListener('input', () => {
-                updateSliderValue(timeSlider, timeValue, '', true);
-                calculateAndDraw();
-            });
-            getLocationBtn.addEventListener('click', getLocation);
+        });
 
-            // --- INITIALIZATION ---
-            function initialize() {
-                const now = new Date();
-                const totalMinutes = now.getHours() * 60 + now.getMinutes();
-                timeSlider.value = totalMinutes;
+        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
+        let touchStartX = 0;
+        let touchEndX = 0;
 
-                updateSliderValue(heightSlider, heightValue, 'ft');
-                updateSliderValue(diameterSlider, diameterValue, 'ft');
-                updateSliderValue(timeSlider, timeValue, '', true);
-                
-                getLocation();
+        // This function will handle the swipe logic
+        function handleHomePageSwipe() {
+            // We only want this to trigger on mobile portrait views.
+            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
+            
+            // Check for a significant horizontal swipe (e.g., more than 100px)
+            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
+                // Navigate to the site's root URL, which acts as the "home page".
+                window.location.href = window.location.origin; 
             }
+        }
 
-            initialize();
+        // Add listeners to the main content area to detect touch start and end points.
+        mainContent.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true }); // Using passive listener for better scroll performance
+
+        mainContent.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleHomePageSwipe();
         });
     </script>
+
 </body>
 </html>
 
