@@ -311,37 +311,48 @@
 function calculateAndDraw() {
     const userLat = parseFloat(latInput.value);
     const userLon = parseFloat(lonInput.value);
-    if (isNaN(userLat) || isNaN(userLon)) return;
+    if (!Number.isFinite(userLat) || !Number.isFinite(userLon)) return;
 
-    let heightVal = parseFloat(heightInput.value);
+    // Parse dimensions
+    const heightVal = parseFloat(heightInput.value);
+    const diameterVal = parseFloat(diameterInput.value);
     const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
-    
-    let diameterVal = parseFloat(diameterInput.value);
     const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
 
-    if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
+    if (!Number.isFinite(heightInFeet) || !Number.isFinite(diameterInFeet) || heightInFeet <= 0 || diameterInFeet <= 0) return;
 
-    // --- Determine effective altitude angle for shadows ---
-    // Ensure altitude angle is always positive, but flip the projection if sun is "behind"
-    let altitudeRad = MIN_ALTITUDE_RAD;
-    if (userLat < 0) {
-        // Southern Hemisphere → invert if necessary
-        altitudeRad = Math.abs(MIN_ALTITUDE_RAD);
-    }
+    // --- Robust solar-altitude handling ---
+    // Use magnitude for shadow LENGTH; direction handled separately.
+    // Also clamp away from 0° to prevent infinite shadows when the sun is at/near horizon.
+    const ALTITUDE_FLOOR_DEG = 3; // tweak if you like (1–5°); prevents extreme lengths
+    const ALTITUDE_FLOOR_RAD = ALTITUDE_FLOOR_DEG * Math.PI / 180;
 
-    // Calculate maximum shadow distance based on solar geometry
-    const maxPossibleShadow = heightInFeet / Math.tan(altitudeRad);
+    // If MIN_ALTITUDE_RAD is undefined/falsey, treat as 0
+    const rawAltRad = Number.isFinite(MIN_ALTITUDE_RAD) ? MIN_ALTITUDE_RAD : 0;
 
-    // Compute full width required to fit umbrella + shadow
-    const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
+    // Positive magnitude for length; clamp to floor
+    const altitudeAbsRad = Math.max(Math.abs(rawAltRad), ALTITUDE_FLOOR_RAD);
+    const tanAlt = Math.tan(altitudeAbsRad);
+    // Guard just in case
+    const safeTanAlt = Math.max(Math.abs(tanAlt), 1e-6);
+
+    // Positive shadow length magnitude (feet)
+    const shadowLengthFeet = heightInFeet / safeTanAlt;
+
+    // --- Layout / scaling ---
+    const totalPathWidthGuess = diameterInFeet * 2 + shadowLengthFeet;
+    if (!Number.isFinite(totalPathWidthGuess) || totalPathWidthGuess <= 0) return;
+
     const scale = VIEWBOX_SIZE / totalPathWidthGuess;
 
-    // Compute radius and scale it
-    const radiusInFeet = diameterInFeet / 2;
-    const radiusScaled = radiusInFeet * scale;
-
+    // Umbrella radius
+    const radiusScaled = (diameterInFeet / 2) * scale;
     umbrellaSVG.setAttribute('r', radiusScaled);
-}
+
+    // --- OPTIONAL: hemisphere-aware direction for placing the shadow graphic ---
+    // If you translate/rotate a separate <g> or path for the shadow, use this sign.
+    // Approx
+
 
 
                 // --- Draw Grid ---
