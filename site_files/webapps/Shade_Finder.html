@@ -336,7 +336,111 @@ function calculateAndDraw() {
     const totalPathWidthGuess = diameterInFeet * 2 + shadowLengthFeet;
     if (!Number.isFinite(totalPathWidthGuess) || totalPathWidthGuess <= 0) return;
 
+    const scale = VIEWBOX_SIZE / totalPathWidthGuess;// --- CORE CALCULATION & DRAWING ---
+function calculateAndDraw() {
+    const userLat = parseFloat(latInput.value);
+    const userLon = parseFloat(lonInput.value);
+    if (isNaN(userLat) || isNaN(userLon)) return;
+
+    // Parse inputs and convert units
+    const heightVal = parseFloat(heightInput.value);
+    const diameterVal = parseFloat(diameterInput.value);
+    const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
+    const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
+    if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
+
+    // Scale factors based on umbrella size & shadow length
+    const maxPossibleShadow = heightInFeet / Math.tan(MIN_ALTITUDE_RAD);
+    const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
     const scale = VIEWBOX_SIZE / totalPathWidthGuess;
+
+    const radiusInFeet = diameterInFeet / 2;
+    const radiusScaled = radiusInFeet * scale;
+    umbrellaSVG.setAttribute('r', radiusScaled);
+
+    // --- Sun positions ---
+    const now = getCombinedDate();
+    const sunTimes = SunCalc.getTimes(now, userLat, userLon);
+
+    // --- Clear old hourly dots ---
+    hourlyDotsGroup.innerHTML = '';
+
+    // First hour marker = sunrise or next full hour
+    let hourMarker = new Date(sunTimes.sunrise);
+    if (hourMarker.getMinutes() !== 0) {
+        hourMarker.setHours(hourMarker.getHours() + 1);
+        hourMarker.setMinutes(0, 0, 0);
+    }
+
+    // --- Plot hourly sun position dots ---
+    while (hourMarker < sunTimes.sunset) {
+        const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
+        if (pos.altitude > 0) {
+            // Convert azimuth → standard math angle (0 = north, clockwise positive)
+            const azimuthRad = (pos.azimuth + Math.PI) % (2 * Math.PI);
+
+            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
+            const shadowX = 100 + offset * Math.sin(azimuthRad);
+            const shadowY = 100 - offset * Math.cos(azimuthRad);
+
+            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            dot.setAttribute('cx', shadowX.toFixed(2));
+            dot.setAttribute('cy', shadowY.toFixed(2));
+            dot.setAttribute('r', '1.5');
+            dot.setAttribute('fill', 'white');
+            dot.setAttribute('fill-opacity', '0.7');
+            hourlyDotsGroup.appendChild(dot);
+        }
+        hourMarker.setHours(hourMarker.getHours() + 1);
+    }
+
+    // --- Build continuous smooth shadow path ---
+    const shadowSteps = [];
+    dailySunPath = [];
+    const stepMinutes = 3; // smaller step = smoother path
+
+    if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
+        let currentTime = new Date(sunTimes.sunrise);
+
+        while (currentTime <= sunTimes.sunset) {
+            const pos = SunCalc.getPosition(currentTime, userLat, userLon);
+
+            if (pos.altitude > MIN_ALTITUDE_RAD) {
+                const azimuthRad = (pos.azimuth + Math.PI) % (2 * Math.PI);
+                const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
+                const shadowX = 100 + offset * Math.sin(azimuthRad);
+                const shadowY = 100 - offset * Math.cos(azimuthRad);
+
+                shadowSteps.push({ x: shadowX, y: shadowY });
+
+                const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+                dailySunPath.push({ minutes: currentMinutes, center: { x: shadowX, y: shadowY } });
+            }
+            currentTime.setMinutes(currentTime.getMinutes() + stepMinutes);
+        }
+    }
+
+    // --- Generate SVG path with smooth arcs ---
+    if (shadowSteps.length > 2) {
+        const sweepFlag = userLat >= 0 ? 1 : 0; // Northern Hemisphere = clockwise, Southern = counterclockwise
+        let d = `M ${shadowSteps[0].x} ${shadowSteps[0].y}`;
+
+        for (let i = 1; i < shadowSteps.length; i++) {
+            const prev = shadowSteps[i - 1];
+            const curr = shadowSteps[i];
+
+            // Distance between points = arc radius approximation
+            const dx = curr.x - prev.x;
+            const dy = curr.y - prev.y;
+            const r = Math.sqrt(dx * dx + dy * dy);
+
+            d += ` A ${r} ${r} 0 0 ${sweepFlag} ${curr.x} ${curr.y}`;
+        }
+
+        shadowPath.setAttribute("d", d);
+    }
+}
+
 
     // Umbrella radius
     const radiusScaled = (diameterInFeet / 2) * scale;
