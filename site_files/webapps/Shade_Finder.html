@@ -307,19 +307,27 @@
                 }
             }
             
-           // --- CORE CALCULATION & DRAWING ---
+           /// --- CORE CALCULATION & DRAWING ---
 function calculateAndDraw() {
     const userLat = parseFloat(latInput.value);
     const userLon = parseFloat(lonInput.value);
-    if (!Number.isFinite(userLat) || !Number.isFinite(userLon)) return;
+    if (isNaN(userLat) || isNaN(userLon)) return;
 
-    // Parse dimensions
-    const heightVal = parseFloat(heightInput.value);
-    const diameterVal = parseFloat(diameterInput.value);
+    let heightVal = parseFloat(heightInput.value);
     const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
+
+    let diameterVal = parseFloat(diameterInput.value);
     const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
 
-    if (!Number.isFinite(heightInFeet) || !Number.isFinite(diameterInFeet) || heightInFeet <= 0 || diameterInFeet <= 0) return;
+    if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
+
+    const maxPossibleShadow = heightInFeet / Math.tan(MIN_ALTITUDE_RAD);
+    const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
+    const scale = VIEWBOX_SIZE / totalPathWidthGuess;
+
+    const radiusInFeet = diameterInFeet / 2;
+    const radiusScaled = radiusInFeet * scale;
+    umbrellaSVG.setAttribute('r', radiusScaled);
 
     // --- Handle solar altitude properly ---
     // Avoid infinite shadows by clamping minimum altitude angle
