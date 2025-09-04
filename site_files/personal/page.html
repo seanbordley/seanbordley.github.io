@@ -1,4 +1,4 @@
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
@@ -124,7 +124,7 @@
             flex-direction: column; 
             align-items: center;
             gap:6vmin; 
-            opacity: .8
+            opacity: 1
         }
 
         .resume-icon { color: #FF0000; }
@@ -141,12 +141,12 @@
             .social-icon:hover {
                 transform: scale(1.1);
             }
-            .resume-icon:hover { opacity: 1; }
-            .email-icon:hover { opacity: 1; }
-            .github-icon:hover { opacity: 1; }
-            .linkedin-icon:hover { opacity: 1; }
-            .imdb-icon:hover { opacity: 1; }
-            .file-icon:hover { opacity: 1; }
+            .resume-icon:hover { opacity: .8; }
+            .email-icon:hover { opacity: .8; }
+            .github-icon:hover { opacity: .8; }
+            .linkedin-icon:hover { opacity: .8; }
+            .imdb-icon:hover { opacity: .8; }
+            .file-icon:hover { opacity: .8; }
         }
         
         @media (min-width: 701px) {
@@ -184,8 +184,8 @@
             text-align: center;
         }
         #orientation-lock-message i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+            font-size: 6vmin;
+            margin-bottom: 2vmin;
             animation: rotate-animation 1.5s ease-in-out infinite;
         }
         @keyframes rotate-animation {
@@ -348,7 +348,8 @@
                     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 
-                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
+                <p>Webapps</p>
+                <ul id="webapp-list"></ul>
                 
                 <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
@@ -434,7 +435,63 @@
                 alert('Oops! There was a problem submitting your form.');
             });
         });
-    </script>
 
+        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // This function will handle the swipe logic
+        function handleHomePageSwipe() {
+            // We only want this to trigger on mobile portrait views.
+            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
+            
+            // Check for a significant horizontal swipe (e.g., more than 100px)
+            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
+                // Navigate to the site's root URL, which acts as the "home page".
+                window.location.href = window.location.origin; 
+            }
+        }
+
+        // Add listeners to the main content area to detect touch start and end points.
+        mainContent.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true }); // Using passive listener for better scroll performance
+
+        mainContent.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleHomePageSwipe();
+        });
+    </script>
+<script>
+    const listContainer = document.getElementById('webapp-list');
+
+    fetch('pages.json') // Fetches the list created by your script
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Could not load the pages.json file.');
+            }
+            return response.json();
+        })
+        .then(pages => {
+            if (pages.length === 0) {
+                listContainer.innerHTML = '<li>No webapps found.</li>';
+                return;
+            }
+            // Loop through the list of apps and create the HTML
+            pages.forEach(page => {
+                const listItem = document.createElement('li');
+                const link = document.createElement('a');
+                link.href = page.url;
+                link.textContent = page.title;
+                listItem.appendChild(link);
+                listContainer.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching or displaying app list:', error);
+            listContainer.innerHTML = '<li>Error loading the list of apps.</li>';
+        });
+</script>
 </body>
 </html>
+
