@@ -307,28 +307,42 @@
                 }
             }
             
-            // --- CORE CALCULATION & DRAWING ---
-            function calculateAndDraw() {
-                const userLat = parseFloat(latInput.value);
-                const userLon = parseFloat(lonInput.value);
-                if (isNaN(userLat) || isNaN(userLon)) return;
+          // --- CORE CALCULATION & DRAWING ---
+function calculateAndDraw() {
+    const userLat = parseFloat(latInput.value);
+    const userLon = parseFloat(lonInput.value);
+    if (isNaN(userLat) || isNaN(userLon)) return;
 
-                let heightVal = parseFloat(heightInput.value);
-                const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
-                
-                let diameterVal = parseFloat(diameterInput.value);
-                const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
+    let heightVal = parseFloat(heightInput.value);
+    const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
+    
+    let diameterVal = parseFloat(diameterInput.value);
+    const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
 
-                if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
+    if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
 
-                const maxPossibleShadow = (heightInFeet / Math.tan(MIN_ALTITUDE_RAD));
-                const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
-                const scale = VIEWBOX_SIZE / totalPathWidthGuess;
+    // --- Determine effective altitude angle for shadows ---
+    // Ensure altitude angle is always positive, but flip the projection if sun is "behind"
+    let altitudeRad = MIN_ALTITUDE_RAD;
+    if (userLat < 0) {
+        // Southern Hemisphere → invert if necessary
+        altitudeRad = Math.abs(MIN_ALTITUDE_RAD);
+    }
 
-                const radiusInFeet = diameterInFeet / 2;
-                const radiusScaled = radiusInFeet * scale;
-                
-                umbrellaSVG.setAttribute('r', radiusScaled);
+    // Calculate maximum shadow distance based on solar geometry
+    const maxPossibleShadow = heightInFeet / Math.tan(altitudeRad);
+
+    // Compute full width required to fit umbrella + shadow
+    const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
+    const scale = VIEWBOX_SIZE / totalPathWidthGuess;
+
+    // Compute radius and scale it
+    const radiusInFeet = diameterInFeet / 2;
+    const radiusScaled = radiusInFeet * scale;
+
+    umbrellaSVG.setAttribute('r', radiusScaled);
+}
+
 
                 // --- Draw Grid ---
                 gridOverlay.innerHTML = '';
