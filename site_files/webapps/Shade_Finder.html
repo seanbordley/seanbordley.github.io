@@ -307,7 +307,7 @@
                 }
             }
             
-           /// --- CORE CALCULATION & DRAWING ---
+            // --- CORE CALCULATION & DRAWING ---
 function calculateAndDraw() {
     const userLat = parseFloat(latInput.value);
     const userLon = parseFloat(lonInput.value);
@@ -329,98 +329,76 @@ function calculateAndDraw() {
     const radiusScaled = radiusInFeet * scale;
     umbrellaSVG.setAttribute('r', radiusScaled);
 
-    // --- Handle solar altitude properly ---
-    // Avoid infinite shadows by clamping minimum altitude angle
-    const ALTITUDE_FLOOR_DEG = 3; // minimum angle above horizon in deg
-    const ALTITUDE_FLOOR_RAD = ALTITUDE_FLOOR_DEG * Math.PI / 180;
+               // Draw Grid
+    gridOverlay.innerHTML = '';
+    const gridSpacingFeet = 2;
+    const gridSpacingSVG = gridSpacingFeet * scale;
+    for (let x = 100; x < VIEWBOX_SIZE; x += gridSpacingSVG) addGridLine(x, 0, x, VIEWBOX_SIZE);
+    for (let x = 100 - gridSpacingSVG; x > 0; x -= gridSpacingSVG) addGridLine(x, 0, x, VIEWBOX_SIZE);
+    for (let y = 100; y < VIEWBOX_SIZE; y += gridSpacingSVG) addGridLine(0, y, VIEWBOX_SIZE, y);
+    for (let y = 100 - gridSpacingSVG; y > 0; y -= gridSpacingSVG) addGridLine(0, y, VIEWBOX_SIZE, y);
 
-    const rawAltRad = Number.isFinite(MIN_ALTITUDE_RAD) ? MIN_ALTITUDE_RAD : 0;
-    const altitudeAbsRad = Math.max(Math.abs(rawAltRad), ALTITUDE_FLOOR_RAD);
+    function addGridLine(x1, y1, x2, y2) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('stroke', 'currentColor');
+        line.setAttribute('stroke-width', '0.25');
+        line.setAttribute('class', 'opacity-20');
+        gridOverlay.appendChild(line);
+    }
 
-    // Shadow length in feet, always positive
-    const shadowLengthFeet = heightInFeet / Math.tan(altitudeAbsRad);
-
-    // --- Scaling based on umbrella + shadow ---
-    const totalPathWidthGuess = diameterInFeet * 2 + shadowLengthFeet;
-    if (!Number.isFinite(totalPathWidthGuess) || totalPathWidthGuess <= 0) return;
-
-    const scale = VIEWBOX_SIZE / totalPathWidthGuess;// --- CORE CALCULATION & DRAWING ---
-function calculateAndDraw() {
-    const userLat = parseFloat(latInput.value);
-    const userLon = parseFloat(lonInput.value);
-    if (isNaN(userLat) || isNaN(userLon)) return;
-
-    // Parse inputs and convert units
-    const heightVal = parseFloat(heightInput.value);
-    const diameterVal = parseFloat(diameterInput.value);
-    const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
-    const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
-    if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
-
-    // Scale factors based on umbrella size & shadow length
-    const maxPossibleShadow = heightInFeet / Math.tan(MIN_ALTITUDE_RAD);
-    const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
-    const scale = VIEWBOX_SIZE / totalPathWidthGuess;
-
-    const radiusInFeet = diameterInFeet / 2;
-    const radiusScaled = radiusInFeet * scale;
-    umbrellaSVG.setAttribute('r', radiusScaled);
-
-    // --- Sun positions ---
     const now = getCombinedDate();
     const sunTimes = SunCalc.getTimes(now, userLat, userLon);
 
-    // --- Clear old hourly dots ---
+    // Clear old dots
     hourlyDotsGroup.innerHTML = '';
 
-    // First hour marker = sunrise or next full hour
-    let hourMarker = new Date(sunTimes.sunrise);
-    if (hourMarker.getMinutes() !== 0) {
-        hourMarker.setHours(hourMarker.getHours() + 1);
-        hourMarker.setMinutes(0, 0, 0);
-    }
-
-    // --- Plot hourly sun position dots ---
-    while (hourMarker < sunTimes.sunset) {
-        const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
-        if (pos.altitude > 0) {
-            // Convert azimuth → standard math angle (0 = north, clockwise positive)
-            const azimuthRad = (pos.azimuth + Math.PI) % (2 * Math.PI);
-
-            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-            const shadowX = 100 + offset * Math.sin(azimuthRad);
-            const shadowY = 100 - offset * Math.cos(azimuthRad);
-
-            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            dot.setAttribute('cx', shadowX.toFixed(2));
-            dot.setAttribute('cy', shadowY.toFixed(2));
-            dot.setAttribute('r', '1.5');
-            dot.setAttribute('fill', 'white');
-            dot.setAttribute('fill-opacity', '0.7');
-            hourlyDotsGroup.appendChild(dot);
+    // Hourly projection dots
+    if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
+        let hourMarker = new Date(sunTimes.sunrise);
+        if (hourMarker.getMinutes() !== 0) {
+            hourMarker.setHours(hourMarker.getHours() + 1);
+            hourMarker.setMinutes(0, 0, 0);
         }
-        hourMarker.setHours(hourMarker.getHours() + 1);
+
+        while (hourMarker < sunTimes.sunset) {
+            const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
+            if (pos.altitude > 0) {
+                const azimuth = pos.azimuth; // Use raw azimuth from SunCalc
+                const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
+                const shadowX = 100 - offset * Math.sin(azimuth);
+                const shadowY = 100 + offset * Math.cos(azimuth);
+
+                const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                dot.setAttribute('cx', shadowX.toFixed(2));
+                dot.setAttribute('cy', shadowY.toFixed(2));
+                dot.setAttribute('r', '1.5');
+                dot.setAttribute('fill', 'white');
+                dot.setAttribute('fill-opacity', '0.7');
+                hourlyDotsGroup.appendChild(dot);
+            }
+            hourMarker.setHours(hourMarker.getHours() + 1);
+        }
     }
 
-    // --- Build continuous smooth shadow path ---
+    // Full-day shadow path
     const shadowSteps = [];
     dailySunPath = [];
-    const stepMinutes = 3; // smaller step = smoother path
+    const stepMinutes = 3;
 
     if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
         let currentTime = new Date(sunTimes.sunrise);
-
         while (currentTime <= sunTimes.sunset) {
             const pos = SunCalc.getPosition(currentTime, userLat, userLon);
-
             if (pos.altitude > MIN_ALTITUDE_RAD) {
-                const azimuthRad = (pos.azimuth + Math.PI) % (2 * Math.PI);
+                const azimuth = pos.azimuth;
                 const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                const shadowX = 100 + offset * Math.sin(azimuthRad);
-                const shadowY = 100 - offset * Math.cos(azimuthRad);
-
+                const shadowX = 100 - offset * Math.sin(azimuth);
+                const shadowY = 100 + offset * Math.cos(azimuth);
                 shadowSteps.push({ x: shadowX, y: shadowY });
-
                 const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
                 dailySunPath.push({ minutes: currentMinutes, center: { x: shadowX, y: shadowY } });
             }
@@ -428,206 +406,21 @@ function calculateAndDraw() {
         }
     }
 
-    // --- Generate SVG path with smooth arcs ---
+    // Draw smooth continuous path
     if (shadowSteps.length > 2) {
-        const sweepFlag = userLat >= 0 ? 1 : 0; // Northern Hemisphere = clockwise, Southern = counterclockwise
+        const sweepFlag = userLat >= 0 ? 1 : 0;
         let d = `M ${shadowSteps[0].x} ${shadowSteps[0].y}`;
-
         for (let i = 1; i < shadowSteps.length; i++) {
             const prev = shadowSteps[i - 1];
             const curr = shadowSteps[i];
-
-            // Distance between points = arc radius approximation
             const dx = curr.x - prev.x;
             const dy = curr.y - prev.y;
             const r = Math.sqrt(dx * dx + dy * dy);
-
             d += ` A ${r} ${r} 0 0 ${sweepFlag} ${curr.x} ${curr.y}`;
         }
-
         shadowPath.setAttribute("d", d);
     }
 }
-
-
-    // Umbrella radius
-    const radiusScaled = (diameterInFeet / 2) * scale;
-    umbrellaSVG.setAttribute('r', radiusScaled);
-
-    // --- Shadow path drawing ---
-    const cx = VIEWBOX_SIZE / 2;
-    const cy = VIEWBOX_SIZE / 2;
-
-    const shadowLengthScaled = shadowLengthFeet * scale;
-
-    // Hemisphere-aware sweep direction
-    const sweepFlag = userLat >= 0 ? 1 : 0; // Northern Hemisphere = clockwise, Southern = counterclockwise
-
-    // If you want to later support sun azimuth angles, plug them here:
-    const azimuthRad = 0; // TODO: Replace with actual azimuth for dynamic shadows
-
-    // Shadow endpoint based on current azimuth
-    const shadowEndX = cx + shadowLengthScaled * Math.cos(azimuthRad);
-    const shadowEndY = cy + shadowLengthScaled * Math.sin(azimuthRad);
-
-    // Build the SVG path string
-    const shadowPath = `
-        M ${cx} ${cy}
-        A ${shadowLengthScaled} ${shadowLengthScaled} 0 0 ${sweepFlag} ${shadowEndX} ${shadowEndY}
-    `;
-
-    // Apply to the shadow path element
-    shadowSVG.setAttribute("d", shadowPath);
-}
-
-
-                // --- Draw Grid ---
-                gridOverlay.innerHTML = '';
-                const gridSpacingFeet = 2;
-                const gridSpacingSVG = gridSpacingFeet * scale;
-                for (let x = 100; x < VIEWBOX_SIZE; x += gridSpacingSVG) {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', x); line.setAttribute('y1', 0); line.setAttribute('x2', x); line.setAttribute('y2', VIEWBOX_SIZE);
-                    line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '0.25'); line.setAttribute('class', 'opacity-20');
-                    gridOverlay.appendChild(line);
-                }
-                 for (let x = 100 - gridSpacingSVG; x > 0; x -= gridSpacingSVG) {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', x); line.setAttribute('y1', 0); line.setAttribute('x2', x); line.setAttribute('y2', VIEWBOX_SIZE);
-                    line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '0.25'); line.setAttribute('class', 'opacity-20');
-                    gridOverlay.appendChild(line);
-                }
-                 for (let y = 100; y < VIEWBOX_SIZE; y += gridSpacingSVG) {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', 0); line.setAttribute('y1', y); line.setAttribute('x2', VIEWBOX_SIZE); line.setAttribute('y2', y);
-                    line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '0.25'); line.setAttribute('class', 'opacity-20');
-                    gridOverlay.appendChild(line);
-                }
-                 for (let y = 100 - gridSpacingSVG; y > 0; y -= gridSpacingSVG) {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', 0); line.setAttribute('y1', y); line.setAttribute('x2', VIEWBOX_SIZE); line.setAttribute('y2', y);
-                    line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '0.25'); line.setAttribute('class', 'opacity-20');
-                    gridOverlay.appendChild(line);
-                }
-                
-                const now = getCombinedDate();
-                const sunPosition = SunCalc.getPosition(now, userLat, userLon);
-                const sunTimes = SunCalc.getTimes(now, userLat, userLon);
-                const azimuthCorrection = userLat >= 0 ? Math.PI : 0;
-
-                // --- Draw Hourly Dots ---
-                hourlyDotsGroup.innerHTML = ''; // Clear previous dots
-                if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
-                    let hourMarker = new Date(sunTimes.sunrise);
-                    if (hourMarker.getMinutes() !== 0 || hourMarker.getSeconds() !== 0 || hourMarker.getMilliseconds() !== 0) {
-                        hourMarker.setHours(hourMarker.getHours() + 1);
-                        hourMarker.setMinutes(0, 0, 0);
-                    }
-                    while (hourMarker < sunTimes.sunset) {
-                        const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
-                        if (pos.altitude > 0) {
-                            const universalAzimuth = pos.azimuth + azimuthCorrection;
-                            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const shadowX = 100 - offset * Math.sin(universalAzimuth);
-                            const shadowY = 100 + offset * Math.cos(universalAzimuth);
-
-                            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                            dot.setAttribute('cx', shadowX.toFixed(2));
-                            dot.setAttribute('cy', shadowY.toFixed(2));
-                            dot.setAttribute('r', '1.5');
-                            dot.setAttribute('fill', 'white');
-                            dot.setAttribute('fill-opacity', '0.7');
-                            hourlyDotsGroup.appendChild(dot);
-                        }
-                        hourMarker.setHours(hourMarker.getHours() + 1);
-                    }
-                }
-                
-                // --- Accurately draw the entire day's shade path ---
-                const shadowSteps = [];
-                dailySunPath = []; // Clear for recalculation
-                const stepMinutes = 1;
-                
-                if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
-                    let currentTime = new Date(sunTimes.sunrise);
-                    while (currentTime <= sunTimes.sunset) {
-                        const pos = SunCalc.getPosition(currentTime, userLat, userLon);
-                        if (pos.altitude > MIN_ALTITUDE_RAD) {
-                            const universalAzimuth = pos.azimuth + azimuthCorrection;
-                            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const shadowX = 100 - offset * Math.sin(universalAzimuth);
-                            const shadowY = 100 + offset * Math.cos(universalAzimuth);
-                            
-                            const stepData = {
-                                center: { x: shadowX, y: shadowY },
-                                rx: radiusScaled / Math.sin(pos.altitude),
-                                ry: radiusScaled,
-                                rotationRad: pos.azimuth + Math.PI / 2
-                            };
-                            shadowSteps.push(stepData);
-                            const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-                            dailySunPath.push({ minutes: currentMinutes, center: stepData.center });
-                        }
-                        currentTime.setMinutes(currentTime.getMinutes() + stepMinutes);
-                    }
-                }
-                
-                if (shadowSteps.length > 2) {
-                    const leftPoints = [];
-                    const rightPoints = [];
-
-                    for (let i = 0; i < shadowSteps.length; i++) {
-                        const step = shadowSteps[i];
-                        
-                        let tangentDx, tangentDy;
-                        if (i === 0) {
-                            tangentDx = shadowSteps[i + 1].center.x - step.center.x;
-                            tangentDy = shadowSteps[i + 1].center.y - step.center.y;
-                        } else if (i === shadowSteps.length - 1) {
-                            tangentDx = step.center.x - shadowSteps[i - 1].center.x;
-                            tangentDy = step.center.y - shadowSteps[i - 1].center.y;
-                        } else {
-                            tangentDx = shadowSteps[i + 1].center.x - shadowSteps[i - 1].center.x;
-                            tangentDy = shadowSteps[i + 1].center.y - shadowSteps[i - 1].center.y;
-                        }
-
-                        const nx = -tangentDy;
-                        const ny = tangentDx;
-
-                        let maxDot = -Infinity;
-                        let minDot = Infinity;
-                        let pLeft, pRight;
-
-                        for (let j = 0; j < 360; j += 15) {
-                            const angleRad = j * (Math.PI / 180);
-                            const x_rot = step.rx * Math.cos(angleRad);
-                            const y_rot = step.ry * Math.sin(angleRad);
-                            
-                            const x = step.center.x + x_rot * Math.cos(step.rotationRad) - y_rot * Math.sin(step.rotationRad);
-                            const y = step.center.y + x_rot * Math.sin(step.rotationRad) + y_rot * Math.cos(step.rotationRad);
-                            
-                            const dot = (x - step.center.x) * nx + (y - step.center.y) * ny;
-                            
-                            if (dot > maxDot) { maxDot = dot; pRight = {x, y}; }
-                            if (dot < minDot) { minDot = dot; pLeft = {x, y}; }
-                        }
-                        if (pLeft) leftPoints.push(pLeft);
-                        if (pRight) rightPoints.push(pRight);
-                    }
-
-                    if (leftPoints.length > 1 && rightPoints.length > 1) {
-                        const rightPointsReversed = rightPoints.reverse();
-                        const pathD = "M" + leftPoints.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" L ")
-                                      + " L " + rightPointsReversed.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" L ")
-                                      + " Z";
-                        shadowPath.setAttribute('d', pathD);
-                    } else {
-                         shadowPath.setAttribute('d', '');
-                    }
-
-                } else {
-                    shadowPath.setAttribute('d', '');
-                }
 
 
                 // --- Draw Current Shade & Position ---
