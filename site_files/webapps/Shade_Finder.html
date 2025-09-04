@@ -72,8 +72,8 @@
         }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-4 space-y-3">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-2">
+    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-3 space-y-2">
         <!-- Header -->
         <div class="text-center">
             <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">Shade Finder</h1>
@@ -92,6 +92,9 @@
                 <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
                 <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
                 <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                
+                <!-- Shade Dimensions Text -->
+                <text id="shade-dims-text" x="100" y="25" font-size="7" fill="currentColor" text-anchor="middle" class="font-semibold"></text>
 
                 <!-- Shade Path -->
                 <path id="shadow-path" fill="#3b82f6" fill-opacity="0.2" />
@@ -105,7 +108,7 @@
                 </g>
 
                 <!-- Shadow -->
-                <circle id="shadow" cx="100" cy="100" r="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
+                <ellipse id="shadow" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
                 <!-- Umbrella -->
                 <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
             </svg>
@@ -118,7 +121,7 @@
         </div>
 
         <!-- Legend -->
-        <div class="flex justify-center items-center space-x-4 text-xs text-gray-600 dark:text-gray-400 pt-2">
+        <div class="flex justify-center items-center space-x-4 text-xs text-gray-600 dark:text-gray-400 pt-1">
             <div class="flex items-center space-x-1.5">
                 <span class="w-3 h-3 rounded-full bg-gray-400/50 border border-gray-500"></span>
                 <span>Umbrella</span>
@@ -134,7 +137,7 @@
         </div>
         
         <!-- Controls -->
-        <div class="space-y-3 pt-2">
+        <div class="space-y-2 pt-1">
             <!-- Location Section -->
             <div id="location-section" class="p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                  <div class="grid grid-cols-3 items-center">
@@ -144,7 +147,7 @@
                     </div>
                     <div></div>
                 </div>
-                 <div class="flex flex-wrap items-center justify-between gap-y-2 text-sm mt-0.5">
+                 <div class="flex flex-wrap items-center justify-between gap-y-1 text-sm mt-1">
                     <div class="flex items-center gap-2">
                         <label for="lat" class="text-xs font-medium text-gray-600 dark:text-gray-400">Latitude</label>
                         <input type="number" id="lat" step="0.0001" class="w-24 p-1 rounded border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
@@ -165,7 +168,7 @@
                     </div>
                     <div></div>
                 </div>
-                <input id="date" type="date" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                <input id="date" type="date" class="w-full mt-1 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
             </div>
             <!-- Timezone -->
              <div>
@@ -176,10 +179,10 @@
                     </div>
                     <div></div>
                 </div>
-                <select id="timezone-picker" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm"></select>
+                <select id="timezone-picker" class="w-full mt-1 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm"></select>
             </div>
             <!-- Umbrella Specs -->
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-2">
                 <div>
                     <div class="flex justify-between items-center">
                         <label for="height" id="height-label" class="text-xs font-medium text-gray-700 dark:text-gray-300">Height (ft)</label>
@@ -188,7 +191,7 @@
                             <button id="height-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
                         </div>
                     </div>
-                    <input id="height" type="number" value="7" step="0.1" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                    <input id="height" type="number" value="7" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
                 </div>
                 <div>
                     <div class="flex justify-between items-center">
@@ -198,7 +201,7 @@
                             <button id="diameter-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
                         </div>
                     </div>
-                    <input id="diameter" type="number" value="9" step="0.1" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                    <input id="diameter" type="number" value="9" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
                 </div>
             </div>
             <!-- Time -->
@@ -212,7 +215,7 @@
                         <span id="timeValue" class="font-bold text-blue-600 dark:text-blue-400 text-sm">12:00 PM</span>
                     </div>
                 </div>
-                <input id="time" type="range" min="0" max="1439" value="720" step="15" class="w-full h-2 mt-1.5 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
+                <input id="time" type="range" min="0" max="1439" value="720" step="15" class="w-full h-2 mt-1 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
             </div>
         </div>
     </div>
@@ -245,6 +248,7 @@
             const ewLine = document.getElementById('ew-line');
             const nsText = document.getElementById('ns-text');
             const ewText = document.getElementById('ew-text');
+            const shadeDimsText = document.getElementById('shade-dims-text');
 
             const heightUnitFt = document.getElementById('height-unit-ft');
             const heightUnitM = document.getElementById('height-unit-m');
@@ -261,6 +265,7 @@
             const VIEWBOX_SIZE = 200;
             const FEET_TO_METERS = 0.3048;
             const METERS_TO_FEET = 3.28084;
+            const MIN_ALTITUDE_RAD = 0.0872665; // 5 degrees in radians
 
 
             // --- UI UPDATE FUNCTIONS ---
@@ -312,7 +317,7 @@
                 }
                 calculateAndDraw();
             }
-
+            
             // --- CORE CALCULATION & DRAWING ---
             function calculateAndDraw() {
                 const userLat = parseFloat(latInput.value);
@@ -327,75 +332,119 @@
 
                 if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
 
-                const maxPossibleShadow = (10 / Math.tan(0.1));
-                const scale = VIEWBOX_SIZE / ((15 * 2) + maxPossibleShadow);
+                const maxPossibleShadow = (heightInFeet / Math.tan(MIN_ALTITUDE_RAD));
+                const totalPathWidthGuess = diameterInFeet * 2 + maxPossibleShadow;
+                const scale = VIEWBOX_SIZE / totalPathWidthGuess;
 
                 const radiusInFeet = diameterInFeet / 2;
                 const radiusScaled = radiusInFeet * scale;
                 
                 umbrellaSVG.setAttribute('r', radiusScaled);
-                shadowSVG.setAttribute('r', radiusScaled);
                 
                 const now = getCombinedDate();
                 const sunPosition = SunCalc.getPosition(now, userLat, userLon);
                 
+                // --- Accurately draw the entire day's shade path ---
                 const sunTimes = SunCalc.getTimes(now, userLat, userLon);
-                const pathPoints = [];
+                const shadowSteps = [];
                 const stepMinutes = 15;
                 
-                // Ensure sunrise is valid before starting loop
                 if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
                     let currentTime = new Date(sunTimes.sunrise);
                     while (currentTime <= sunTimes.sunset) {
                         const pos = SunCalc.getPosition(currentTime, userLat, userLon);
-                        if (pos.altitude > 0) {
+                        if (pos.altitude > MIN_ALTITUDE_RAD) {
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const angle = pos.azimuth + Math.PI / 2;
-                            const shadowAngle = angle + Math.PI;
-                            const x = 100 + offset * Math.cos(shadowAngle);
-                            const y = 100 - offset * Math.sin(shadowAngle);
-                            pathPoints.push({x, y});
+                            const cartesianAzimuth = pos.azimuth + Math.PI / 2;
+                            const shadowAngle = cartesianAzimuth + Math.PI;
+                            
+                            shadowSteps.push({
+                                center: {
+                                    x: 100 + offset * Math.cos(shadowAngle),
+                                    y: 100 - offset * Math.sin(shadowAngle)
+                                },
+                                rx: radiusScaled / Math.sin(pos.altitude),
+                                ry: radiusScaled,
+                                rotationRad: -cartesianAzimuth
+                            });
                         }
                         currentTime.setMinutes(currentTime.getMinutes() + stepMinutes);
                     }
                 }
-
-
-                if (pathPoints.length > 1) {
+                
+                if (shadowSteps.length > 2) {
                     const leftPoints = [];
                     const rightPoints = [];
 
-                    for (let i = 0; i < pathPoints.length; i++) {
-                        let prev = pathPoints[i-1] || pathPoints[i];
-                        let next = pathPoints[i+1] || pathPoints[i];
+                    for (let i = 0; i < shadowSteps.length; i++) {
+                        const step = shadowSteps[i];
                         
-                        let dx = next.x - prev.x;
-                        let dy = next.y - prev.y;
-                        let len = Math.sqrt(dx*dx + dy*dy);
+                        // Determine path direction to find the normal
+                        const prevCenter = (i > 0) ? shadowSteps[i-1].center : step.center;
+                        const nextCenter = (i < shadowSteps.length - 1) ? shadowSteps[i+1].center : step.center;
+                        const dx = nextCenter.x - prevCenter.x;
+                        const dy = nextCenter.y - prevCenter.y;
                         
-                        let nx = -dy / len; // Normal vector
-                        let ny = dx / len;
+                        // Normal vector to the path's direction
+                        const nx = -dy;
+                        const ny = dx;
 
-                        leftPoints.push(`${pathPoints[i].x + nx * radiusScaled},${pathPoints[i].y + ny * radiusScaled}`);
-                        rightPoints.push(`${pathPoints[i].x - nx * radiusScaled},${pathPoints[i].y - ny * radiusScaled}`);
+                        let maxDot = -Infinity;
+                        let minDot = Infinity;
+                        let pLeft, pRight;
+
+                        // Sample points on the ellipse to find the ones most perpendicular to the path
+                        for (let j = 0; j < 360; j += 15) {
+                            const angleRad = j * (Math.PI / 180);
+                            const x_rot = step.rx * Math.cos(angleRad);
+                            const y_rot = step.ry * Math.sin(angleRad);
+                            
+                            const x = step.center.x + x_rot * Math.cos(step.rotationRad) - y_rot * Math.sin(step.rotationRad);
+                            const y = step.center.y + x_rot * Math.sin(step.rotationRad) + y_rot * Math.cos(step.rotationRad);
+                            
+                            const dot = (x - step.center.x) * nx + (y - step.center.y) * ny;
+                            
+                            if (dot > maxDot) {
+                                maxDot = dot;
+                                pRight = {x, y};
+                            }
+                            if (dot < minDot) {
+                                minDot = dot;
+                                pLeft = {x, y};
+                            }
+                        }
+                        if(pLeft) leftPoints.push(pLeft);
+                        if(pRight) rightPoints.push(pRight);
                     }
-                    const pathD = `M ${leftPoints[0]} L ${leftPoints.join(' L ')} L ${rightPoints.reverse().join(' L ')} Z`;
-                    shadowPath.setAttribute('d', pathD);
+
+                    if (leftPoints.length > 1 && rightPoints.length > 1) {
+                        const rightPointsReversed = rightPoints.reverse();
+                        const pathD = "M" + leftPoints.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" L ")
+                                    + " L " + rightPointsReversed.map(p => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" L ")
+                                    + " Z";
+                        shadowPath.setAttribute('d', pathD);
+                    } else {
+                         shadowPath.setAttribute('d', '');
+                    }
+
                 } else {
                     shadowPath.setAttribute('d', '');
                 }
 
-                // Draw Current Shade & Position
+
+                // --- Draw Current Shade & Position ---
                 if (sunPosition.altitude <= 0) {
                     nightMessage.classList.remove('hidden');
                     shadowSVG.classList.add('hidden');
                     distanceOverlay.classList.add('hidden');
+                    shadeDimsText.classList.add('hidden');
                     return;
                 }
                 
                 nightMessage.classList.add('hidden');
                 shadowSVG.classList.remove('hidden');
                 distanceOverlay.classList.remove('hidden');
+                shadeDimsText.classList.remove('hidden');
 
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
                 const cartesianAzimuth = sunPosition.azimuth + Math.PI / 2;
@@ -403,10 +452,25 @@
                 
                 const shadowX = 100 + shadowOffset * Math.cos(shadowAngle);
                 const shadowY = 100 - shadowOffset * Math.sin(shadowAngle);
+                
+                const elongatedRadius = radiusScaled / Math.sin(sunPosition.altitude);
+                const rotationDegrees = -cartesianAzimuth * (180 / Math.PI);
 
                 shadowSVG.setAttribute('cx', shadowX);
                 shadowSVG.setAttribute('cy', shadowY);
+                shadowSVG.setAttribute('rx', elongatedRadius);
+                shadowSVG.setAttribute('ry', radiusScaled);
+                shadowSVG.setAttribute('transform', `rotate(${rotationDegrees} ${shadowX} ${shadowY})`);
                 
+                // --- Display Shade Dimensions ---
+                const shortAxisFeet = diameterInFeet;
+                const longAxisFeet = diameterInFeet / Math.sin(sunPosition.altitude);
+                const shortAxisMeters = shortAxisFeet * FEET_TO_METERS;
+                const longAxisMeters = longAxisFeet * FEET_TO_METERS;
+                
+                shadeDimsText.textContent = `Shade: ${longAxisFeet.toFixed(1)}' x ${shortAxisFeet.toFixed(1)}' (${longAxisMeters.toFixed(1)}m x ${shortAxisMeters.toFixed(1)}m)`;
+
+                // --- Display Distance Overlay ---
                 const offsetEastWest_feet = (shadowX - 100) / scale;
                 const offsetNorthSouth_feet = -(shadowY - 100) / scale;
                 const LABEL_PADDING = 4;
@@ -539,5 +603,4 @@
     </script>
 </body>
 </html>
-
 
