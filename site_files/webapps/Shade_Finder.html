@@ -87,7 +87,6 @@
                   <path id="shadow-path" fill="#3b82f6" fill-opacity="0.4" />
                   
                   <ellipse id="shadow" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
-                  <line id="future-shade-line" stroke="red" stroke-width="1" stroke-dasharray="2,2" class="hidden"/>
                   <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
 
             </svg>
@@ -98,15 +97,20 @@
                   <div class="loader"></div>
             </div>
 
-            <div class="absolute bottom-2 left-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
-                <button id="getLocationBtn" title="Get Current Location" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                </button>
-                <input type="number" id="lat" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Lat:">
-                
-                <div class="w-4 h-4"></div> <!-- Spacer -->
-
-                <input type="number" id="lon" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Lon:">
+            <div class="absolute bottom-2 left-2">
+                <div class="flex items-stretch gap-0.5 p-1 rounded-md bg-gray-900/70 backdrop-blur-sm">
+                    <button id="getLocationBtn" title="Get Current Location" class="p-2 rounded-md hover:bg-gray-700 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12m-3 0a3 3 0 106 0 3 3 0 10-6 0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h3m14 0h3m-9-9v3m0 14v3"></path></svg>
+                    </button>
+                    <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center px-1">
+                        <label for="lat" class="font-medium text-gray-400" style="font-size: 1.75vmin;">Lat</label>
+                        <input type="number" id="lat" step="0.0001" class="w-24 p-0.5 rounded border bg-gray-700 border-gray-600" style="font-size: 1.75vmin;">
+                        
+                        <label for="lon" class="font-medium text-gray-400" style="font-size: 1.75vmin;">Lon</label>
+                        <input type="number" id="lon" step="0.0001" class="w-24 p-0.5 rounded border bg-gray-700 border-gray-600" style="font-size: 1.75vmin;">
+                    </div>
+                </div>
+                <p id="error-message" class="text-red-500 hidden text-center pt-1" style="font-size: 1.75vmin;"></p>
             </div>
 
             <div class="absolute bottom-2 right-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
@@ -121,10 +125,7 @@
                 <input type="text" id="time-input-box" class="bg-gray-900/70 backdrop-blur-sm rounded-md px-1 py-0.5 border-gray-600 w-full" style="font-size: 1.75vmin;" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:mm">
                 
                   <button id="timezone-reset-btn" title="Auto-detect time zone" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                       <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.51 9h16.98M3.51 15h16.98M12 3a9 9 0 015.657 15.343"></path>
-                        </svg>
+                       <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c-2.28 0-4.46.9-6.08 2.37M12 21c2.28 0 4.46-.9 6.08-2.37M3 12h18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l2 2"></path></svg>
                   </button>
                   <div class="w-full">
                        <select id="timezone-picker" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-auto" style="font-size: 1.75vmin;"></select>
@@ -160,7 +161,7 @@
                             <button id="height-unit-ft" class="px-2 py-0.5 unit-toggle active-unit">ft</button>
                             <button id="height-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
                         </div>
-                    </div>
+                   </div>
                     <input id="height" type="number" value="5.5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
                 </div>
                 <div>
@@ -171,11 +172,10 @@
                             <button id="diameter-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
                         </div>
                    </div>
-                   <input id="diameter" type="number" value="5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
+                    <input id="diameter" type="number" value="5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
                 </div>
             </div>
         </div>
-         <p id="error-message" class="text-red-500 hidden text-center pt-1" style="font-size: 2.25vmin;"></p>
     </div>
 
     <script>
@@ -192,7 +192,6 @@
             const umbrellaSVG = document.getElementById('umbrella');
             const shadowSVG = document.getElementById('shadow');
             const shadowPath = document.getElementById('shadow-path');
-            const futureShadeLine = document.getElementById('future-shade-line');
             const nightMessage = document.getElementById('night-message');
             const gridOverlay = document.getElementById('grid-overlay');
             
@@ -494,35 +493,6 @@
                 const nsTextContent = `${nsDistFt.toFixed(1)}' (${nsDistM.toFixed(1)}m) ${offsetNorthSouth_feet >= 0 ? 'N' : 'S'}`;
                 
                 centerPosText.textContent = `Center: ${nsTextContent} & ${ewTextContent}`;
-
-                // --- Draw Future Shade Line ---
-                const futureTime = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour from now
-                if (futureTime <= sunTimes.sunset) {
-                    const futureSunPosition = SunCalc.getPosition(futureTime, userLat, userLon);
-                    if (futureSunPosition.altitude > 0) {
-                        const futureShadowOffset = (heightInFeet / Math.tan(futureSunPosition.altitude)) * scale;
-                        const futureShadowX = 100 + futureShadowOffset * Math.sin(futureSunPosition.azimuth);
-                        const futureShadowY = 100 - futureShadowOffset * Math.cos(futureSunPosition.azimuth);
-                        const futureRotationRad = futureSunPosition.azimuth + Math.PI / 2;
-
-                        // Calculate endpoints of the minor axis of the future ellipse
-                        const x1 = futureShadowX - radiusScaled * Math.sin(futureRotationRad);
-                        const y1 = futureShadowY + radiusScaled * Math.cos(futureRotationRad);
-                        const x2 = futureShadowX + radiusScaled * Math.sin(futureRotationRad);
-                        const y2 = futureShadowY - radiusScaled * Math.cos(futureRotationRad);
-                        
-                        futureShadeLine.setAttribute('x1', x1);
-                        futureShadeLine.setAttribute('y1', y1);
-                        futureShadeLine.setAttribute('x2', x2);
-                        futureShadeLine.setAttribute('y2', y2);
-                        futureShadeLine.classList.remove('hidden');
-
-                    } else {
-                        futureShadeLine.classList.add('hidden');
-                    }
-                } else {
-                    futureShadeLine.classList.add('hidden');
-                }
             }
 
             // --- Dragging Logic ---
@@ -619,9 +589,7 @@
             });
 
             [heightInput, diameterInput, latInput, lonInput, timezonePicker, timeInputBox].forEach(el => {
-                if (el) { // Check if element exists before adding listener
-                    el.addEventListener('input', calculateAndDraw);
-                }
+                el.addEventListener('input', calculateAndDraw);
             });
             
             shadowSVG.addEventListener('mousedown', startDrag);
@@ -671,4 +639,3 @@
     </script>
 </body>
 </html>
-
