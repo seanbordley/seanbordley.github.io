@@ -307,7 +307,7 @@
                 }
             }
             
-          // --- CORE CALCULATION & DRAWING ---
+        // --- CORE CALCULATION & DRAWING ---
 function calculateAndDraw() {
     const userLat = parseFloat(latInput.value);
     const userLon = parseFloat(lonInput.value);
@@ -321,25 +321,18 @@ function calculateAndDraw() {
 
     if (!Number.isFinite(heightInFeet) || !Number.isFinite(diameterInFeet) || heightInFeet <= 0 || diameterInFeet <= 0) return;
 
-    // --- Robust solar-altitude handling ---
-    // Use magnitude for shadow LENGTH; direction handled separately.
-    // Also clamp away from 0° to prevent infinite shadows when the sun is at/near horizon.
-    const ALTITUDE_FLOOR_DEG = 3; // tweak if you like (1–5°); prevents extreme lengths
+    // --- Handle solar altitude properly ---
+    // Avoid infinite shadows by clamping minimum altitude angle
+    const ALTITUDE_FLOOR_DEG = 3; // minimum angle above horizon in deg
     const ALTITUDE_FLOOR_RAD = ALTITUDE_FLOOR_DEG * Math.PI / 180;
 
-    // If MIN_ALTITUDE_RAD is undefined/falsey, treat as 0
     const rawAltRad = Number.isFinite(MIN_ALTITUDE_RAD) ? MIN_ALTITUDE_RAD : 0;
-
-    // Positive magnitude for length; clamp to floor
     const altitudeAbsRad = Math.max(Math.abs(rawAltRad), ALTITUDE_FLOOR_RAD);
-    const tanAlt = Math.tan(altitudeAbsRad);
-    // Guard just in case
-    const safeTanAlt = Math.max(Math.abs(tanAlt), 1e-6);
 
-    // Positive shadow length magnitude (feet)
-    const shadowLengthFeet = heightInFeet / safeTanAlt;
+    // Shadow length in feet, always positive
+    const shadowLengthFeet = heightInFeet / Math.tan(altitudeAbsRad);
 
-    // --- Layout / scaling ---
+    // --- Scaling based on umbrella + shadow ---
     const totalPathWidthGuess = diameterInFeet * 2 + shadowLengthFeet;
     if (!Number.isFinite(totalPathWidthGuess) || totalPathWidthGuess <= 0) return;
 
@@ -349,9 +342,31 @@ function calculateAndDraw() {
     const radiusScaled = (diameterInFeet / 2) * scale;
     umbrellaSVG.setAttribute('r', radiusScaled);
 
-    // --- OPTIONAL: hemisphere-aware direction for placing the shadow graphic ---
-    // If you translate/rotate a separate <g> or path for the shadow, use this sign.
-    // Approx
+    // --- Shadow path drawing ---
+    const cx = VIEWBOX_SIZE / 2;
+    const cy = VIEWBOX_SIZE / 2;
+
+    const shadowLengthScaled = shadowLengthFeet * scale;
+
+    // Hemisphere-aware sweep direction
+    const sweepFlag = userLat >= 0 ? 1 : 0; // Northern Hemisphere = clockwise, Southern = counterclockwise
+
+    // If you want to later support sun azimuth angles, plug them here:
+    const azimuthRad = 0; // TODO: Replace with actual azimuth for dynamic shadows
+
+    // Shadow endpoint based on current azimuth
+    const shadowEndX = cx + shadowLengthScaled * Math.cos(azimuthRad);
+    const shadowEndY = cy + shadowLengthScaled * Math.sin(azimuthRad);
+
+    // Build the SVG path string
+    const shadowPath = `
+        M ${cx} ${cy}
+        A ${shadowLengthScaled} ${shadowLengthScaled} 0 0 ${sweepFlag} ${shadowEndX} ${shadowEndY}
+    `;
+
+    // Apply to the shadow path element
+    shadowSVG.setAttribute("d", shadowPath);
+}
 
 
 
