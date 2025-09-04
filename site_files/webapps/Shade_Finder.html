@@ -6,6 +6,9 @@
     <title>Shade Finder</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -14,54 +17,67 @@
         .slider-thumb::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 2.5vmin;
+            height: 2.5vmin;
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            border: 0.2vmin solid white;
+            box-shadow: 0 0 0.5vmin rgba(0,0,0,0.2);
         }
         .slider-thumb::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 2.5vmin;
+            height: 2.5vmin;
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            border: 0.2vmin solid white;
+            box-shadow: 0 0 0.5vmin rgba(0,0,0,0.2);
         }
         .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #3b82f6;
+            border: 0.5vmin solid #f3f3f3;
+            border-top: 0.5vmin solid #3b82f6;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 5vmin;
+            height: 5vmin;
             animation: spin 1s linear infinite;
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        input:disabled {
+            background-color: #e5e7eb;
+            cursor: not-allowed;
+        }
+        .dark input:disabled {
+            background-color: #4b5563;
+        }
+        /* Hide number input arrows */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .unit-toggle {
+            background-color: transparent;
+            transition: background-color 0.2s;
+        }
+        .active-unit {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+        }
     </style>
 </head>
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8 space-y-6">
+    <div class="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-4 space-y-3">
         <!-- Header -->
         <div class="text-center">
-            <h1 class="text-2xl md:text-3xl font-bold text-blue-600 dark:text-blue-400">Shade Finder</h1>
-            <p class="text-gray-500 dark:text-gray-400 mt-1">Find the perfect spot to relax.</p>
-        </div>
-
-        <!-- Location Section -->
-        <div id="location-section" class="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <div id="loader" class="loader mx-auto"></div>
-            <div id="location-content" class="hidden">
-                 <p class="text-sm">Your Location:</p>
-                 <p class="font-semibold" id="coords">Fetching...</p>
-                 <button id="getLocationBtn" class="mt-2 text-xs text-blue-500 hover:underline">Refresh Location</button>
-            </div>
-             <p id="error-message" class="text-red-500 text-sm hidden"></p>
+            <h1 class="text-xl font-bold text-blue-600 dark:text-blue-400">Shade Finder</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Plan your perfect spot in the shade.</p>
         </div>
 
         <!-- Visualization -->
@@ -77,113 +93,242 @@
                 <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
                 <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
 
-                <!-- Sun -->
-                <circle id="sun" r="8" fill="#FFD700" stroke="orange" stroke-width="1"/>
+                <!-- Shade Path -->
+                <path id="shadow-path" fill="#3b82f6" fill-opacity="0.2" />
+                
+                <!-- Distance Overlay -->
+                <g id="distance-overlay" class="opacity-80">
+                    <line id="ew-line" x1="100" y1="100" x2="150" y2="100" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" />
+                    <line id="ns-line" x1="150" y1="100" x2="150" y2="150" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" />
+                    <text id="ew-text" x="125" y="95" font-size="7" fill="currentColor" text-anchor="middle" class="font-semibold">0 ft</text>
+                    <text id="ns-text" x="155" y="125" font-size="7" fill="currentColor" text-anchor="start" dominant-baseline="middle" class="font-semibold">0 ft</text>
+                </g>
+
                 <!-- Shadow -->
-                <circle id="shadow" cx="100" cy="100" r="20" fill="#3b82f6" fill-opacity="0.4"/>
+                <circle id="shadow" cx="100" cy="100" r="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
                 <!-- Umbrella -->
                 <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
             </svg>
             <div id="night-message" class="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-lg font-semibold hidden">
                 <p>It's nighttime!</p>
             </div>
+             <div id="loader" class="absolute inset-0 bg-white/70 dark:bg-gray-800/70 flex items-center justify-center">
+                <div class="loader"></div>
+            </div>
         </div>
 
         <!-- Legend -->
-        <div class="flex justify-center items-center space-x-4 text-xs text-gray-600 dark:text-gray-400">
-            <div class="flex items-center space-x-1.5">
-                <span class="w-3 h-3 rounded-full bg-yellow-400 border border-orange-500"></span>
-                <span>Sun</span>
-            </div>
+        <div class="flex justify-center items-center space-x-4 text-xs text-gray-600 dark:text-gray-400 pt-2">
             <div class="flex items-center space-x-1.5">
                 <span class="w-3 h-3 rounded-full bg-gray-400/50 border border-gray-500"></span>
                 <span>Umbrella</span>
             </div>
             <div class="flex items-center space-x-1.5">
-                <span class="w-3 h-3 rounded-full bg-blue-500/40"></span>
+                <span class="w-3 h-3 rounded-full bg-blue-500/50 border border-blue-600"></span>
                 <span>Shade</span>
             </div>
+             <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-blue-500/20"></span>
+                <span>Day's Shade Path</span>
+            </div>
         </div>
-
+        
         <!-- Controls -->
-        <div class="space-y-4">
-            <!-- Umbrella Height -->
-            <div>
-                <label for="height" class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <span>Umbrella Height</span>
-                    <span id="heightValue" class="font-bold text-blue-600 dark:text-blue-400">7 ft</span>
-                </label>
-                <input id="height" type="range" min="4" max="10" value="7" step="0.5" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
+        <div class="space-y-3 pt-2">
+            <!-- Location Section -->
+            <div id="location-section" class="p-2 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                 <div class="grid grid-cols-3 items-center">
+                    <label class="text-xs font-medium text-gray-700 dark:text-gray-300">Location</label>
+                    <div class="text-center">
+                        <button id="getLocationBtn" class="text-xs text-blue-500 hover:underline">Current</button>
+                    </div>
+                    <div></div>
+                </div>
+                 <div class="flex flex-wrap items-center justify-between gap-y-2 text-sm mt-0.5">
+                    <div class="flex items-center gap-2">
+                        <label for="lat" class="text-xs font-medium text-gray-600 dark:text-gray-400">Latitude</label>
+                        <input type="number" id="lat" step="0.0001" class="w-24 p-1 rounded border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label for="lon" class="text-xs font-medium text-gray-600 dark:text-gray-400">Longitude</label>
+                        <input type="number" id="lon" step="0.0001" class="w-24 p-1 rounded border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                    </div>
+                 </div>
+                 <p id="error-message" class="text-red-500 text-xs hidden text-center pt-1"></p>
             </div>
-            <!-- Umbrella Diameter -->
-            <div>
-                <label for="diameter" class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <span>Umbrella Diameter</span>
-                    <span id="diameterValue" class="font-bold text-blue-600 dark:text-blue-400">9 ft</span>
-                </label>
-                <input id="diameter" type="range" min="4" max="15" value="9" step="1" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
+             <!-- Date -->
+             <div>
+                <div class="grid grid-cols-3 items-center">
+                    <label for="date" class="text-xs font-medium text-gray-700 dark:text-gray-300">Date</label>
+                    <div class="text-center">
+                        <button id="date-reset-btn" class="text-xs text-blue-500 hover:underline">Today</button>
+                    </div>
+                    <div></div>
+                </div>
+                <input id="date" type="date" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
             </div>
-            <!-- Time of Day -->
+            <!-- Timezone -->
+             <div>
+                <div class="grid grid-cols-3 items-center">
+                    <label for="timezone-picker" class="text-xs font-medium text-gray-700 dark:text-gray-300">Time Zone</label>
+                    <div class="text-center">
+                        <button id="timezone-reset-btn" class="text-xs text-blue-500 hover:underline">Auto-detect</button>
+                    </div>
+                    <div></div>
+                </div>
+                <select id="timezone-picker" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm"></select>
+            </div>
+            <!-- Umbrella Specs -->
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <div class="flex justify-between items-center">
+                        <label for="height" id="height-label" class="text-xs font-medium text-gray-700 dark:text-gray-300">Height (ft)</label>
+                        <div class="flex items-center text-xs border border-gray-300 dark:border-gray-500 rounded-md overflow-hidden">
+                            <button id="height-unit-ft" class="px-2 py-0.5 unit-toggle active-unit">ft</button>
+                            <button id="height-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
+                        </div>
+                    </div>
+                    <input id="height" type="number" value="7" step="0.1" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                </div>
+                <div>
+                    <div class="flex justify-between items-center">
+                        <label for="diameter" id="diameter-label" class="text-xs font-medium text-gray-700 dark:text-gray-300">Diameter (ft)</label>
+                        <div class="flex items-center text-xs border border-gray-300 dark:border-gray-500 rounded-md overflow-hidden">
+                            <button id="diameter-unit-ft" class="px-2 py-0.5 unit-toggle active-unit">ft</button>
+                            <button id="diameter-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
+                        </div>
+                    </div>
+                    <input id="diameter" type="number" value="9" step="0.1" class="w-full mt-0.5 p-1 rounded-md border bg-white dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-sm">
+                </div>
+            </div>
+            <!-- Time -->
             <div>
-                <label for="time" class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300">
-                    <span>Time of Day</span>
-                    <span id="timeValue" class="font-bold text-blue-600 dark:text-blue-400">12:00 PM</span>
-                </label>
-                <input id="time" type="range" min="0" max="1439" value="720" step="15" class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
+                 <div class="grid grid-cols-3 items-center text-xs font-medium text-gray-700 dark:text-gray-300">
+                    <label for="time">Time</label>
+                    <div class="text-center">
+                         <button id="time-reset-btn" class="text-xs text-blue-500 hover:underline">Now</button>
+                    </div>
+                    <div class="text-right">
+                        <span id="timeValue" class="font-bold text-blue-600 dark:text-blue-400 text-sm">12:00 PM</span>
+                    </div>
+                </div>
+                <input id="time" type="range" min="0" max="1439" value="720" step="15" class="w-full h-2 mt-1.5 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer slider-thumb">
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const heightSlider = document.getElementById('height');
-            const heightValue = document.getElementById('heightValue');
-            const diameterSlider = document.getElementById('diameter');
-            const diameterValue = document.getElementById('diameterValue');
+            dayjs.extend(window.dayjs_plugin_utc);
+            dayjs.extend(window.dayjs_plugin_timezone);
+
+            const heightInput = document.getElementById('height');
+            const diameterInput = document.getElementById('diameter');
             const timeSlider = document.getElementById('time');
             const timeValue = document.getElementById('timeValue');
-
+            const dateInput = document.getElementById('date');
+            
             const umbrellaSVG = document.getElementById('umbrella');
             const shadowSVG = document.getElementById('shadow');
-            const sunSVG = document.getElementById('sun');
+            const shadowPath = document.getElementById('shadow-path');
             const nightMessage = document.getElementById('night-message');
             
-            const coordsDisplay = document.getElementById('coords');
+            const latInput = document.getElementById('lat');
+            const lonInput = document.getElementById('lon');
             const getLocationBtn = document.getElementById('getLocationBtn');
-            const loader = document.getElementById('loader');
-            const locationContent = document.getElementById('location-content');
-            const errorMessage = document.getElementById('error-message');
 
-            let userLat = 34.0522; // Default to Los Angeles
-            let userLon = -118.2437;
-            const FEET_TO_METERS = 0.3048;
-            const VIEWBOX_SIZE = 200; // SVG viewBox is 200x200
+            const loader = document.getElementById('loader');
+            const errorMessage = document.getElementById('error-message');
             
+            const distanceOverlay = document.getElementById('distance-overlay');
+            const nsLine = document.getElementById('ns-line');
+            const ewLine = document.getElementById('ew-line');
+            const nsText = document.getElementById('ns-text');
+            const ewText = document.getElementById('ew-text');
+
+            const heightUnitFt = document.getElementById('height-unit-ft');
+            const heightUnitM = document.getElementById('height-unit-m');
+            const heightLabel = document.getElementById('height-label');
+            const diameterUnitFt = document.getElementById('diameter-unit-ft');
+            const diameterUnitM = document.getElementById('diameter-unit-m');
+            const diameterLabel = document.getElementById('diameter-label');
+            
+            const dateResetBtn = document.getElementById('date-reset-btn');
+            const timeResetBtn = document.getElementById('time-reset-btn');
+            const timezonePicker = document.getElementById('timezone-picker');
+            const timezoneResetBtn = document.getElementById('timezone-reset-btn');
+
+            const VIEWBOX_SIZE = 200;
+            const FEET_TO_METERS = 0.3048;
+            const METERS_TO_FEET = 3.28084;
+
+
             // --- UI UPDATE FUNCTIONS ---
-            function updateSliderValue(slider, display, unit, isTime = false) {
-                if (isTime) {
-                    const totalMinutes = parseInt(slider.value);
-                    const hours = Math.floor(totalMinutes / 60) % 24;
-                    const minutes = totalMinutes % 60;
-                    const ampm = hours >= 12 ? 'PM' : 'AM';
-                    const displayHours = hours % 12 === 0 ? 12 : hours % 12;
-                    const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
-                    display.textContent = `${displayHours}:${displayMinutes} ${ampm}`;
-                } else {
-                    display.textContent = `${slider.value} ${unit}`;
+            function updateSliderValue(slider, display) {
+                const totalMinutes = parseInt(slider.value);
+                const hours = Math.floor(totalMinutes / 60) % 24;
+                const minutes = totalMinutes % 60;
+                const ampm = hours >= 12 ? 'PM' : 'AM';
+                const displayHours = hours % 12 === 0 ? 12 : hours % 12;
+                const displayMinutes = minutes < 10 ? '0' + minutes : minutes;
+                display.textContent = `${displayHours}:${displayMinutes} ${ampm}`;
+            }
+            
+            function getCombinedDate() {
+                const dateStr = dateInput.value;
+                if (!dateStr) return new Date();
+
+                const totalMinutes = parseInt(timeSlider.value);
+                const hours = Math.floor(totalMinutes / 60);
+                const minutes = totalMinutes % 60;
+                
+                const timeStr = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+                const isoStr = `${dateStr}T${timeStr}`;
+                const selectedTimezone = timezonePicker.value;
+
+                return dayjs.tz(isoStr, selectedTimezone).toDate();
+            }
+
+            function setUnit(type, unit) {
+                const ftBtn = document.getElementById(`${type}-unit-ft`);
+                const mBtn = document.getElementById(`${type}-unit-m`);
+                const label = document.getElementById(`${type}-label`);
+                const input = document.getElementById(type);
+                let currentVal = parseFloat(input.value);
+
+                if (isNaN(currentVal)) return;
+
+                if (unit === 'ft' && !ftBtn.classList.contains('active-unit')) {
+                    ftBtn.classList.add('active-unit');
+                    mBtn.classList.remove('active-unit');
+                    label.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} (ft)`;
+                    input.value = (currentVal * METERS_TO_FEET).toFixed(1);
+
+                } else if (unit === 'm' && !mBtn.classList.contains('active-unit')) {
+                    mBtn.classList.add('active-unit');
+                    ftBtn.classList.remove('active-unit');
+                    label.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} (m)`;
+                    input.value = (currentVal * FEET_TO_METERS).toFixed(2);
                 }
+                calculateAndDraw();
             }
 
             // --- CORE CALCULATION & DRAWING ---
             function calculateAndDraw() {
-                if (!userLat || !userLon) return;
+                const userLat = parseFloat(latInput.value);
+                const userLon = parseFloat(lonInput.value);
+                if (isNaN(userLat) || isNaN(userLon)) return;
 
-                const heightInFeet = parseFloat(heightSlider.value);
-                const diameterInFeet = parseFloat(diameterSlider.value);
+                let heightVal = parseFloat(heightInput.value);
+                const heightInFeet = heightUnitM.classList.contains('active-unit') ? heightVal * METERS_TO_FEET : heightVal;
                 
-                // Scale factor to fit the umbrella and its shadow in the viewbox
-                const maxPossibleShadow = (10 / Math.tan(0.1)); // Max height at low sun angle
-                const scale = VIEWBOX_SIZE / ((15 * 2) + maxPossibleShadow); // Base on max diameter
+                let diameterVal = parseFloat(diameterInput.value);
+                const diameterInFeet = diameterUnitM.classList.contains('active-unit') ? diameterVal * METERS_TO_FEET : diameterVal;
+
+                if (isNaN(heightInFeet) || isNaN(diameterInFeet)) return;
+
+                const maxPossibleShadow = (10 / Math.tan(0.1));
+                const scale = VIEWBOX_SIZE / ((15 * 2) + maxPossibleShadow);
 
                 const radiusInFeet = diameterInFeet / 2;
                 const radiusScaled = radiusInFeet * scale;
@@ -191,108 +336,201 @@
                 umbrellaSVG.setAttribute('r', radiusScaled);
                 shadowSVG.setAttribute('r', radiusScaled);
                 
-                const totalMinutes = parseInt(timeSlider.value);
-                const now = new Date();
-                now.setHours(Math.floor(totalMinutes / 60));
-                now.setMinutes(totalMinutes % 60);
-
+                const now = getCombinedDate();
                 const sunPosition = SunCalc.getPosition(now, userLat, userLon);
                 
-                // Sun is below the horizon
+                const sunTimes = SunCalc.getTimes(now, userLat, userLon);
+                const pathPoints = [];
+                const stepMinutes = 15;
+                
+                // Ensure sunrise is valid before starting loop
+                if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
+                    let currentTime = new Date(sunTimes.sunrise);
+                    while (currentTime <= sunTimes.sunset) {
+                        const pos = SunCalc.getPosition(currentTime, userLat, userLon);
+                        if (pos.altitude > 0) {
+                            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
+                            const angle = pos.azimuth + Math.PI / 2;
+                            const shadowAngle = angle + Math.PI;
+                            const x = 100 + offset * Math.cos(shadowAngle);
+                            const y = 100 - offset * Math.sin(shadowAngle);
+                            pathPoints.push({x, y});
+                        }
+                        currentTime.setMinutes(currentTime.getMinutes() + stepMinutes);
+                    }
+                }
+
+
+                if (pathPoints.length > 1) {
+                    const leftPoints = [];
+                    const rightPoints = [];
+
+                    for (let i = 0; i < pathPoints.length; i++) {
+                        let prev = pathPoints[i-1] || pathPoints[i];
+                        let next = pathPoints[i+1] || pathPoints[i];
+                        
+                        let dx = next.x - prev.x;
+                        let dy = next.y - prev.y;
+                        let len = Math.sqrt(dx*dx + dy*dy);
+                        
+                        let nx = -dy / len; // Normal vector
+                        let ny = dx / len;
+
+                        leftPoints.push(`${pathPoints[i].x + nx * radiusScaled},${pathPoints[i].y + ny * radiusScaled}`);
+                        rightPoints.push(`${pathPoints[i].x - nx * radiusScaled},${pathPoints[i].y - ny * radiusScaled}`);
+                    }
+                    const pathD = `M ${leftPoints[0]} L ${leftPoints.join(' L ')} L ${rightPoints.reverse().join(' L ')} Z`;
+                    shadowPath.setAttribute('d', pathD);
+                } else {
+                    shadowPath.setAttribute('d', '');
+                }
+
+                // Draw Current Shade & Position
                 if (sunPosition.altitude <= 0) {
                     nightMessage.classList.remove('hidden');
                     shadowSVG.classList.add('hidden');
-                    sunSVG.classList.add('hidden');
+                    distanceOverlay.classList.add('hidden');
                     return;
                 }
                 
                 nightMessage.classList.add('hidden');
                 shadowSVG.classList.remove('hidden');
-                sunSVG.classList.remove('hidden');
+                distanceOverlay.classList.remove('hidden');
 
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
-
-                // SunCalc azimuth: 0 is South, positive clockwise.
-                // Convert to standard Cartesian angle: 0 is East (right), positive counter-clockwise.
-                // SVG coordinates: y-axis is inverted.
                 const cartesianAzimuth = sunPosition.azimuth + Math.PI / 2;
-                const shadowAngle = cartesianAzimuth + Math.PI; // Opposite direction for shadow
+                const shadowAngle = cartesianAzimuth + Math.PI;
                 
                 const shadowX = 100 + shadowOffset * Math.cos(shadowAngle);
-                const shadowY = 100 - shadowOffset * Math.sin(shadowAngle); // Subtract for SVG y-inversion
-
-                // Calculate sun's position for visualization
-                // Map altitude (0 to PI/2) to a distance from the center (95 to 10)
-                const sunDistance = 95 - (sunPosition.altitude / (Math.PI / 2)) * 85;
-                const sunX = 100 + sunDistance * Math.cos(cartesianAzimuth);
-                const sunY = 100 - sunDistance * Math.sin(cartesianAzimuth);
-
-                sunSVG.setAttribute('cx', sunX);
-                sunSVG.setAttribute('cy', sunY);
+                const shadowY = 100 - shadowOffset * Math.sin(shadowAngle);
 
                 shadowSVG.setAttribute('cx', shadowX);
                 shadowSVG.setAttribute('cy', shadowY);
+                
+                const offsetEastWest_feet = (shadowX - 100) / scale;
+                const offsetNorthSouth_feet = -(shadowY - 100) / scale;
+                const LABEL_PADDING = 4;
+
+                const offsetEastWest_meters = offsetEastWest_feet * FEET_TO_METERS;
+                const offsetNorthSouth_meters = offsetNorthSouth_feet * FEET_TO_METERS;
+
+                ewLine.setAttribute('x1', 100);
+                ewLine.setAttribute('y1', 100);
+                ewLine.setAttribute('x2', shadowX);
+                ewLine.setAttribute('y2', 100);
+
+                nsLine.setAttribute('x1', shadowX);
+                nsLine.setAttribute('y1', 100);
+                nsLine.setAttribute('x2', shadowX);
+                nsLine.setAttribute('y2', shadowY);
+                
+                const ewDistFt = Math.abs(offsetEastWest_feet);
+                const ewDistM = Math.abs(offsetEastWest_meters);
+                const ewTextContent = `${ewDistFt.toFixed(1)}ft (${ewDistM.toFixed(1)}m) ${offsetEastWest_feet >= 0 ? 'E' : 'W'}`;
+                ewText.setAttribute('x', (100 + shadowX) / 2);
+                ewText.setAttribute('y', 100 - radiusScaled - LABEL_PADDING);
+                ewText.setAttribute('dominant-baseline', 'auto');
+                ewText.textContent = ewTextContent;
+
+                const nsDistFt = Math.abs(offsetNorthSouth_feet);
+                const nsDistM = Math.abs(offsetNorthSouth_meters);
+                const nsTextContent = `${nsDistFt.toFixed(1)}ft (${nsDistM.toFixed(1)}m) ${offsetNorthSouth_feet >= 0 ? 'N' : 'S'}`;
+                const textXOffset = (offsetEastWest_feet >= 0 ? 1 : -1) * (radiusScaled + LABEL_PADDING);
+                const textAnchor = offsetEastWest_feet >= 0 ? 'start' : 'end';
+                nsText.setAttribute('x', shadowX + textXOffset);
+                nsText.setAttribute('y', (100 + shadowY) / 2);
+                nsText.setAttribute('text-anchor', textAnchor);
+                nsText.textContent = nsTextContent;
             }
 
             // --- GEOLOCATION ---
             function getLocation() {
-                loader.style.display = 'block';
-                locationContent.classList.add('hidden');
+                loader.style.display = 'flex';
                 errorMessage.classList.add('hidden');
-
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => {
-                            userLat = position.coords.latitude;
-                            userLon = position.coords.longitude;
-                            coordsDisplay.textContent = `${userLat.toFixed(4)}, ${userLon.toFixed(4)}`;
-                            loader.style.display = 'none';
-                            locationContent.classList.remove('hidden');
-                            calculateAndDraw();
-                        },
-                        () => {
-                            handleLocationError("Could not get location. Using default.");
-                        }
-                    );
-                } else {
-                    handleLocationError("Geolocation not supported. Using default.");
-                }
+                latInput.disabled = true;
+                lonInput.disabled = true;
+                handleLocationError("Showing preset location.");
             }
 
             function handleLocationError(message) {
-                 coordsDisplay.textContent = `${userLat.toFixed(4)}, ${userLon.toFixed(4)} (Default)`;
+                 latInput.value = (37.5629).toFixed(4);
+                 lonInput.value = (-122.3255).toFixed(4);
                  errorMessage.textContent = message;
-                 errorMessage.classList.remove('hidden');
                  loader.style.display = 'none';
-                 locationContent.classList.remove('hidden');
+                 latInput.disabled = false;
+                 lonInput.disabled = false;
                  calculateAndDraw();
             }
 
             // --- EVENT LISTENERS ---
-            heightSlider.addEventListener('input', () => {
-                updateSliderValue(heightSlider, heightValue, 'ft');
+            [heightInput, diameterInput, timeSlider, dateInput, latInput, lonInput, timezonePicker].forEach(el => {
+                el.addEventListener('input', calculateAndDraw);
+            });
+            timeSlider.addEventListener('input', () => updateSliderValue(timeSlider, timeValue));
+
+            heightUnitFt.addEventListener('click', () => setUnit('height', 'ft'));
+            heightUnitM.addEventListener('click', () => setUnit('height', 'm'));
+            diameterUnitFt.addEventListener('click', () => setUnit('diameter', 'ft'));
+            diameterUnitM.addEventListener('click', () => setUnit('diameter', 'm'));
+
+            dateResetBtn.addEventListener('click', () => {
+                dateInput.value = dayjs().format('YYYY-MM-DD');
                 calculateAndDraw();
             });
-            diameterSlider.addEventListener('input', () => {
-                updateSliderValue(diameterSlider, diameterValue, 'ft');
+
+            timeResetBtn.addEventListener('click', () => {
+                const now = dayjs();
+                const currentMinutes = now.hour() * 60 + now.minute();
+                timeSlider.value = currentMinutes;
+                timezonePicker.value = dayjs.tz.guess();
+                updateSliderValue(timeSlider, timeValue);
                 calculateAndDraw();
             });
-            timeSlider.addEventListener('input', () => {
-                updateSliderValue(timeSlider, timeValue, '', true);
+            
+            timezoneResetBtn.addEventListener('click', () => {
+                timezonePicker.value = dayjs.tz.guess();
                 calculateAndDraw();
             });
-            getLocationBtn.addEventListener('click', getLocation);
+
+            getLocationBtn.addEventListener('click', () => {
+                loader.style.display = 'flex';
+                latInput.disabled = true;
+                lonInput.disabled = true;
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            latInput.value = position.coords.latitude.toFixed(4);
+                            lonInput.value = position.coords.longitude.toFixed(4);
+                            loader.style.display = 'none';
+                            latInput.disabled = false;
+                            lonInput.disabled = false;
+                            calculateAndDraw();
+                        },
+                        () => handleLocationError("Could not get location. Please enter manually.")
+                    );
+                } else {
+                    handleLocationError("Geolocation not supported. Please enter manually.");
+                }
+            });
 
             // --- INITIALIZATION ---
             function initialize() {
-                const now = new Date();
-                const totalMinutes = now.getHours() * 60 + now.getMinutes();
-                timeSlider.value = totalMinutes;
+                // Populate Timezone Picker
+                const timezones = Intl.supportedValuesOf('timeZone');
+                timezones.forEach(tz => {
+                    const option = document.createElement('option');
+                    option.value = tz;
+                    option.textContent = tz.replace(/_/g, ' ');
+                    timezonePicker.appendChild(option);
+                });
+                timezonePicker.value = dayjs.tz.guess();
 
-                updateSliderValue(heightSlider, heightValue, 'ft');
-                updateSliderValue(diameterSlider, diameterValue, 'ft');
-                updateSliderValue(timeSlider, timeValue, '', true);
+                // Set initial values
+                const initialTimeMinutes = 16 * 60; // 4:00 PM
+                timeSlider.value = initialTimeMinutes;
+                dateInput.value = '2025-09-03';
                 
+                updateSliderValue(timeSlider, timeValue);
                 getLocation();
             }
 
@@ -301,4 +539,5 @@
     </script>
 </body>
 </html>
+
 
