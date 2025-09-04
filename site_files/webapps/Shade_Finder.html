@@ -85,6 +85,7 @@
                   </g>
                   
                   <path id="shadow-path" fill="#3b82f6" fill-opacity="0.4" />
+                  <g id="hourly-dots-group"></g>
                   
                   <ellipse id="shadow" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
                   <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
@@ -97,20 +98,15 @@
                   <div class="loader"></div>
             </div>
 
-            <div class="absolute bottom-2 left-2">
-                <div class="flex items-stretch gap-0.5 p-1 rounded-md bg-gray-900/70 backdrop-blur-sm">
-                    <button id="getLocationBtn" title="Get Current Location" class="p-2 rounded-md hover:bg-gray-700 flex items-center justify-center">
-                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12m-3 0a3 3 0 106 0 3 3 0 10-6 0"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 12h3m14 0h3m-9-9v3m0 14v3"></path></svg>
-                    </button>
-                    <div class="grid grid-cols-[auto_1fr] gap-x-2 gap-y-1 items-center px-1">
-                        <label for="lat" class="font-medium text-gray-400" style="font-size: 1.75vmin;">Lat</label>
-                        <input type="number" id="lat" step="0.0001" class="w-24 p-0.5 rounded border bg-gray-700 border-gray-600" style="font-size: 1.75vmin;">
-                        
-                        <label for="lon" class="font-medium text-gray-400" style="font-size: 1.75vmin;">Lon</label>
-                        <input type="number" id="lon" step="0.0001" class="w-24 p-0.5 rounded border bg-gray-700 border-gray-600" style="font-size: 1.75vmin;">
-                    </div>
-                </div>
-                <p id="error-message" class="text-red-500 hidden text-center pt-1" style="font-size: 1.75vmin;"></p>
+            <div class="absolute bottom-2 left-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
+                <button id="getLocationBtn" title="Get Current Location" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
+                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                </button>
+                <input type="number" id="lat" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Lat:">
+                
+                <div class="w-4 h-4"></div> <!-- Spacer -->
+
+                <input type="number" id="lon" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Lon:">
             </div>
 
             <div class="absolute bottom-2 right-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
@@ -125,7 +121,10 @@
                 <input type="text" id="time-input-box" class="bg-gray-900/70 backdrop-blur-sm rounded-md px-1 py-0.5 border-gray-600 w-full" style="font-size: 1.75vmin;" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:mm">
                 
                   <button id="timezone-reset-btn" title="Auto-detect time zone" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                       <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3c-2.28 0-4.46.9-6.08 2.37M12 21c2.28 0 4.46-.9 6.08-2.37M3 12h18"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l2 2"></path></svg>
+                       <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.51 9h16.98M3.51 15h16.98M12 3a9 9 0 015.657 15.343"></path>
+                        </svg>
                   </button>
                   <div class="w-full">
                        <select id="timezone-picker" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-auto" style="font-size: 1.75vmin;"></select>
@@ -133,7 +132,7 @@
             </div>
         </div>
 
-        <div class="flex justify-center items-center space-x-4 text-gray-400 pt-1" style="font-size: 2.25vmin;">
+        <div class="flex justify-center items-center flex-wrap gap-x-4 gap-y-1 text-gray-400 pt-1" style="font-size: 2.25vmin;">
             <div class="flex items-center space-x-1.5">
                 <span class="w-3 h-3 rounded-full bg-gray-400/50 border border-gray-500"></span>
                 <span>Umbrella</span>
@@ -146,8 +145,12 @@
                 <span class="w-3 h-3 rounded-full bg-blue-500/40"></span>
                 <span>Day's Path</span>
             </div>
+            <div class="flex items-center space-x-1.5">
+                <span class="w-3 h-3 rounded-full" style="background-color: rgba(255, 255, 255, 0.7);"></span>
+                <span>Projections</span>
+            </div>
              <div class="flex items-center space-x-1.5">
-                 <svg width="12" height="12" viewBox="0 0 12 12" class="opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
+                 <svg width="12" height="12" viewBox="0 0 12" class="opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
                 <span>2ft Grid</span>
             </div>
         </div>
@@ -161,7 +164,7 @@
                             <button id="height-unit-ft" class="px-2 py-0.5 unit-toggle active-unit">ft</button>
                             <button id="height-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
                         </div>
-                   </div>
+                    </div>
                     <input id="height" type="number" value="5.5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
                 </div>
                 <div>
@@ -172,10 +175,11 @@
                             <button id="diameter-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
                         </div>
                    </div>
-                    <input id="diameter" type="number" value="5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
+                   <input id="diameter" type="number" value="5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
                 </div>
             </div>
         </div>
+         <p id="error-message" class="text-red-500 hidden text-center pt-1" style="font-size: 2.25vmin;"></p>
     </div>
 
     <script>
@@ -192,6 +196,7 @@
             const umbrellaSVG = document.getElementById('umbrella');
             const shadowSVG = document.getElementById('shadow');
             const shadowPath = document.getElementById('shadow-path');
+            const hourlyDotsGroup = document.getElementById('hourly-dots-group');
             const nightMessage = document.getElementById('night-message');
             const gridOverlay = document.getElementById('grid-overlay');
             
@@ -356,9 +361,38 @@
                 
                 const now = getCombinedDate();
                 const sunPosition = SunCalc.getPosition(now, userLat, userLon);
+                const sunTimes = SunCalc.getTimes(now, userLat, userLon);
+
+                // --- Draw Hourly Dots ---
+                hourlyDotsGroup.innerHTML = ''; // Clear previous dots
+                if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
+                    let hourMarker = new Date(sunTimes.sunrise);
+                    // Start from the next full hour after sunrise
+                    if (hourMarker.getMinutes() !== 0 || hourMarker.getSeconds() !== 0 || hourMarker.getMilliseconds() !== 0) {
+                        hourMarker.setHours(hourMarker.getHours() + 1);
+                        hourMarker.setMinutes(0, 0, 0);
+                    }
+                    // Loop for every hour until sunset
+                    while (hourMarker < sunTimes.sunset) {
+                        const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
+                        if (pos.altitude > 0) {
+                            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
+                            const shadowX = 100 + offset * Math.sin(pos.azimuth);
+                            const shadowY = 100 - offset * Math.cos(pos.azimuth);
+
+                            const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                            dot.setAttribute('cx', shadowX.toFixed(2));
+                            dot.setAttribute('cy', shadowY.toFixed(2));
+                            dot.setAttribute('r', '1.5');
+                            dot.setAttribute('fill', 'white');
+                            dot.setAttribute('fill-opacity', '0.7');
+                            hourlyDotsGroup.appendChild(dot);
+                        }
+                        hourMarker.setHours(hourMarker.getHours() + 1);
+                    }
+                }
                 
                 // --- Accurately draw the entire day's shade path ---
-                const sunTimes = SunCalc.getTimes(now, userLat, userLon);
                 const shadowSteps = [];
                 dailySunPath = []; // Clear for recalculation
                 const stepMinutes = 1;
@@ -589,7 +623,9 @@
             });
 
             [heightInput, diameterInput, latInput, lonInput, timezonePicker, timeInputBox].forEach(el => {
-                el.addEventListener('input', calculateAndDraw);
+                if (el) { // Check if element exists before adding listener
+                    el.addEventListener('input', calculateAndDraw);
+                }
             });
             
             shadowSVG.addEventListener('mousedown', startDrag);
@@ -639,3 +675,5 @@
     </script>
 </body>
 </html>
+
+
