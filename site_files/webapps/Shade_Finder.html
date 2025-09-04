@@ -121,7 +121,7 @@
                 <input type="text" id="time-input-box" class="bg-gray-900/70 backdrop-blur-sm rounded-md px-1 py-0.5 border-gray-600 w-full" style="font-size: 1.75vmin;" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:mm">
                 
                   <button id="timezone-reset-btn" title="Auto-detect time zone" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                       <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                       <svg class="w-4 h-4 text-gray-300 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.51 9h16.98M3.51 15h16.98M12 3a9 9 0 015.657 15.343"></path>
                         </svg>
@@ -150,7 +150,7 @@
                 <span>Projections</span>
             </div>
              <div class="flex items-center space-x-1.5">
-                 <svg width="12" height="12" viewBox="0 0 12" class="opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
+                 <svg width="12" height="12" viewBox="0 0 12 12" class="opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
                 <span>2ft Grid</span>
             </div>
         </div>
@@ -307,7 +307,7 @@
                 }
             }
             
-        // --- CORE CALCULATION & DRAWING ---
+           // --- CORE CALCULATION & DRAWING ---
 function calculateAndDraw() {
     const userLat = parseFloat(latInput.value);
     const userLon = parseFloat(lonInput.value);
@@ -369,7 +369,6 @@ function calculateAndDraw() {
 }
 
 
-
                 // --- Draw Grid ---
                 gridOverlay.innerHTML = '';
                 const gridSpacingFeet = 2;
@@ -402,23 +401,23 @@ function calculateAndDraw() {
                 const now = getCombinedDate();
                 const sunPosition = SunCalc.getPosition(now, userLat, userLon);
                 const sunTimes = SunCalc.getTimes(now, userLat, userLon);
+                const azimuthCorrection = userLat >= 0 ? Math.PI : 0;
 
                 // --- Draw Hourly Dots ---
                 hourlyDotsGroup.innerHTML = ''; // Clear previous dots
                 if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
                     let hourMarker = new Date(sunTimes.sunrise);
-                    // Start from the next full hour after sunrise
                     if (hourMarker.getMinutes() !== 0 || hourMarker.getSeconds() !== 0 || hourMarker.getMilliseconds() !== 0) {
                         hourMarker.setHours(hourMarker.getHours() + 1);
                         hourMarker.setMinutes(0, 0, 0);
                     }
-                    // Loop for every hour until sunset
                     while (hourMarker < sunTimes.sunset) {
                         const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
                         if (pos.altitude > 0) {
+                            const universalAzimuth = pos.azimuth + azimuthCorrection;
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const shadowX = 100 + offset * Math.sin(pos.azimuth);
-                            const shadowY = 100 - offset * Math.cos(pos.azimuth);
+                            const shadowX = 100 - offset * Math.sin(universalAzimuth);
+                            const shadowY = 100 + offset * Math.cos(universalAzimuth);
 
                             const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                             dot.setAttribute('cx', shadowX.toFixed(2));
@@ -442,9 +441,10 @@ function calculateAndDraw() {
                     while (currentTime <= sunTimes.sunset) {
                         const pos = SunCalc.getPosition(currentTime, userLat, userLon);
                         if (pos.altitude > MIN_ALTITUDE_RAD) {
+                            const universalAzimuth = pos.azimuth + azimuthCorrection;
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const shadowX = 100 + offset * Math.sin(pos.azimuth);
-                            const shadowY = 100 - offset * Math.cos(pos.azimuth);
+                            const shadowX = 100 - offset * Math.sin(universalAzimuth);
+                            const shadowY = 100 + offset * Math.cos(universalAzimuth);
                             
                             const stepData = {
                                 center: { x: shadowX, y: shadowY },
@@ -530,9 +530,10 @@ function calculateAndDraw() {
                 nightMessage.classList.add('hidden');
                 shadowSVG.classList.remove('hidden');
             
+                const universalSunAzimuth = sunPosition.azimuth + azimuthCorrection;
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
-                const shadowX = 100 + shadowOffset * Math.sin(sunPosition.azimuth);
-                const shadowY = 100 - shadowOffset * Math.cos(sunPosition.azimuth);
+                const shadowX = 100 - shadowOffset * Math.sin(universalSunAzimuth);
+                const shadowY = 100 + shadowOffset * Math.cos(universalSunAzimuth);
                 
                 const elongatedRadius = radiusScaled / Math.sin(sunPosition.altitude);
                 const rotationRad = sunPosition.azimuth + Math.PI / 2;
@@ -715,5 +716,4 @@ function calculateAndDraw() {
     </script>
 </body>
 </html>
-
 
