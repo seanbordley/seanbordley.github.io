@@ -12,8 +12,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         html, body {
-            overflow: hidden;
             overscroll-behavior: none; /* Disables pull-to-refresh */
+        }
+        /* Lock scrolling on mobile/tablet */
+        @media (max-width: 1023px) {
+            html, body {
+                overflow: hidden;
+            }
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -378,7 +383,7 @@
                 const maxExtent = maxShadowOffset + maxElongatedRadius;
 
                 // User request: zoom in a bit more
-                const maxDim = maxExtent * 0.4; 
+                const maxDim = maxExtent * 0.6; 
                 const scale = VIEWBOX_SIZE / (maxDim * 1.1);
                 
                 if (userLat !== lastMapLat || userLon !== lastMapLon) {
