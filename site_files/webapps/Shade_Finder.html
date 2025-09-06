@@ -59,10 +59,10 @@
         input[type="date"]::-webkit-calendar-picker-indicator {
             display: none;
         }
-        #shadow {
+        #shadow-ellipse {
             cursor: grab;
         }
-        #shadow:active {
+        #shadow-ellipse:active {
             cursor: grabbing;
         }
     </style>
@@ -76,45 +76,45 @@
 
         <div id="map-container" class="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-gray-700">
               <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full">
-                    <defs>
-                        <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
-                            <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
-                            <feFlood flood-color="black" flood-opacity="0.7"/>
-                            <feComposite in2="offsetblur" operator="in"/>
-                            <feMerge>
-                                <feMergeNode/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    <g id="grid-overlay"></g>
-                    <text x="96" y="15" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">N</text>
-                    <text x="96" y="190" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">S</text>
-                    <text x="10" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">W</text>
-                    <text x="182" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">E</text>
-                    <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    
-                    <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" style="font-size: 1vmin;">
-                            <text id="shade-dims-text" x="100" y="25"></text>
-                            <text id="center-pos-text" x="100" y="33"></text>
-                    </g>
-                    
-                    <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
-                    <path id="shadow-path" fill="#3b82f6" fill-opacity="0.4" />
-                    <g id="hourly-dots-group"></g>
-                    
-                    <ellipse id="shadow" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
-                    <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
-            </svg>
+                          <defs>
+                              <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                  <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                                  <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
+                                  <feFlood flood-color="black" flood-opacity="0.7"/>
+                                  <feComposite in2="offsetblur" operator="in"/>
+                                  <feMerge>
+                                      <feMergeNode/>
+                                      <feMergeNode in="SourceGraphic"/>
+                                  </feMerge>
+                              </filter>
+                          </defs>
+                          <g id="grid-overlay"></g>
+                          <text x="96" y="15" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">N</text>
+                          <text x="96" y="190" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">S</text>
+                          <text x="10" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">W</text>
+                          <text x="182" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">E</text>
+                          <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                          <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                          <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                          <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                          
+                          <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" style="font-size: 1.5vmin;">
+                                <text id="shade-dims-text" x="100" y="25"></text>
+                                <text id="center-pos-text" x="100" y="33"></text>
+                          </g>
+                          
+                          <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
+                          <path id="shadow-path" fill="#3b82f6" fill-opacity="0.4" />
+                          <g id="hourly-dots-group"></g>
+                          
+                          <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
+                          <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
+              </svg>
             <div id="night-message" class="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-semibold hidden" style="font-size: 4vmin;">
                 <p>It's Nighttime!</p>
             </div>
-             <div id="loader" class="absolute inset-0 bg-gray-800/70 flex items-center justify-center">
-                    <div class="loader"></div>
+                  <div id="loader" class="absolute inset-0 bg-gray-800/70 flex items-center justify-center">
+                          <div class="loader"></div>
             </div>
 
             <div class="absolute bottom-2 left-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
@@ -123,31 +123,29 @@
                 </button>
                 <input type="number" id="lat" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Latitude">
                 
-                <div class="w-4 h-4"></div> <!-- Spacer -->
-
-                <input type="number" id="lon" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Longitude">
+                <div class="w-4 h-4"></div> <input type="number" id="lon" step="0.0001" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full text-left" style="font-size: 1.75vmin;" placeholder="Longitude">
             </div>
 
             <div class="absolute bottom-2 right-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
-                    <button id="date-reset-btn" title="Set to today" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </button>
+                      <button id="date-reset-btn" title="Set to today" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
+                              <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                      </button>
                 <input type="date" id="date" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-full" style="font-size: 1.75vmin;">
 
-                    <button id="time-reset-btn" title="Set to current time" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                            <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </button>
+                      <button id="time-reset-btn" title="Set to current time" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
+                              <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                      </button>
                 <input type="text" id="time-input-box" class="bg-gray-900/70 backdrop-blur-sm rounded-md px-1 py-0.5 border-gray-600 w-full" style="font-size: 1.75vmin;" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:mm">
                 
-                    <button id="timezone-reset-btn" title="Auto-detect time zone" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
-                            <svg class="w-4 h-4 text-gray-300 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.51 9h16.98M3.51 15h16.98M12 3a9 9 0 015.657 15.343"></path>
-                            </svg>
-                    </button>
-                    <div class="w-full">
-                            <select id="timezone-picker" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-auto" style="font-size: 1.75vmin;"></select>
-                    </div>
+                      <button id="timezone-reset-btn" title="Auto-detect time zone" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
+                              <svg class="w-4 h-4 text-gray-300 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.51 9h16.98M3.51 15h16.98M12 3a9 9 0 015.657 15.343"></path>
+                              </svg>
+                      </button>
+                      <div class="w-full">
+                              <select id="timezone-picker" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-auto" style="font-size: 1.75vmin;"></select>
+                      </div>
             </div>
         </div>
 
@@ -166,29 +164,27 @@
             </div>
              <div class="flex items-center space-x-1.5">
                 <svg width="12" height="12" viewBox="0 0 12 12" class="opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
-                <span>2ft Grid</span>
+                <span id="grid-legend-text">2ft Grid</span>
             </div>
         </div>
         
         <div class="space-y-2 pt-1">
+            <div class="flex justify-center items-center pb-2">
+                <div class="flex items-center border border-gray-600 rounded-md overflow-hidden" style="font-size: 2.25vmin;">
+                    <button id="unit-imperial" class="px-4 py-1 unit-toggle active-unit">Imperial</button>
+                    <button id="unit-metric" class="px-4 py-1 unit-toggle">Metric</button>
+                </div>
+            </div>
             <div class="grid grid-cols-2 gap-2">
                 <div>
                     <div class="flex justify-between items-center">
-                        <label for="height" id="height-label" class="font-medium text-gray-300" style="font-size: 2.25vmin;">Height (ft)</label>
-                        <div class="flex items-center border border-gray-600 rounded-md overflow-hidden" style="font-size: 2.25vmin;">
-                            <button id="height-unit-ft" class="px-2 py-0.5 unit-toggle active-unit">ft</button>
-                            <button id="height-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
-                        </div>
+                        <label for="height" id="height-label" class="font-medium text-gray-300" style="font-size: 2.25vmin;">Height to Edge of Umbrella (ft)</label>
                     </div>
                     <input id="height" type="number" value="5.5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
                 </div>
                 <div>
                     <div class="flex justify-between items-center">
-                        <label for="diameter" id="diameter-label" class="font-medium text-gray-300" style="font-size: 2.25vmin;">Diameter (ft)</label>
-                        <div class="flex items-center border border-gray-600 rounded-md overflow-hidden" style="font-size: 2.25vmin;">
-                            <button id="diameter-unit-ft" class="px-2 py-0.5 unit-toggle active-unit">ft</button>
-                            <button id="diameter-unit-m" class="px-2 py-0.5 unit-toggle">m</button>
-                        </div>
+                        <label for="diameter" id="diameter-label" class="font-medium text-gray-300" style="font-size: 2.25vmin;">Umbrella Diameter (ft)</label>
                    </div>
                    <input id="diameter" type="number" value="5" step="0.1" class="w-full mt-1 p-1 rounded-md border bg-gray-700 border-gray-600" style="font-size: 2.25vmin;">
                 </div>
@@ -209,7 +205,7 @@
             
             const svg = document.getElementById('sky');
             const umbrellaSVG = document.getElementById('umbrella');
-            const shadowSVG = document.getElementById('shadow');
+            const shadowEllipseSVG = document.getElementById('shadow-ellipse');
             const shadowPath = document.getElementById('shadow-path');
             const hourlyDotsGroup = document.getElementById('hourly-dots-group');
             const nightMessage = document.getElementById('night-message');
@@ -225,17 +221,17 @@
             const centerPosText = document.getElementById('center-pos-text');
             const shadeDimsText = document.getElementById('shade-dims-text');
 
-            const heightUnitFt = document.getElementById('height-unit-ft');
-            const heightUnitM = document.getElementById('height-unit-m');
             const heightLabel = document.getElementById('height-label');
-            const diameterUnitFt = document.getElementById('diameter-unit-ft');
-            const diameterUnitM = document.getElementById('diameter-unit-m');
             const diameterLabel = document.getElementById('diameter-label');
             
             const dateResetBtn = document.getElementById('date-reset-btn');
             const timeResetBtn = document.getElementById('time-reset-btn');
             const timezonePicker = document.getElementById('timezone-picker');
             const timezoneResetBtn = document.getElementById('timezone-reset-btn');
+            
+            const unitImperialBtn = document.getElementById('unit-imperial');
+            const unitMetricBtn = document.getElementById('unit-metric');
+            const gridLegendText = document.getElementById('grid-legend-text');
 
             const VIEWBOX_SIZE = 200;
             const FEET_TO_METERS = 0.3048;
@@ -245,6 +241,7 @@
             let isDragging = false;
             let dailySunPath = [];
             let lastMapLat = null, lastMapLon = null;
+            let currentUnitSystem = 'imperial';
             
             function getCombinedDate() {
                 const dateStr = dateInput.value;
@@ -257,27 +254,30 @@
                 return dayjs.tz(isoStr, selectedTimezone).toDate();
             }
 
-            function setUnit(type, unit) {
-                const ftBtn = document.getElementById(`${type}-unit-ft`);
-                const mBtn = document.getElementById(`${type}-unit-m`);
-                const label = document.getElementById(`${type}-label`);
-                const input = document.getElementById(type);
-                let currentVal = parseFloat(input.value);
+            function setUnitSystem(system) {
+                if (system === currentUnitSystem) return; 
 
-                if (isNaN(currentVal)) return;
+                const heightVal = parseFloat(heightInput.value);
+                const diameterVal = parseFloat(diameterInput.value);
 
-                if (unit === 'ft' && !ftBtn.classList.contains('active-unit')) {
-                    ftBtn.classList.add('active-unit');
-                    mBtn.classList.remove('active-unit');
-                    label.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} (ft)`;
-                    input.value = (currentVal * METERS_TO_FEET).toFixed(1);
-
-                } else if (unit === 'm' && !mBtn.classList.contains('active-unit')) {
-                    mBtn.classList.add('active-unit');
-                    ftBtn.classList.remove('active-unit');
-                    label.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} (m)`;
-                    input.value = (currentVal * FEET_TO_METERS).toFixed(2);
+                if (system === 'metric') {
+                    unitMetricBtn.classList.add('active-unit');
+                    unitImperialBtn.classList.remove('active-unit');
+                    if (!isNaN(heightVal)) heightInput.value = (heightVal * FEET_TO_METERS).toFixed(2);
+                    if (!isNaN(diameterVal)) diameterInput.value = (diameterVal * FEET_TO_METERS).toFixed(2);
+                    heightLabel.textContent = 'Height to Edge of Umbrella (m)';
+                    diameterLabel.textContent = 'Umbrella Diameter (m)';
+                    gridLegendText.textContent = '0.6m Grid';
+                } else { // imperial
+                    unitImperialBtn.classList.add('active-unit');
+                    unitMetricBtn.classList.remove('active-unit');
+                    if (!isNaN(heightVal)) heightInput.value = (heightVal * METERS_TO_FEET).toFixed(1);
+                    if (!isNaN(diameterVal)) diameterInput.value = (diameterVal * METERS_TO_FEET).toFixed(1);
+                    heightLabel.textContent = 'Height to Edge of Umbrella (ft)';
+                    diameterLabel.textContent = 'Umbrella Diameter (ft)';
+                    gridLegendText.textContent = '2ft Grid';
                 }
+                currentUnitSystem = system;
                 calculateAndDraw();
             }
             
@@ -328,7 +328,6 @@
                 const viewboxWidthInFeet = VIEWBOX_SIZE / scale;
                 const feetPerDegree = 364000; // Approx feet per degree latitude
 
-                // Calculate the delta in degrees for longitude and latitude
                 const deltaLon = (viewboxWidthInFeet / (feetPerDegree * Math.cos(lat * Math.PI / 180))) / 2;
                 const deltaLat = (viewboxWidthInFeet / feetPerDegree) / 2;
                 
@@ -360,15 +359,13 @@
                     return;
                 }
                 
-                const heightInFeet = heightUnitFt.classList.contains('active-unit') ? heightVal : heightVal * METERS_TO_FEET;
-                const diameterInFeet = diameterUnitFt.classList.contains('active-unit') ? diameterVal : diameterVal * METERS_TO_FEET;
+                const heightInFeet = currentUnitSystem === 'imperial' ? heightVal : heightVal * METERS_TO_FEET;
+                const diameterInFeet = currentUnitSystem === 'imperial' ? diameterVal : diameterVal * METERS_TO_FEET;
                 
-                // New scaling logic to ensure sunrise/sunset are visible
                 const sunTimesForScale = SunCalc.getTimes(getCombinedDate(), userLat, userLon);
-                let minAltitudeForScale = MIN_ALTITUDE_RAD; // Default to 5 degrees if no sunrise/sunset
+                let minAltitudeForScale = MIN_ALTITUDE_RAD; 
 
                 if (sunTimesForScale.sunrise instanceof Date && !isNaN(sunTimesForScale.sunrise)) {
-                    // Check altitude one minute after sunrise to get a low angle without division by zero
                     const sunrisePlusOneMinute = new Date(sunTimesForScale.sunrise.getTime() + 60000);
                     const sunrisePos = SunCalc.getPosition(sunrisePlusOneMinute, userLat, userLon);
                     
@@ -377,13 +374,11 @@
                     }
                 }
 
-                // Calculate the furthest point the shadow will reach
                 const maxShadowOffset = heightInFeet / Math.tan(minAltitudeForScale);
                 const maxElongatedRadius = (diameterInFeet / 2) / Math.sin(minAltitudeForScale);
                 const maxExtent = maxShadowOffset + maxElongatedRadius;
 
-                // User request: zoom in a bit more
-                const maxDim = maxExtent * 0.6; 
+                const maxDim = maxExtent * 0.55; 
                 const scale = VIEWBOX_SIZE / (maxDim * 1.1);
                 
                 if (userLat !== lastMapLat || userLon !== lastMapLon) {
@@ -424,12 +419,16 @@
                 }
                 
                 const now = getCombinedDate();
-                const sunPosition = SunCalc.getPosition(now, userLat, userLon);
+                let sunPosition = SunCalc.getPosition(now, userLat, userLon);
+                if (sunPosition.altitude > (Math.PI / 2) - 0.01) { 
+                    const pastPos = SunCalc.getPosition(new Date(now.getTime() - 60000), userLat, userLon);
+                    sunPosition.azimuth = pastPos.azimuth;
+                }
                 const sunTimes = SunCalc.getTimes(now, userLat, userLon);
                 
                 const sunIndicator = document.getElementById('sun-indicator');
 
-                hourlyDotsGroup.innerHTML = ''; // Clear previous dots
+                hourlyDotsGroup.innerHTML = ''; 
                 if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
                     let hourMarker = new Date(sunTimes.sunrise);
                     if (hourMarker.getMinutes() !== 0 || hourMarker.getSeconds() !== 0 || hourMarker.getMilliseconds() !== 0) {
@@ -437,10 +436,14 @@
                         hourMarker.setMinutes(0, 0, 0);
                     }
                     while (hourMarker < sunTimes.sunset) {
-                        const pos = SunCalc.getPosition(hourMarker, userLat, userLon);
+                        let pos = SunCalc.getPosition(hourMarker, userLat, userLon);
+                        if (pos.altitude > (Math.PI / 2) - 0.01) {
+                            const pastPos = SunCalc.getPosition(new Date(hourMarker.getTime() - 60000), userLat, userLon);
+                            pos.azimuth = pastPos.azimuth;
+                        }
+
                         if (pos.altitude > 0) {
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            // Use original azimuth calculation logic here
                             const shadowX = 100 + offset * Math.sin(pos.azimuth);
                             const shadowY = 100 - offset * Math.cos(pos.azimuth);
 
@@ -467,17 +470,24 @@
                 if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
                     let currentTime = new Date(sunTimes.sunrise);
                     while (currentTime <= sunTimes.sunset) {
-                        const pos = SunCalc.getPosition(currentTime, userLat, userLon);
+                        let pos = SunCalc.getPosition(currentTime, userLat, userLon);
+                        if (pos.altitude > (Math.PI / 2) - 0.01) {
+                            const pastPos = SunCalc.getPosition(new Date(currentTime.getTime() - 60000), userLat, userLon);
+                            pos.azimuth = pastPos.azimuth;
+                        }
+
                         if (pos.altitude > MIN_ALTITUDE_RAD) {
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
                             const shadowX = 100 + offset * Math.sin(pos.azimuth);
                             const shadowY = 100 - offset * Math.cos(pos.azimuth);
                             
+                            const rotationRad = pos.azimuth;
+                            
                             const stepData = {
                                 center: { x: shadowX, y: shadowY },
                                 rx: radiusScaled,
                                 ry: radiusScaled / Math.sin(pos.altitude),
-                                rotationRad: pos.azimuth
+                                rotationRad: rotationRad 
                             };
                             shadowSteps.push(stepData);
                             const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
@@ -544,62 +554,67 @@
                      shadowPath.setAttribute('d', '');
                 }
 
-                if (sunPosition.altitude <= 0) {
+                if (sunPosition.altitude < MIN_ALTITUDE_RAD) {
                     sunIndicator.classList.add('hidden');
                     nightMessage.classList.remove('hidden');
-                    shadowSVG.classList.add('hidden');
+                    shadowEllipseSVG.classList.add('hidden');
                     centerPosText.textContent = '';
                     shadeDimsText.textContent = '';
                     return;
                 }
                 
-                // Show and position sun indicator
                 sunIndicator.classList.remove('hidden');
                 const sunDist = ( (Math.PI / 2) - sunPosition.altitude) / (Math.PI / 2) * 100;
                 const sunX = 100 - sunDist * Math.sin(sunPosition.azimuth);
-                const sunY = 100 + sunDist * Math.cos(sunPosition.azimuth);
+                let sunY = 100 + sunDist * Math.cos(sunPosition.azimuth);
+                
+                sunY = Math.max(100, sunY);
+
                 sunIndicator.setAttribute('cx', sunX);
                 sunIndicator.setAttribute('cy', sunY);
 
                 nightMessage.classList.add('hidden');
-                shadowSVG.classList.remove('hidden');
+                shadowEllipseSVG.classList.remove('hidden');
             
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
-                const shadowX = 100 + shadowOffset * Math.sin(sunPosition.azimuth);
-                const shadowY = 100 - shadowOffset * Math.cos(sunPosition.azimuth);
+                let shadowX = 100 + shadowOffset * Math.sin(sunPosition.azimuth);
+                let shadowY = 100 - shadowOffset * Math.cos(sunPosition.azimuth);
                 
+                shadowX = Math.max(0, Math.min(VIEWBOX_SIZE, shadowX));
+                shadowY = Math.min(100, shadowY);
+
                 const elongatedRadius = radiusScaled / Math.sin(sunPosition.altitude);
                 const rotationRad = sunPosition.azimuth;
                 const rotationDegrees = rotationRad * (180 / Math.PI);
 
-                shadowSVG.setAttribute('cx', shadowX);
-                shadowSVG.setAttribute('cy', shadowY);
-                shadowSVG.setAttribute('rx', radiusScaled);
-                shadowSVG.setAttribute('ry', elongatedRadius);
-                shadowSVG.setAttribute('transform', `rotate(${rotationDegrees} ${shadowX} ${shadowY})`);
+                shadowEllipseSVG.setAttribute('cx', shadowX);
+                shadowEllipseSVG.setAttribute('cy', shadowY);
+                shadowEllipseSVG.setAttribute('rx', radiusScaled);
+                shadowEllipseSVG.setAttribute('ry', elongatedRadius);
+                shadowEllipseSVG.setAttribute('transform', `rotate(${rotationDegrees} ${shadowX} ${shadowY})`);
                 
                 const shortAxisFeet = diameterInFeet;
                 const longAxisFeet = diameterInFeet / Math.sin(sunPosition.altitude);
-                const shortAxisMeters = shortAxisFeet * FEET_TO_METERS;
-                const longAxisMeters = longAxisFeet * FEET_TO_METERS;
                 
-                shadeDimsText.textContent = `Shade: ${longAxisFeet.toFixed(1)}'x${shortAxisFeet.toFixed(1)}' (${longAxisMeters.toFixed(1)}x${shortAxisMeters.toFixed(1)}m)`;
-
                 const offsetEastWest_feet = (shadowX - 100) / scale;
                 const offsetNorthSouth_feet = -(shadowY - 100) / scale;
                 
-                const offsetEastWest_meters = offsetEastWest_feet * FEET_TO_METERS;
-                const offsetNorthSouth_meters = offsetNorthSouth_feet * FEET_TO_METERS;
-                
-                const ewDistFt = Math.abs(offsetEastWest_feet);
-                const ewDistM = Math.abs(offsetEastWest_meters);
-                const ewTextContent = `${ewDistFt.toFixed(1)}' (${ewDistM.toFixed(1)}m) ${offsetEastWest_feet >= 0 ? 'E' : 'W'}`;
-                
-                const nsDistFt = Math.abs(offsetNorthSouth_feet);
-                const nsDistM = Math.abs(offsetNorthSouth_meters);
-                const nsTextContent = `${nsDistFt.toFixed(1)}' (${nsDistM.toFixed(1)}m) ${offsetNorthSouth_feet >= 0 ? 'N' : 'S'}`;
-                
-                centerPosText.textContent = `Center: ${nsTextContent} & ${ewTextContent}`;
+                if (currentUnitSystem === 'imperial') {
+                    shadeDimsText.textContent = `Shade Area: ${longAxisFeet.toFixed(1)}' x ${shortAxisFeet.toFixed(1)}'`;
+                    const ewText = `${Math.abs(offsetEastWest_feet).toFixed(1)}' ${offsetEastWest_feet >= 0 ? 'E' : 'W'}`;
+                    const nsText = `${Math.abs(offsetNorthSouth_feet).toFixed(1)}' ${offsetNorthSouth_feet >= 0 ? 'N' : 'S'}`;
+                    centerPosText.textContent = `Center of Shade: ${nsText} & ${ewText}`;
+                } else { // metric
+                    const shortAxisMeters = shortAxisFeet * FEET_TO_METERS;
+                    const longAxisMeters = longAxisFeet * FEET_TO_METERS;
+                    const offsetEastWest_meters = offsetEastWest_feet * FEET_TO_METERS;
+                    const offsetNorthSouth_meters = offsetNorthSouth_feet * FEET_TO_METERS;
+
+                    shadeDimsText.textContent = `Shade Area: ${longAxisMeters.toFixed(1)}m x ${shortAxisMeters.toFixed(1)}m`;
+                    const ewText = `${Math.abs(offsetEastWest_meters).toFixed(1)}m ${offsetEastWest_meters >= 0 ? 'E' : 'W'}`;
+                    const nsText = `${Math.abs(offsetNorthSouth_meters).toFixed(1)}m ${offsetNorthSouth_meters >= 0 ? 'N' : 'S'}`;
+                    centerPosText.textContent = `Center of Shade: ${nsText} & ${ewText}`;
+                }
             }
 
             function getSVGCoords(e) {
@@ -641,6 +656,10 @@
                 if (!isDragging) return;
                 e.preventDefault();
                 const coords = getSVGCoords(e);
+
+                coords.x = Math.max(0, Math.min(VIEWBOX_SIZE, coords.x));
+                coords.y = Math.max(0, Math.min(VIEWBOX_SIZE, coords.y));
+
                 const newTimeInMinutes = findClosestTime(coords);
                 
                 const hours = Math.floor(newTimeInMinutes / 60);
@@ -698,17 +717,15 @@
                 }
             });
             
-            shadowSVG.addEventListener('mousedown', startDrag);
+            shadowEllipseSVG.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', drag);
             document.addEventListener('mouseup', endDrag);
-            shadowSVG.addEventListener('touchstart', startDrag, { passive: false });
+            shadowEllipseSVG.addEventListener('touchstart', startDrag, { passive: false });
             document.addEventListener('touchmove', drag, { passive: false });
             document.addEventListener('touchend', endDrag);
 
-            heightUnitFt.addEventListener('click', () => setUnit('height', 'ft'));
-            heightUnitM.addEventListener('click', () => setUnit('height', 'm'));
-            diameterUnitFt.addEventListener('click', () => setUnit('diameter', 'ft'));
-            diameterUnitM.addEventListener('click', () => setUnit('diameter', 'm'));
+            unitImperialBtn.addEventListener('click', () => setUnitSystem('imperial'));
+            unitMetricBtn.addEventListener('click', () => setUnitSystem('metric'));
 
             dateResetBtn.addEventListener('click', () => {
                 dateInput.value = dayjs().format('YYYY-MM-DD');
@@ -752,10 +769,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
 
