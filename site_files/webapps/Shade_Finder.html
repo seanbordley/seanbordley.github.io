@@ -65,6 +65,20 @@
         #shadow-ellipse:active {
             cursor: grabbing;
         }
+        #map-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: var(--map-bg-image);
+            background-size: cover;
+            background-position: center;
+            opacity: var(--map-opacity, 0.3); /* Default opacity */
+            z-index: 0;
+        }
+        #sky {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-300 flex items-center justify-center min-h-screen p-2">
@@ -169,10 +183,14 @@
         </div>
         
         <div class="space-y-2 pt-1">
-            <div class="flex justify-center items-center pb-2">
+            <div class="flex justify-around items-center pb-2">
                 <div class="flex items-center border border-gray-600 rounded-md overflow-hidden" style="font-size: 2.25vmin;">
                     <button id="unit-imperial" class="px-4 py-1 unit-toggle active-unit">Imperial</button>
                     <button id="unit-metric" class="px-4 py-1 unit-toggle">Metric</button>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <label for="map-opacity-slider" class="text-gray-400" style="font-size: 2.25vmin;">Map BG</label>
+                    <input type="range" id="map-opacity-slider" min="0" max="1" step="0.05" value="0.3" class="w-24">
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-2">
@@ -210,6 +228,7 @@
             const hourlyDotsGroup = document.getElementById('hourly-dots-group');
             const nightMessage = document.getElementById('night-message');
             const gridOverlay = document.getElementById('grid-overlay');
+            const mapContainer = document.getElementById('map-container');
             
             const latInput = document.getElementById('lat');
             const lonInput = document.getElementById('lon');
@@ -232,6 +251,7 @@
             const unitImperialBtn = document.getElementById('unit-imperial');
             const unitMetricBtn = document.getElementById('unit-metric');
             const gridLegendText = document.getElementById('grid-legend-text');
+            const mapOpacitySlider = document.getElementById('map-opacity-slider');
 
             const VIEWBOX_SIZE = 200;
             const FEET_TO_METERS = 0.3048;
@@ -323,8 +343,6 @@
             }
             
             function updateMapBackground(lat, lon, scale) {
-                const mapContainer = document.getElementById('map-container');
-                
                 const viewboxWidthInFeet = VIEWBOX_SIZE / scale;
                 const feetPerDegree = 364000; // Approx feet per degree latitude
 
@@ -341,10 +359,8 @@
 
                 const bbox = `${minLon},${minLat},${maxLon},${maxLat}`;
                 const mapUrl = `https://render.openstreetmap.org/cgi-bin/export?bbox=${bbox}&scale=10000&format=png`;
-
-                mapContainer.style.backgroundImage = `url('${mapUrl}')`;
-                mapContainer.style.backgroundSize = 'cover';
-                mapContainer.style.backgroundPosition = 'center';
+                
+                mapContainer.style.setProperty('--map-bg-image', `url('${mapUrl}')`);
             }
 
             function calculateAndDraw() {
@@ -379,10 +395,10 @@
                 const safeAltitude = Math.max(minAltitudeForScale, MIN_ALTITUDE_RAD);
                 const maxShadowOffset = heightInFeet / Math.tan(safeAltitude);
 
-                const maxElongatedRadius = (diameterInFeet / 2) / Math.sin(minAltitudeForScale);
+                const maxElongatedRadius = (diameterInFeet / 2) / Math.sin(safeAltitude);
                 const maxExtent = maxShadowOffset + maxElongatedRadius;
 
-                const maxDim = maxExtent * 0.55; 
+                const maxDim = maxExtent * 0.6655; // Zoomed out 10% more
                 const scale = VIEWBOX_SIZE / (maxDim * 1.1);
                 
                 if (userLat !== lastMapLat || userLon !== lastMapLon) {
@@ -725,6 +741,10 @@
 
             unitImperialBtn.addEventListener('click', () => setUnitSystem('imperial'));
             unitMetricBtn.addEventListener('click', () => setUnitSystem('metric'));
+            
+            mapOpacitySlider.addEventListener('input', (e) => {
+                mapContainer.style.setProperty('--map-opacity', e.target.value);
+            });
 
             dateResetBtn.addEventListener('click', () => {
                 dateInput.value = dayjs().format('YYYY-MM-DD');
