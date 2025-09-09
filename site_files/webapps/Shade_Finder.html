@@ -328,7 +328,9 @@
                 const viewboxWidthInFeet = VIEWBOX_SIZE / scale;
                 const feetPerDegree = 364000; // Approx feet per degree latitude
 
-                const deltaLon = (viewboxWidthInFeet / (feetPerDegree * Math.cos(lat * Math.PI / 180))) / 2;
+                const cosLat = Math.max(0.01, Math.cos(lat * Math.PI / 180)); // Clamp to avoid blowups near poles
+                const deltaLon = (viewboxWidthInFeet / (feetPerDegree * cosLat)) / 2;
+
                 const deltaLat = (viewboxWidthInFeet / feetPerDegree) / 2;
                 
                 const paddingFactor = 1.1; 
@@ -374,7 +376,9 @@
                     }
                 }
 
-                const maxShadowOffset = heightInFeet / Math.tan(minAltitudeForScale);
+                const safeAltitude = Math.max(minAltitudeForScale, MIN_ALTITUDE_RAD);
+                const maxShadowOffset = heightInFeet / Math.tan(safeAltitude);
+
                 const maxElongatedRadius = (diameterInFeet / 2) / Math.sin(minAltitudeForScale);
                 const maxExtent = maxShadowOffset + maxElongatedRadius;
 
@@ -444,7 +448,6 @@
 
                         if (pos.altitude > 0) {
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            // CORRECTED: Shadow position is opposite the sun.
                             const shadowX = 100 + offset * Math.sin(pos.azimuth);
                             const shadowY = 100 - offset * Math.cos(pos.azimuth);
 
@@ -479,11 +482,9 @@
 
                         if (pos.altitude > MIN_ALTITUDE_RAD) {
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            // CORRECTED: Shadow position is opposite the sun.
                             const shadowX = 100 + offset * Math.sin(pos.azimuth);
                             const shadowY = 100 - offset * Math.cos(pos.azimuth);
                             
-                            // CORRECTED: Rotation should align with the sun's azimuth.
                             const rotationRad = pos.azimuth;
                             
                             const stepData = {
@@ -568,9 +569,8 @@
                 
                 sunIndicator.classList.remove('hidden');
                 const sunDist = ( (Math.PI / 2) - sunPosition.altitude) / (Math.PI / 2) * 100;
-                // CORRECTED: Sun position based on standard coordinate system from South.
-                const sunX = 100 - sunDist * Math.sin(sunPosition.azimuth); // West is negative X
-                const sunY = 100 + sunDist * Math.cos(sunPosition.azimuth); // South is positive Y
+                const sunX = 100 - sunDist * Math.sin(sunPosition.azimuth);
+                const sunY = 100 + sunDist * Math.cos(sunPosition.azimuth);
 
                 sunIndicator.setAttribute('cx', sunX);
                 sunIndicator.setAttribute('cy', sunY);
@@ -579,12 +579,10 @@
                 shadowEllipseSVG.classList.remove('hidden');
             
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
-                // CORRECTED: Shadow position is opposite the sun.
                 let shadowX = 100 + shadowOffset * Math.sin(sunPosition.azimuth);
                 let shadowY = 100 - shadowOffset * Math.cos(sunPosition.azimuth);
 
                 const elongatedRadius = radiusScaled / Math.sin(sunPosition.altitude);
-                // CORRECTED: Rotation should align with the sun's azimuth.
                 const rotationRad = sunPosition.azimuth;
                 const rotationDegrees = rotationRad * (180 / Math.PI);
 
@@ -770,5 +768,4 @@
     </script>
 </body>
 </html>
-
 
