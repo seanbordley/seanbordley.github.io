@@ -23,6 +23,9 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+        #map-container-wrapper {
+            border: 0.5vmin solid #4a5568;
+        }
         .loader {
             border: 0.5vmin solid #4a5568; /* gray-700 */
             border-top: 0.5vmin solid #4299e1; /* blue-400 */
@@ -51,7 +54,7 @@
             background-color: transparent;
             transition: background-color 0.2s;
         }
-        .active-unit {
+        .active-unit, .compass-active {
             background-color: #3b82f6; /* blue-500 */
             color: white;
         }
@@ -74,47 +77,58 @@
             <p class="text-gray-400" style="font-size: 2.25vmin;">Plan your perfect spot in the shade.</p>
         </div>
 
-        <div id="map-container" class="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-gray-700">
+        <div id="map-container-wrapper" class="relative w-full aspect-square rounded-lg">
+            <div id="map-container" class="relative w-full h-full rounded-md overflow-hidden bg-black">
               <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full">
-                          <defs>
-                              <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                                  <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
-                                  <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
-                                  <feFlood flood-color="black" flood-opacity="0.7"/>
-                                  <feComposite in2="offsetblur" operator="in"/>
-                                  <feMerge>
-                                      <feMergeNode/>
-                                      <feMergeNode in="SourceGraphic"/>
-                                  </feMerge>
-                              </filter>
-                          </defs>
-                          <g id="grid-overlay"></g>
-                          <text x="96" y="15" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">N</text>
-                          <text x="96" y="190" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">S</text>
-                          <text x="10" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">W</text>
-                          <text x="182" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">E</text>
-                          <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                          <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                          <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                          <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                          
-                          <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" style="font-size: 1.5vmin;">
-                                <text id="shade-dims-text" x="100" y="25"></text>
-                                <text id="center-pos-text" x="100" y="33"></text>
-                          </g>
-                          
-                          <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
-                          <path id="shadow-path" fill="#3b82f6" fill-opacity="0.4" />
-                          <g id="hourly-dots-group"></g>
-                          
-                          <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
-                          <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
+                  <g id="map-group">
+                      <defs>
+                          <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                              <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                              <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
+                              <feFlood flood-color="black" flood-opacity="0.7"/>
+                              <feComposite in2="offsetblur" operator="in"/>
+                              <feMerge>
+                                  <feMergeNode/>
+                                  <feMergeNode in="SourceGraphic"/>
+                              </feMerge>
+                          </filter>
+                      </defs>
+                      <g id="grid-overlay"></g>
+                      <text x="100" y="15" text-anchor="middle" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">N</text>
+                      <text x="100" y="190" text-anchor="middle" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">S</text>
+                      <text x="10" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">W</text>
+                      <text x="182" y="104" fill="currentColor" class="opacity-75 font-semibold" style="font-size: 2vmin;" filter="url(#text-shadow)">E</text>
+                      <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                      <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                      <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                      <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                      
+                      <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" style="font-size: 2vmin;">
+                            <text x="100" y="18">
+                                <tspan id="shade-dims-text" x="100" dy="1.5em"></tspan>
+                                <tspan id="center-pos-text" x="100" dy="1.4em"></tspan>
+                            </text>
+                      </g>
+                      
+                      <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
+                      <path id="shadow-path" fill="#3b82f6" fill-opacity="0.4" />
+                      <g id="hourly-dots-group"></g>
+                      
+                      <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
+                      <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
+                  </g>
               </svg>
             <div id="night-message" class="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-semibold hidden" style="font-size: 4vmin;">
                 <p>It's Nighttime!</p>
             </div>
                   <div id="loader" class="absolute inset-0 bg-gray-800/70 flex items-center justify-center">
                           <div class="loader"></div>
+            </div>
+            
+            <div class="absolute top-2 left-2 flex space-x-1">
+                 <button id="compassBtn" title="Toggle Compass" class="p-1 rounded-md bg-gray-900/70 backdrop-blur-sm hover:bg-gray-700">
+                     <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2h8a2 2 0 002-2v-1a2 2 0 012-2h1.945M7.832 14.168L12 21.336l4.168-7.168M12 3v1m0 16.035V21m-4.168-15.168L3 3m18 0l-4.832 2.832M3 9h3.5m11 0H21"></path></svg>
+                </button>
             </div>
 
             <div class="absolute bottom-2 left-2 grid grid-cols-[auto_1fr] gap-x-1 gap-y-1 items-center">
@@ -147,6 +161,7 @@
                               <select id="timezone-picker" class="bg-gray-900/70 backdrop-blur-sm rounded-md p-0.5 border-gray-600 w-auto" style="font-size: 1.5vmin;"></select>
                       </div>
             </div>
+          </div>
         </div>
 
         <div class="flex justify-center items-center flex-wrap gap-x-4 gap-y-1 text-gray-400 pt-1" style="font-size: 2.25vmin;">
@@ -204,6 +219,7 @@
             const dateInput = document.getElementById('date');
             
             const svg = document.getElementById('sky');
+            const mapGroup = document.getElementById('map-group');
             const umbrellaSVG = document.getElementById('umbrella');
             const shadowEllipseSVG = document.getElementById('shadow-ellipse');
             const shadowPath = document.getElementById('shadow-path');
@@ -214,6 +230,7 @@
             const latInput = document.getElementById('lat');
             const lonInput = document.getElementById('lon');
             const getLocationBtn = document.getElementById('getLocationBtn');
+            const compassBtn = document.getElementById('compassBtn');
 
             const loader = document.getElementById('loader');
             const errorMessage = document.getElementById('error-message');
@@ -242,6 +259,7 @@
             let dailySunPath = [];
             let lastMapLat = null, lastMapLon = null;
             let currentUnitSystem = 'imperial';
+            let isCompassActive = false;
             
             function getCombinedDate() {
                 const dateStr = dateInput.value;
@@ -705,6 +723,44 @@
                  calculateAndDraw();
             }
 
+            const handleOrientation = (event) => {
+                const heading = event.webkitCompassHeading || event.alpha;
+                if (heading !== null) {
+                    mapGroup.setAttribute('transform', `rotate(${-heading} 100 100)`);
+                }
+            };
+
+            function toggleCompass() {
+                if (isCompassActive) {
+                    window.removeEventListener('deviceorientation', handleOrientation);
+                    mapGroup.removeAttribute('transform');
+                    compassBtn.classList.remove('compass-active');
+                    isCompassActive = false;
+                } else {
+                    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                        DeviceOrientationEvent.requestPermission()
+                            .then(permissionState => {
+                                if (permissionState === 'granted') {
+                                    window.addEventListener('deviceorientation', handleOrientation);
+                                    compassBtn.classList.add('compass-active');
+                                    isCompassActive = true;
+                                } else {
+                                    alert('Permission to access orientation was denied.');
+                                }
+                            })
+                            .catch(console.error);
+                    } else if ('DeviceOrientationEvent' in window) {
+                         window.addEventListener('deviceorientation', handleOrientation);
+                         compassBtn.classList.add('compass-active');
+                         isCompassActive = true;
+                    } else {
+                        alert('Compass is not supported on this device/browser.');
+                    }
+                }
+            }
+            
+            compassBtn.addEventListener('click', toggleCompass);
+
             dateInput.addEventListener('input', () => {
                 populateTimezonePicker();
                 calculateAndDraw();
@@ -768,6 +824,4 @@
     </script>
 </body>
 </html>
-
-
 
