@@ -120,15 +120,38 @@
             background-color: var(--card-bg); /* This creates the Blue Border */
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
         }
+
+        /* PSEUDO-ELEMENT for the Grey Fill
+           This sits behind the image. When the image is opacity:0, this is what you see.
+        */
+        .project-card::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 96%;
+            height: 96%;
+            background-color: var(--card-fill); /* Grey fill variable */
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            z-index: -1;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Hide the hexagon grey fill when enlarged (so it doesn't conflict with the rect image) */
+        .project-card.is-enlarged::before {
+            opacity: 0;
+        }
         
         .project-card img {
             width: 96%;
             height: 96%;
             object-fit: cover;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            transition: none;
-            /* This gives the hexagon its grey body if the image is missing or transparent */
-            background-color: var(--card-fill); 
+            
+            /* UPDATED: Start hidden so we see the grey fill and text first */
+            opacity: 0; 
+            transition: opacity 0.3s ease;
         }
 
         /* --- NEW STYLES FOR WHITE TEXT OVERLAY --- */
@@ -192,8 +215,10 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* FIX: Remove the grey background when enlarged to prevent "frame" artifacts */
             background-color: transparent; 
+            
+            /* UPDATED: Reveal image when enlarged */
+            opacity: 1; 
         }
 
         .project-card.is-enlarged .project-overlay {
