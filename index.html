@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sean Bordley</title>
-    <link rel="icon" href="/site_files/media/logo.png">
+    <link rel="icon" href="https://placehold.co/32x32/blue/white?text=SB">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -82,7 +82,7 @@
             margin-left: -12.28vmin; /* half of width */
             z-index: 5; /* In front of the center photo */
             
-            opacity: .7; 
+            opacity: 0.7; /* Reverted to 0.7 as the base state */
 
             transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
             backface-visibility: hidden; 
@@ -94,12 +94,43 @@
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
         }
         
+        /* Add hover effect for opacity */
+        @media (hover: hover) {
+            .project-card:hover {
+                opacity: 0.9; /* Brightens to 0.9 on hover */
+            }
+        }
+        
         .project-card img {
             width: 96%;
             height: 96%;
             object-fit: cover;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             transition: none;
+        }
+
+        /* NEW STYLES FOR UNIFORM TEXT SIZE WITH TOGGLE */
+        .hex-text {
+            position: absolute;
+            z-index: 10;
+            color: white;
+            font-weight: 700;
+            font-size: 3vmin; 
+            text-align: center;
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+            letter-spacing: 0.1em;
+            display: none; /* Hidden by default */
+        }
+
+        /* Only show text if the parent container has the class 'show-labels' */
+        .hexagon-showcase-container.show-labels .hex-text {
+            display: block;
+        }
+        
+        /* Hide the text when the card is enlarged/clicked */
+        .project-card.is-enlarged .hex-text {
+            display: none !important;
         }
 
         /* Positioning for the 6 surrounding hexagons, with the 7th being central */
@@ -176,6 +207,7 @@
             z-index: 100;
             pointer-events: none;
             text-align: center;
+            letter-spacing: 0.1em;
         }
 
         /* Styling for the subtitle */
@@ -214,7 +246,7 @@
             flex-direction: column; 
             align-items: center;
             gap:6vmin; 
-            opacity: 1
+            opacity: 0.7; /* CHANGED: Starts faded to match hexagons */
         }
 
         .resume-icon { color: #FF0000; }
@@ -230,13 +262,15 @@
             }
             .social-icon:hover {
                 transform: scale(1.1);
+                opacity: 1; /* CHANGED: Brightens to full visibility on hover */
             }
-            .resume-icon:hover { opacity: .8; }
-            .email-icon:hover { opacity: .8; }
-            .github-icon:hover { opacity: .8; }
-            .linkedin-icon:hover { opacity: .8; }
-            .imdb-icon:hover { opacity: .8; }
-            .file-icon:hover { opacity: .8; }
+            /* REMOVED specific opacity rules for individual icons as the generic rule above covers it now */
+            .resume-icon:hover { }
+            .email-icon:hover { }
+            .github-icon:hover { }
+            .linkedin-icon:hover { }
+            .imdb-icon:hover { }
+            .file-icon:hover { }
             .project-card:hover .project-overlay {
                 opacity: .8;
             }
@@ -295,6 +329,11 @@
             
            .project-card.is-enlarged {
                 transform: translate(0, 0) scale(3.1);
+            }
+            
+            /* Adjust text size for mobile if needed, though vmin usually handles it */
+            .hex-text {
+                font-size: 4vmin;
             }
 
             #project-title-display {
@@ -411,22 +450,22 @@
 <body class="text-slate-300">
     
     <div class="social-icons">
-        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+        <a href="#" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
         </a>
         <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
             <i class="fas fa-envelope"></i>
         </a>
-        <a href="https://www.imdb.com/name/nm4282305/" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
+        <a href="#" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
             <i class="fab fa-imdb"></i>
         </a>
-        <a href="https://github.com/seanbordley" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
+        <a href="#" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
             <i class="fab fa-github"></i>
         </a>
-        <a href="https://www.linkedin.com/in/seanbordley" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
+        <a href="#" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
             <i class="fab fa-linkedin"></i>
         </a>
-        <a href="https://drive.google.com/drive/folders/0B2LEStpL-tf3c1kzcXpVSTBFOXM?resourcekey=0-QHuPXzwjMDHcsdhFRS-AkQ&usp=drive_link" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
+        <a href="#" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
             <i class="fas fa-folder"></i>
         </a>
     </div>
@@ -440,44 +479,56 @@
     </div>
 
     <main id="main-content">
-        <div class="hexagon-showcase-container" id="showcase">
+        <!-- 
+            IMPORTANT: The class "show-labels" below controls the visibility of the text overlays.
+            Keep it while using placeholders. Remove "show-labels" when you add your real images.
+        -->
+        <div class="hexagon-showcase-container show-labels" id="showcase">
             <div class="center-photo">
-                <img src="" alt="" class="w-full h-full object-cover">
+                <!-- PLACEHOLDER FOR CENTER PHOTO -->
+                <img src="https://placehold.co/200x250/blue/white?text=Sean" alt="Sean Bordley" class="w-full h-full object-cover">
             </div>
             
-            <a href="/site_files/systems/page.html" class="project-card" data-title="SYSTEMS">
-                <img src="/site_files/systems/main.jpg" alt="">
+            <a href="#" class="project-card" data-title="SYSTEMS">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="Systems">
+                <span class="hex-text">SYSTEMS</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/fixtures/page.html" class="project-card" data-title="FIXTURES">
-                <img src="/site_files/fixtures/main.jpg" alt="">
+            <a href="#" class="project-card" data-title="FIXTURES">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="Fixtures">
+                <span class="hex-text">FIXTURES</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/parts/page.html" class="project-card" data-title="PARTS">
-                <img src="/site_files/parts/main.jpg" alt="">
+            <a href="#" class="project-card" data-title="PARTS">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="Parts">
+                <span class="hex-text">PARTS</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/tools/page.html" class="project-card" data-title="TOOLS">
-                <img src="/site_files/tools/main.jpg" alt="">
+            <a href="#" class="project-card" data-title="TOOLS">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="Tools">
+                <span class="hex-text">TOOLS</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/film/page.html" class="project-card" data-title="FILM">
-                <img src="/site_files/film/main.jpg" alt="">
+            <a href="#" class="project-card" data-title="FILM">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="Film">
+                <span class="hex-text">FILM</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/personal/page.html" class="project-card" data-title="PERSONAL">
-                <img src="/site_files/personal/main.jpg" alt="">
+            <a href="#" class="project-card" data-title="PERSONAL">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="Personal">
+                <span class="hex-text">PERSONAL</span>
                 <div class="project-overlay"></div>
             </a>
-             <a href="/site_files/about/page.html" class="project-card" data-title="ABOUT">
-                <img src="/site_files/about/main.jpg" alt="">
+             <a href="#" class="project-card" data-title="ABOUT">
+                <img src="https://placehold.co/400x400/1a202c/1a202c" alt="About">
+                <span class="hex-text">ABOUT</span>
                 <div class="project-overlay"></div>
             </a>
         </div>
         <!-- This is the dedicated container for the title -->
         <div id="project-title-display">
             <span id="project-main-title"></span>
-            <span id="project-subtitle-display">(CLICK PICTURE FOR MORE)</span>
+            <span id="project-subtitle-display">(CLICK FOR MORE)</span>
         </div>
     </main>
 
@@ -734,24 +785,6 @@
             }, true);
         }
     </script>
-   <!-- =================================================================== -->
-    <!-- UNDER CONSTRUCTION OVERLAY - PASTE THIS INTO YOUR HTML -->
-    <!-- Place this div right before the closing </body> tag. -->
-    <!-- =================================================================== -->
-    <div id="construction-overlay" class="fixed inset-0 z-50 flex items-center justify-center text-center text-white p-4" style="background-color: rgba(26, 32, 44, 0.9);">
-        <div class="max-w-lg">
-            <!-- Site Favicon -->
-            <!-- IMPORTANT: Replace "/favicon.ico" with the actual path to your favicon image -->
-            <img src="/site_files/media/logo.png" alt="Site Icon" class="mx-auto h-20 w-20 mb-6">
-            
-            <h1 class="text-4xl md:text-5xl font-bold mb-4">Under Construction</h1>
-            <p class="text-lg md:text-xl text-gray-300">
-            Website is currently undergoing updates.
-            </p>
-            <p class="mt-2 text-gray-400">Thank you for your patience!</p>
-        </div>
-    </div>
-    <!-- End of Overlay -->
+
 </body>
 </html>
-```eof
