@@ -9,7 +9,7 @@
         const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        const SITE_VERSION = "1.0.13";
+        const SITE_VERSION = "1.0.20";
     </script>
     <!-- =================================================================== -->
 
@@ -467,8 +467,8 @@
             position: relative;
             box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Added shadow for depth */
             
-            /* UPDATED: Height and Layout for Max Vertical Space */
-            height: 85vh; /* Forces modal to be tall */
+            /* UPDATED: Height increased to 95% to give textarea more room */
+            height: 95%; 
             display: flex;
             flex-direction: column;
         }
@@ -495,6 +495,7 @@
             flex-direction: column;
             flex-grow: 1;
             min-height: 0; /* Fix for flex scrolling */
+            overflow-y: auto; /* Scroll if content gets squeezed too much */
         }
         
         #form-content {
@@ -506,7 +507,7 @@
 
         .contact-modal label {
             display: block;
-            margin-bottom: 1vmin;
+            margin-bottom: 0.5rem; /* Replaced vmin with rem for stability */
         }
 
         /* Make the "Message" label and textarea expand */
@@ -514,14 +515,15 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            margin-bottom: 2vmin;
+            margin-bottom: 1rem; /* Replaced vmin with rem */
         }
 
+        /* UPDATED: Changed vmin to rem/px for stability during resize */
         .contact-modal input, .contact-modal textarea {
             width: 100%;
-            padding: 1.5vmin;
-            margin-bottom: 2vmin;
-            border-radius: 0.625vmin;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
             border: var(--input-border); /* Use theme variable */
             font-family: 'Inter', sans-serif;
             color: var(--input-text); /* Use theme variable */
@@ -536,7 +538,7 @@
 
         /* --- STYLED FILE INPUT --- */
         .contact-modal input[type="file"] {
-            padding: 1vmin;
+            padding: 0.5rem;
             line-height: 1.5;
             cursor: pointer;
         }
@@ -544,9 +546,9 @@
             background-color: var(--accent-color);
             color: white;
             border: none;
-            padding: 0.5vmin 1vmin;
-            margin-right: 1vmin;
-            border-radius: 0.4vmin;
+            padding: 0.25rem 0.5rem;
+            margin-right: 0.5rem;
+            border-radius: 4px;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             font-weight: 600;
@@ -556,19 +558,21 @@
         }
         
         /* Updated Send Button - SYMMETRICAL Regular Flat-Top Hexagon */
+        /* Switched to FIXED PIXELS to prevent resize-on-keyboard-open */
         .contact-modal button {
-            width: 12vmin; /* Smaller width */
-            height: 10.4vmin; /* Height calc: 12 / 1.1547 to be regular */
-            max-width: 120px;
-            max-height: 104px;
+            width: 100px; 
+            height: 86px; /* 100 / 1.1547 */
             
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0 auto; /* Center horizontally */
+            
+            /* UPDATED: Removed margin-top to remove space above, relied on flex layout */
+            margin: 0 auto; 
+            
             padding: 0;
             position: relative;
-            flex-shrink: 0; /* Prevents button from squishing */
+            flex-shrink: 0; 
             
             background-color: var(--card-bg); 
             
@@ -584,7 +588,6 @@
         .contact-modal button::before {
             content: '';
             position: absolute;
-            /* Using calc for uniform border thickness */
             top: 3px;
             left: 3px;
             width: calc(100% - 6px);
@@ -594,15 +597,15 @@
             z-index: 1;
         }
 
-        /* Text styling to match main hexagons */
+        /* Text styling */
         .contact-modal button .btn-text {
             position: relative;
-            z-index: 2; /* Sits above the grey fill */
+            z-index: 2; 
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 2.2vmin; /* Kept font size same as requested */
+            font-size: 1rem; /* Fixed Size */
             text-transform: uppercase;
-            letter-spacing: 0.1em; /* Matches main hexagon text spacing */
+            letter-spacing: 0.1em; 
             color: white; 
         }
 
@@ -611,10 +614,6 @@
             opacity: 0.9;
         }
         
-        .contact-modal label {
-            display: block;
-            margin-bottom: 1vmin;
-        }
         #form-success-message {
             display: none;
             text-align: center;
@@ -635,7 +634,7 @@
             justify-content: center;
             align-items: center;
             opacity: 0;
-            transition: opacity 0.4s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease; /* Added visibility transition */
         }
         .project-content-overlay.is-visible {
             display: flex;
@@ -789,7 +788,8 @@
                     </label>
                     <label>
                         Your message:
-                        <textarea name="message" required></textarea>
+                        <!-- UPDATED: Increased rows to 8 for more visual height -->
+                        <textarea name="message" rows="5" required></textarea>
                     </label>
                     <label>
                         Attachment:
@@ -847,11 +847,15 @@
         // --- Project Content Overlay Logic ---
         const openProjectOverlay = (url) => {
             projectIframe.src = url;
+            // UPDATED: Explicitly hide hexagons to prevent ghosting/pop-through
+            hexagonContainer.classList.add('is-hidden'); 
             projectContentOverlay.classList.add('is-visible');
         };
 
         const closeProjectOverlay = () => {
             projectContentOverlay.classList.remove('is-visible');
+            // UPDATED: Show hexagons only when project overlay closes
+            hexagonContainer.classList.remove('is-hidden');
             setTimeout(() => {
                 projectIframe.src = ""; // Clear source to stop media/reset
             }, 300);
@@ -870,16 +874,27 @@
         emailIconButton.addEventListener('click', (e) => {
             e.preventDefault();
             contactModalOverlay.classList.add('is-visible');
+            
+            // UPDATED: Ensure hexagons are always hidden when contact form is up
             hexagonContainer.classList.add('is-hidden');
-            // Add fade class for mobile
-            projectContentOverlay.classList.add('background-faded');
+
+            // If project overlay is up, fade it out to clean background
+            if (projectContentOverlay.classList.contains('is-visible')) {
+                projectContentOverlay.classList.add('background-faded');
+            }
         });
 
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
-            hexagonContainer.classList.remove('is-hidden');
-            // Remove fade class
+            
+            // Remove fade from project overlay (if it was there)
             projectContentOverlay.classList.remove('background-faded');
+
+            // UPDATED: Only show hexagons if we are NOT returning to the project overlay
+            if (!projectContentOverlay.classList.contains('is-visible')) {
+                hexagonContainer.classList.remove('is-hidden');
+            }
+            
             // Reset the form after a short delay
             setTimeout(() => {
                 contactForm.reset();
