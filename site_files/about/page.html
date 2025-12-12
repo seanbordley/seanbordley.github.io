@@ -302,6 +302,7 @@
 </head>
 <body class="text-slate-300">
     
+    <!-- 
     <div class="social-icons">
         <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
@@ -321,7 +322,8 @@
         <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
             <i class="fas fa-folder"></i>
         </a>
-    </div>
+    </div> 
+    -->
 
     <!-- Orientation Lock Message -->
     <div id="orientation-lock-message">
@@ -381,18 +383,20 @@
 
     <script>
         const mainContent = document.getElementById('main-content');
-        const emailIconButton = document.getElementById('email-icon-button');
+        // const emailIconButton = document.getElementById('email-icon-button');
         const contactModalOverlay = document.getElementById('contact-modal-overlay');
         const closeModalButton = document.getElementById('close-modal-button');
         const contactForm = document.getElementById('contact-form');
         const formContent = document.getElementById('form-content');
         const successMessage = document.getElementById('form-success-message');
 
+        /*
         emailIconButton.addEventListener('click', (e) => {
             e.preventDefault();
             contactModalOverlay.classList.add('is-visible');
             mainContent.classList.add('is-hidden');
         });
+        */
 
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
@@ -464,4 +468,3 @@
 
 </body>
 </html>
-
