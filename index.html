@@ -2,11 +2,14 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <!-- =================================================================== -->
-    <!-- SITE MODE CONFIGURATION -->
-    <!-- 0 = Live Site (Overlay hidden) -->
-    <!-- 1 = Under Construction (Overlay visible) -->
+    <!-- SITE CONFIGURATION -->
     <script>
-        const SITE_MODE = 1; 
+        // 0 = Live Site (Overlay hidden)
+        // 1 = Under Construction (Overlay visible)
+        const SITE_MODE = 0; 
+
+        // Version Number (Change this to track updates)
+        const SITE_VERSION = "1.0.0";
     </script>
     <!-- =================================================================== -->
 
@@ -158,7 +161,7 @@
             object-fit: cover;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             
-            /* UPDATED: Start hidden so we see the grey fill and text first */
+            /* Start hidden so we see the grey fill and text first */
             opacity: 0; 
             transition: opacity 0.3s ease;
         }
@@ -225,8 +228,6 @@
             height: 100%;
             object-fit: cover;
             background-color: transparent; 
-            
-            /* UPDATED: Reveal image when enlarged */
             opacity: 1; 
         }
 
@@ -498,6 +499,59 @@
             font-size: 2.4vmin;
             color: green;
         }
+
+        /* --- PROJECT CONTENT OVERLAY --- */
+        .project-content-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .project-content-overlay.is-visible {
+            display: flex;
+            opacity: 1;
+        }
+        .project-content-modal {
+            width: 95%;
+            height: 95%;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+        .project-content-modal iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .project-content-modal .close-button {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 3rem;
+            color: #333;
+            cursor: pointer;
+            z-index: 10;
+            line-height: 1;
+            background: rgba(255,255,255,0.7);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            text-align: center;
+        }
+        .project-content-modal .close-button:hover {
+            color: #000;
+            background: rgba(255,255,255,1);
+        }
     </style>
 </head>
 <body class="text-slate-300">
@@ -608,6 +662,14 @@
         </div>
     </div>
 
+    <!-- Project Content Overlay (New) -->
+    <div id="project-content-overlay" class="project-content-overlay">
+        <div class="project-content-modal">
+            <span id="close-project-button" class="close-button">&times;</span>
+            <iframe id="project-iframe" src="" title="Project Content"></iframe>
+        </div>
+    </div>
+
     <script>
         // --- Apply Configuration (Reads SITE_MODE from top of body) ---
         document.addEventListener('DOMContentLoaded', () => {
@@ -634,12 +696,41 @@
         const contactForm = document.getElementById('contact-form');
         const formContent = document.getElementById('form-content');
         const successMessage = document.getElementById('form-success-message');
+        
+        // New elements for content overlay
+        const projectContentOverlay = document.getElementById('project-content-overlay');
+        const closeProjectButton = document.getElementById('close-project-button');
+        const projectIframe = document.getElementById('project-iframe');
+
         let enlargeTimeout;
         let lastHoveredProject = null;
         let touchStartX = 0;
         let touchStartY = 0;
         let touchEndX = 0;
         let touchEndY = 0;
+
+        // --- Project Content Overlay Logic ---
+        const openProjectOverlay = (url) => {
+            projectIframe.src = url;
+            projectContentOverlay.classList.add('is-visible');
+        };
+
+        const closeProjectOverlay = () => {
+            projectContentOverlay.classList.remove('is-visible');
+            setTimeout(() => {
+                projectIframe.src = ""; // Clear source to stop media/reset
+            }, 300);
+        };
+
+        closeProjectButton.addEventListener('click', closeProjectOverlay);
+        
+        // Close if clicking outside the modal box
+        projectContentOverlay.addEventListener('click', (e) => {
+            if (e.target === projectContentOverlay) {
+                closeProjectOverlay();
+            }
+        });
+
 
         emailIconButton.addEventListener('click', (e) => {
             e.preventDefault();
@@ -703,38 +794,18 @@
             // --- Mobile/Touch Logic ---
             projects.forEach(project => {
                 project.addEventListener('click', function(e) {
+                    // Always prevent default navigation for the overlay behavior
+                    e.preventDefault();
+
                     const swipeDistance = Math.abs(touchEndX - touchStartX);
-                    if (swipeDistance > 20) { // Threshold to differentiate tap from swipe
+                    if (swipeDistance > 20) { 
                         return;
                     }
 
-                    if (this.classList.contains('is-enlarged')) {
-                        return; 
-                    }
-                    
-                    e.preventDefault(); 
-
-                    const isAlreadyCentral = this.classList.contains('is-central');
-                    
-                    resetAllProjects();
-
-                    if (!isAlreadyCentral) {
-                        showcase.classList.add('is-active');
-                        projects.forEach(p => {
-                            if (p !== this) p.classList.add('is-faded');
-                        });
-                        this.classList.add('is-central');
-
-                        enlargeTimeout = setTimeout(() => {
-                            this.classList.add('is-enlarged');
-                            showcase.classList.add('is-focused');
-                            // Show the title
-                            const title = this.dataset.title;
-                            if (title) {
-                                mainTitleDisplay.textContent = title;
-                                titleDisplay.classList.add('is-visible');
-                            }
-                        }, 100);
+                    // On click, just open the overlay directly instead of expanding
+                    const url = this.getAttribute('href');
+                    if (url) {
+                        openProjectOverlay(url);
                     }
                 });
             });
@@ -764,45 +835,28 @@
                     titleDisplay.classList.remove('is-visible');
                 }
             });
-            // --- New Swipe-to-Dismiss Logic ---
-            const handleSwipe = () => {
-                const isEnlarged = document.querySelector('.project-card.is-enlarged');
-                if (!isEnlarged) return;
-
-                const swipeDistanceX = Math.abs(touchEndX - touchStartX);
-                const swipeDistanceY = Math.abs(touchEndY - touchStartY);
-
-                // If swipe is more than 50px, dismiss the image
-                if (swipeDistanceX > 50 || swipeDistanceY > 50) {
-                    resetAllProjects();
-                }
-            };
+            
+            // --- Swipe logic to close (if needed, but usually back button closes overlay)
+            // Kept simple for now.
 
             mainContent.addEventListener('touchstart', (e) => {
                 touchStartX = e.changedTouches[0].screenX;
                 touchStartY = e.changedTouches[0].screenY;
-                touchEndX = e.changedTouches[0].screenX; // Reset endX on new touch
-                touchEndY = e.changedTouches[0].screenY; // Reset endY on new touch
+                touchEndX = e.changedTouches[0].screenX; 
+                touchEndY = e.changedTouches[0].screenY; 
             }, false);
 
             mainContent.addEventListener('touchend', (e) => {
                 touchEndX = e.changedTouches[0].screenX;
                 touchEndY = e.changedTouches[0].screenY;
-                handleSwipe();
+                // handleSwipe(); // Disabled swipe reset since expansion is removed
             }, false);
-
-            mainContent.addEventListener('click', function(e) {
-                if (!showcase.contains(e.target)) {
-                    resetAllProjects();
-                }
-            }, true);
 
         } else {
             // --- Desktop/Hover Logic ---
             projects.forEach(project => {
                 project.addEventListener('mouseenter', function() {
-                    if (document.querySelector('.project-card.is-enlarged')) return;
-
+                    // Just hover effects, no logic change needed here
                     projects.forEach(p => p.classList.remove('is-central'));
                     
                     showcase.classList.add('is-active');
@@ -819,35 +873,18 @@
                 });
 
                 project.addEventListener('click', function(e) {
-                    if (this.classList.contains('is-enlarged')) {
-                        return;
-                    }
-                    
                     e.preventDefault();
-                    
-                    projects.forEach(p => {
-                        if (p !== this) {
-                             p.classList.remove('is-central', 'is-enlarged');
-                        }
-                    });
-
-                    this.classList.add('is-central');
-                    this.classList.add('is-enlarged');
-                    showcase.classList.add('is-focused');
+                    // Open overlay instead of expanding
+                    const url = this.getAttribute('href');
+                    if (url) {
+                        openProjectOverlay(url);
+                    }
                 });
             });
 
             showcase.addEventListener('mouseleave', () => {
-                if (!document.querySelector('.project-card.is-enlarged')) {
-                    resetAllProjects();
-                }
+                resetAllProjects();
             });
-
-            mainContent.addEventListener('click', function(e) {
-                if (!showcase.contains(e.target)) {
-                    resetAllProjects();
-                }
-            }, true);
         }
 
         // --- THEME AUTO-DETECT LOGIC ---
@@ -865,6 +902,9 @@
         mediaQuery.addEventListener('change', (e) => {
             setTheme(e.matches);
         });
+
+        // Log the current version to the browser console
+        console.log(`Portfolio Version: ${SITE_VERSION}`);
 
     </script>
     
