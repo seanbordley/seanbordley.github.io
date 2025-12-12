@@ -9,7 +9,7 @@
         const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        const SITE_VERSION = "1.0.2";
+        const SITE_VERSION = "1.0.4";
     </script>
     <!-- =================================================================== -->
 
@@ -378,6 +378,12 @@
                 font-size: 4vmin;
             }
 
+            /* Fade project background on mobile when contact form is up */
+            .project-content-overlay.background-faded {
+                opacity: 0;
+                pointer-events: none;
+            }
+
             #project-title-display {
                 font-size: 14vmin;
                 top:5%;
@@ -428,7 +434,7 @@
             width: 100%;
             height: 100%;
             background-color: var(--modal-overlay); /* Variable */
-            z-index: 5000; /* Increased to ensure it's above the project overlay (3000) */
+            z-index: 6000; /* Increased to ensure it's above the project overlay (3000) */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -625,7 +631,15 @@
         </div>
     </main>
 
-    <!-- Contact Form Modal -->
+    <!-- Project Content Overlay (New) -->
+    <div id="project-content-overlay" class="project-content-overlay">
+        <div class="project-content-modal">
+            <span id="close-project-button" class="close-button">&times;</span>
+            <iframe id="project-iframe" src="" title="Project Content"></iframe>
+        </div>
+    </div>
+
+    <!-- Contact Form Modal (Moved here to be on top) -->
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
@@ -646,14 +660,6 @@
                     <p style="text-align: center; font-size: 5vmin; color: blue; font-weight: bold;">Thank you!</p>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Project Content Overlay (New) -->
-    <div id="project-content-overlay" class="project-content-overlay">
-        <div class="project-content-modal">
-            <span id="close-project-button" class="close-button">&times;</span>
-            <iframe id="project-iframe" src="" title="Project Content"></iframe>
         </div>
     </div>
 
@@ -723,11 +729,15 @@
             e.preventDefault();
             contactModalOverlay.classList.add('is-visible');
             hexagonContainer.classList.add('is-hidden');
+            // Add fade class for mobile
+            projectContentOverlay.classList.add('background-faded');
         });
 
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
             hexagonContainer.classList.remove('is-hidden');
+            // Remove fade class
+            projectContentOverlay.classList.remove('background-faded');
             // Reset the form after a short delay
             setTimeout(() => {
                 contactForm.reset();
