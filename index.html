@@ -9,7 +9,7 @@
         const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        const SITE_VERSION = "1.0.4";
+        const SITE_VERSION = "1.0.13";
     </script>
     <!-- =================================================================== -->
 
@@ -34,6 +34,14 @@
             --social-bg: rgba(0,0,0,0.7);
             --social-icon-color-base: inherit; 
             --modal-overlay: rgba(0, 0, 0, 0.7);
+
+            /* Modal Aesthetics (Dark) */
+            --modal-bg: #1a202c; /* Matches Hexagon Fill */
+            --modal-border: 2px solid blue;
+            --modal-text: #cbd5e1;
+            --input-bg: #000000;
+            --input-text: #ffffff;
+            --input-border: 1px solid blue;
         }
 
         /* Light Mode Overrides */
@@ -45,6 +53,14 @@
             --card-fill: #cbd5e1;     /* Lighter grey for light mode */
             --social-bg: rgba(255,255,255,0.8);
             --modal-overlay: rgba(255, 255, 255, 0.8);
+
+            /* Modal Aesthetics (Light) */
+            --modal-bg: #ffffff;
+            --modal-border: 2px solid #0044cc;
+            --modal-text: #1e293b;
+            --input-bg: #f8fafc;
+            --input-text: #1e293b;
+            --input-border: 1px solid #0044cc;
         }
 
         html, body {
@@ -378,12 +394,6 @@
                 font-size: 4vmin;
             }
 
-            /* Fade project background on mobile when contact form is up */
-            .project-content-overlay.background-faded {
-                opacity: 0;
-                pointer-events: none;
-            }
-
             #project-title-display {
                 font-size: 14vmin;
                 top:5%;
@@ -447,13 +457,20 @@
             pointer-events: auto;
         }
         .contact-modal {
-            background-color: #cccccc;
+            background-color: var(--modal-bg); /* Use theme variable */
+            color: var(--modal-text); /* Use theme variable */
+            border: var(--modal-border); /* Use theme variable */
             padding: 4vmin;
             border-radius: 1.25vmin;
             width: 90%;
             max-width: 500px;
             position: relative;
-            color: black;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Added shadow for depth */
+            
+            /* UPDATED: Height and Layout for Max Vertical Space */
+            height: 85vh; /* Forces modal to be tall */
+            display: flex;
+            flex-direction: column;
         }
         .contact-modal .close-button {
             position: absolute;
@@ -461,28 +478,139 @@
             right: 2.5vmin;
             font-size: 4vmin;
             cursor: pointer;
-            color: #333;
+            color: var(--modal-text); /* Use theme variable */
+        }
+        .contact-modal .close-button:hover {
+            color: var(--accent-color); /* Highlight on hover */
         }
         .contact-modal h2 {
             margin-top: 0;
             text-align: center;
+            flex-shrink: 0; /* Prevents header from shrinking */
         }
-        .contact-modal input, .contact-modal textarea, .contact-modal button {
+        
+        /* Flexbox for Form Structure to fill height */
+        #contact-form {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0; /* Fix for flex scrolling */
+        }
+        
+        #form-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+        }
+
+        .contact-modal label {
+            display: block;
+            margin-bottom: 1vmin;
+        }
+
+        /* Make the "Message" label and textarea expand */
+        #form-content label:nth-of-type(2) {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            margin-bottom: 2vmin;
+        }
+
+        .contact-modal input, .contact-modal textarea {
             width: 100%;
             padding: 1.5vmin;
             margin-bottom: 2vmin;
             border-radius: 0.625vmin;
-            border: 1px solid #ccc;
+            border: var(--input-border); /* Use theme variable */
             font-family: 'Inter', sans-serif;
-            color: black;
-            background-color: white;
+            color: var(--input-text); /* Use theme variable */
+            background-color: var(--input-bg); /* Use theme variable */
         }
-        .contact-modal button {
-            background-color: blue;
-            color: white;
+
+        .contact-modal textarea {
+            /* UPDATED: Expand to fill space */
+            flex-grow: 1; 
+            resize: none; /* Prevent manual resize since it auto-fills */
+        }
+
+        /* --- STYLED FILE INPUT --- */
+        .contact-modal input[type="file"] {
+            padding: 1vmin;
+            line-height: 1.5;
             cursor: pointer;
-            border: none;
         }
+        .contact-modal input[type="file"]::file-selector-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5vmin 1vmin;
+            margin-right: 1vmin;
+            border-radius: 0.4vmin;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+        }
+        .contact-modal input[type="file"]::file-selector-button:hover {
+            opacity: 0.9;
+        }
+        
+        /* Updated Send Button - SYMMETRICAL Regular Flat-Top Hexagon */
+        .contact-modal button {
+            width: 12vmin; /* Smaller width */
+            height: 10.4vmin; /* Height calc: 12 / 1.1547 to be regular */
+            max-width: 120px;
+            max-height: 104px;
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto; /* Center horizontally */
+            padding: 0;
+            position: relative;
+            flex-shrink: 0; /* Prevents button from squishing */
+            
+            background-color: var(--card-bg); 
+            
+            /* Symmetrical Flat-Topped Hexagon */
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Inner Grey Fill for Button */
+        .contact-modal button::before {
+            content: '';
+            position: absolute;
+            /* Using calc for uniform border thickness */
+            top: 3px;
+            left: 3px;
+            width: calc(100% - 6px);
+            height: calc(100% - 6px);
+            background-color: var(--card-fill); 
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            z-index: 1;
+        }
+
+        /* Text styling to match main hexagons */
+        .contact-modal button .btn-text {
+            position: relative;
+            z-index: 2; /* Sits above the grey fill */
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 2.2vmin; /* Kept font size same as requested */
+            text-transform: uppercase;
+            letter-spacing: 0.1em; /* Matches main hexagon text spacing */
+            color: white; 
+        }
+
+        .contact-modal button:hover {
+            transform: scale(1.1);
+            opacity: 0.9;
+        }
+        
         .contact-modal label {
             display: block;
             margin-bottom: 1vmin;
@@ -491,7 +619,7 @@
             display: none;
             text-align: center;
             font-size: 2.4vmin;
-            color: green;
+            color: var(--accent-color); /* Use theme variable */
         }
 
         /* --- PROJECT CONTENT OVERLAY --- */
@@ -513,6 +641,14 @@
             display: flex;
             opacity: 1;
         }
+        
+        /* GLOBAL FADE RULE: Ensures overlay (and X button) vanish when contact form is up */
+        .project-content-overlay.background-faded {
+            opacity: 0 !important; 
+            pointer-events: none;
+            z-index: -1 !important; /* Pushes it behind main content while hidden */
+        }
+
         .project-content-modal {
             width: 100%; /* Changed to 100% to remove spacing frame */
             height: 100%; /* Changed to 100% to remove spacing frame */
@@ -644,17 +780,23 @@
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
             <h2>CONTACT</h2>
-            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+            <!-- Updated form to allow file uploads with enctype -->
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST" enctype="multipart/form-data">
                 <div id="form-content">
                     <label>
                         Your email:
-                        <input type="email" name="email">
+                        <input type="email" name="email" required>
                     </label>
                     <label>
                         Your message:
-                        <textarea name="message"></textarea>
+                        <textarea name="message" required></textarea>
                     </label>
-                    <button type="submit">Send</button>
+                    <label>
+                        Attachment:
+                        <input type="file" name="attachment">
+                    </label>
+                    <!-- UPDATED BUTTON STRUCTURE -->
+                    <button type="submit"><span class="btn-text">Send</span></button>
                 </div>
                 <div id="form-success-message" style="display: none;">
                     <p style="text-align: center; font-size: 5vmin; color: blue; font-weight: bold;">Thank you!</p>
