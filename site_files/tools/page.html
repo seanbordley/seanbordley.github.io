@@ -11,6 +11,28 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Custom Scrollbar Styling */
+        /* Webkit (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000000; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #333333; 
+            border-radius: 6px;
+            border: 3px solid #000000; /* Creates padding around thumb */
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #555555; 
+        }
+        /* Firefox */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #333333 #000000;
+        }
+
         html, body {
             height: 100%;
             margin: 0;
@@ -124,7 +146,7 @@
             flex-direction: column; 
             align-items: center;
             gap:6vmin; 
-            opacity: 1
+            opacity: .8
         }
 
         .resume-icon { color: #FF0000; }
@@ -141,12 +163,12 @@
             .social-icon:hover {
                 transform: scale(1.1);
             }
-            .resume-icon:hover { opacity: .8; }
-            .email-icon:hover { opacity: .8; }
-            .github-icon:hover { opacity: .8; }
-            .linkedin-icon:hover { opacity: .8; }
-            .imdb-icon:hover { opacity: .8; }
-            .file-icon:hover { opacity: .8; }
+            .resume-icon:hover { opacity: 1; }
+            .email-icon:hover { opacity: 1; }
+            .github-icon:hover { opacity: 1; }
+            .linkedin-icon:hover { opacity: 1; }
+            .imdb-icon:hover { opacity: 1; }
+            .file-icon:hover { opacity: 1; }
         }
         
         @media (min-width: 701px) {
@@ -201,20 +223,20 @@
                 overflow-y: auto;
             }
             .content-container {
-                padding: 1rem;
+                padding: 1.6vmin;
             }
             .content-title {
-                font-size: 2.25rem; /* 36px */
+                font-size: 3.6vmin;
             }
             .content-subtitle {
-                font-size: 1.1rem;
+                font-size: 1.76vmin;
             }
             .content-body {
-                font-size: 1rem; /* 16px */
+                font-size: 1.6vmin;
             }
              .contact-label {
-                display: none;
-            }
+                display: none;
+            }
         }
 
         @media (max-width: 850px) and (orientation: landscape) {
@@ -269,8 +291,8 @@
         }
         .contact-modal input, .contact-modal textarea, .contact-modal button {
             width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
+            padding: 1.2vmin;
+            margin-bottom: 1.6vmin;
             border-radius: 5px;
             border: 1px solid #ccc;
             font-family: 'Inter', sans-serif;
@@ -286,7 +308,7 @@
         }
         .contact-modal label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8vmin;
             text-align: left;
         }
         #form-success-message {
@@ -302,6 +324,7 @@
 </head>
 <body class="text-slate-300">
     
+    <!-- 
     <div class="social-icons">
         <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
             <i class="fas fa-file-alt"></i>
@@ -321,7 +344,8 @@
         <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
             <i class="fas fa-folder"></i>
         </a>
-    </div>
+    </div> 
+    -->
 
     <!-- Orientation Lock Message -->
     <div id="orientation-lock-message">
@@ -381,18 +405,20 @@
 
     <script>
         const mainContent = document.getElementById('main-content');
-        const emailIconButton = document.getElementById('email-icon-button');
+        // const emailIconButton = document.getElementById('email-icon-button');
         const contactModalOverlay = document.getElementById('contact-modal-overlay');
         const closeModalButton = document.getElementById('close-modal-button');
         const contactForm = document.getElementById('contact-form');
         const formContent = document.getElementById('form-content');
         const successMessage = document.getElementById('form-success-message');
 
+        /*
         emailIconButton.addEventListener('click', (e) => {
             e.preventDefault();
             contactModalOverlay.classList.add('is-visible');
             mainContent.classList.add('is-hidden');
         });
+        */
 
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
@@ -444,6 +470,14 @@
             // We only want this to trigger on mobile portrait views.
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
             
+            // Check if orientation lock message is VISIBLE.
+            // If it is display: flex (or not none), we are technically in a state where we shouldn't navigate home via swipe on content,
+            // BUT the user asked: "if the orientation screen is up do nothing".
+            // The orientation screen only shows up in LANDSCAPE on mobile (due to media query).
+            // The isMobilePortrait check already ensures we are NOT in landscape.
+            // So, if we are in portrait, the lock screen is hidden.
+            // Therefore, simply checking isMobilePortrait is sufficient to ensure we don't trigger this while the lock screen is up.
+            
             // Check for a significant horizontal swipe (e.g., more than 100px)
             if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
                 // Navigate to the site's root URL, which acts as the "home page".
@@ -464,4 +498,3 @@
 
 </body>
 </html>
-
