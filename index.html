@@ -9,8 +9,8 @@
         const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        // 1.0.43: Fixed JS bug where closing modal forced display:block, breaking flex spacing.
-        const SITE_VERSION = "1.0.43";
+        // 1.0.44: Fixed contact modal scrolling on mobile (reduced heights, added overflow fix).
+        const SITE_VERSION = "1.0.44";
     </script>
     <!-- =================================================================== -->
 
@@ -473,8 +473,10 @@
             
             /* UPDATED: height: auto shrinks the modal to fit content */
             height: auto;
-            max-height: 90dvh; /* Prevents it from going off-screen */
+            max-height: 85vh; /* UPDATED: Adjusted to 85vh for better mobile clearance */
             overflow-y: auto; /* Scroll if content exceeds screen height */
+            -webkit-overflow-scrolling: touch; /* IMPORTANT: Enables smooth scrolling on iOS */
+            overscroll-behavior: contain; /* Prevents body scroll chaining */
             
             display: flex;
             flex-direction: column;
@@ -512,6 +514,7 @@
             flex-direction: column;
             min-height: 0;
             gap: 1.5rem; /* Adds consistent space between all inputs */
+            padding-bottom: 0.5rem; /* Extra padding for bottom scroll clearance */
         }
 
         .contact-modal label {
@@ -539,8 +542,8 @@
         }
 
         .contact-modal textarea {
-            /* UPDATED: Reduced height */
-            min-height: 180px; 
+            /* UPDATED: Reduced height to ensure other elements fit on mobile screens */
+            min-height: 120px; 
             resize: vertical; /* Allow user to resize vertically if they want */
         }
 
