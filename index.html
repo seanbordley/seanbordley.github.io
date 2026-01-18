@@ -6,11 +6,11 @@
     <script>
         // 0 = Live Site (Overlay hidden)
         // 1 = Under Construction (Overlay visible)
-        const SITE_MODE = 1; 
+        const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        // 1.0.46: Fixed W3C syntax errors (stray characters, mismatched tags).
-        const SITE_VERSION = "1.0.46";
+        // 1.0.48: Removed text bubbles/framing. Restored text legibility styles.
+        const SITE_VERSION = "1.0.48";
     </script>
     <!-- =================================================================== -->
 
@@ -21,47 +21,52 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* --- THEME VARIABLES --- */
         :root {
             /* Dark Mode (Default) */
-            --bg-color: #000000;
+            --bg-color: #050505; /* Slightly softer black */
             --text-main: #cbd5e1; /* slate-300 */
-            --accent-color: blue;
-            --card-bg: blue; /* Controls the border color */
-            --card-fill: #1a202c; /* Controls the grey inner background */
-            --social-bg: rgba(0,0,0,0.7);
+            
+            /* Modern Electric Blue Palette */
+            --accent-color: #3b82f6; /* Blue-500 */
+            --card-bg: #1d4ed8;      /* Blue-700 (Border Color) */
+            --card-fill: #1e293b;    /* Slate-800 (Inner Hex Color) */
+            
+            --social-bg: rgba(0,0,0,0.5);
             --social-icon-color-base: inherit; 
-            --modal-overlay: rgba(0, 0, 0, 0.7);
+            --modal-overlay: rgba(0, 0, 0, 0.8);
 
             /* Modal Aesthetics (Dark) */
-            --modal-bg: #1a202c; /* Matches Hexagon Fill */
-            --modal-border: 2px solid blue;
-            --modal-text: #cbd5e1;
-            --input-bg: #000000;
+            --modal-bg: #1e293b; 
+            --modal-border: 1px solid #3b82f6;
+            --modal-text: #e2e8f0;
+            --input-bg: #0f172a;
             --input-text: #ffffff;
-            --input-border: 1px solid blue;
+            --input-border: 1px solid #334155;
         }
 
         /* Light Mode Overrides */
         [data-theme="light"] {
-            --bg-color: #f0f2f5;      /* Light Grey/White */
-            --text-main: #1e293b;     /* Dark Slate */
-            --accent-color: #0044cc;  /* Darker blue for better contrast on light bg */
-            --card-bg: #0044cc;
-            --card-fill: #cbd5e1;     /* Lighter grey for light mode */
-            --social-bg: rgba(255,255,255,0.8);
-            --modal-overlay: rgba(255, 255, 255, 0.8);
+            --bg-color: #f8fafc;      /* Slate-50 */
+            --text-main: #334155;     /* Slate-700 */
+            
+            --accent-color: #2563eb;  /* Blue-600 */
+            --card-bg: #2563eb;       /* Blue-600 */
+            --card-fill: #e2e8f0;     /* Slate-200 */
+            
+            --social-bg: rgba(255,255,255,0.6);
+            --modal-overlay: rgba(255, 255, 255, 0.85);
 
             /* Modal Aesthetics (Light) */
             --modal-bg: #ffffff;
-            --modal-border: 2px solid #0044cc;
+            --modal-border: 1px solid #2563eb;
             --modal-text: #1e293b;
-            --input-bg: #f8fafc;
+            --input-bg: #f1f5f9;
             --input-text: #1e293b;
-            --input-border: 1px solid #0044cc;
+            --input-border: 1px solid #cbd5e1;
         }
 
         html, body {
@@ -118,11 +123,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            opacity: 0; 
+            opacity: 0;
+            /* Added drop shadow */
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); 
         }
         .center-photo img {
-            width: 96%;
-            height: 96%;
+            width: 98%; /* Slightly thinner border */
+            height: 98%;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             background-color: var(--card-fill); /* Inner Grey Color */
         }
@@ -141,16 +148,28 @@
             margin-left: -12.28vmin; 
             z-index: 5; 
             
-            opacity: .7; 
+            opacity: .8; /* Slightly more visible by default */
 
-            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.5s ease;
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.3s ease;
             backface-visibility: hidden; 
             
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: var(--card-bg); /* This creates the Blue Border */
+            background-color: var(--card-bg); /* This creates the Border */
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            
+            /* MODERNIZATION: Real depth via filter */
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+        }
+
+        /* Hover Glow Effect */
+        @media (hover: hover) {
+            .project-card:hover {
+                filter: drop-shadow(0 0 20px var(--accent-color));
+                opacity: 1;
+                z-index: 20; /* Bring above others */
+            }
         }
 
         /* PSEUDO-ELEMENT for the Grey Fill */
@@ -160,8 +179,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 96%;
-            height: 96%;
+            width: 98%; /* MODERNIZATION: Thinner, cleaner border (was 96%) */
+            height: 98%;
             background-color: var(--card-fill); /* Grey fill variable */
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             z-index: -1;
@@ -174,25 +193,38 @@
         }
         
         .project-card img {
-            width: 96%;
-            height: 96%;
+            width: 98%; /* Match the before element */
+            height: 98%;
             object-fit: cover;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             opacity: 0; 
             transition: opacity 0.3s ease;
         }
 
-        /* --- NEW STYLES FOR WHITE TEXT OVERLAY --- */
+        /* --- NEW MODERN TEXT STYLES --- */
         .hex-text {
             position: absolute;
             z-index: 10;
-            color: white; /* Basic White Text */
-            font-weight: 700;
-            font-size: 3vmin; 
+            color: white; 
+            
+            /* REMOVED Glassmorphism/Bubble styles */
+            /* background: rgba(0, 0, 0, 0.45); */
+            /* backdrop-filter: blur(4px); */
+            /* -webkit-backdrop-filter: blur(4px); */
+            /* padding: 0.4vmin 1.2vmin; */
+            /* border-radius: 99px; */
+            /* border: 1px solid rgba(255,255,255,0.15); */
+            
+            font-weight: 700; /* Reverted to bolder weight for visibility */
+            font-size: 3vmin; /* Reverted to larger size */
             text-align: center;
             pointer-events: none;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-            letter-spacing: 0.1em;
+            
+            /* Stronger shadow for contrast against images */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            
+            letter-spacing: 0.15em; 
+            /* box-shadow: 0 4px 6px rgba(0,0,0,0.1); */
         }
 
         /* Hide text when card is enlarged */
@@ -212,9 +244,10 @@
         /* --- JS-Controlled Animation States --- */
         
         .project-card.is-faded {
-            opacity: 0.3; 
+            opacity: 0.2; /* Deeper fade for better contrast */
             z-index: 4;
             transition: opacity 0.4s ease;
+            filter: grayscale(0.5) blur(1px); /* Add blur to non-focused items */
         }
         .hexagon-showcase-container.is-active .center-photo {
             opacity: 0;
@@ -236,6 +269,7 @@
             background-color: transparent;
             clip-path: inset(0% round 1vmin);
             overflow: visible;
+            filter: drop-shadow(0 0 50px rgba(0,0,0,0.8)); /* Deep shadow when open */
         }
 
         .project-card.is-enlarged img {
@@ -253,7 +287,7 @@
 
         .project-overlay {
             position: absolute; top:0; left:0; right:0; bottom:0;
-            background: rgba(0, 0, 0, 0.1); 
+            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3)); /* Gradient overlay */
             opacity: 0;
             transition: opacity 0.4s ease;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -262,13 +296,18 @@
         /* Styling for the fixed project title display */
         #project-title-display {
             position: fixed;
-            top: 1%;
+            top: 2%; /* Slightly lower */
             left: 50%;
             transform: translate(-50%, 0);
             color: var(--accent-color); /* Variable */
-            font-size: 4vmin;
-            font-weight: 700;
-            text-shadow: 0.25vmin 0.25vmin 0.75vmin rgba(0, 0, 0, 0.9);
+            
+            /* MODERNIZATION: Cinematic Typography */
+            font-size: 5vmin;
+            font-weight: 300; /* Thinner */
+            letter-spacing: 0.2em; /* Wider */
+            text-transform: uppercase;
+            
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Softer shadow */
             opacity: 0;
             white-space: nowrap;
             transition: opacity 0.4s ease-out;
@@ -280,10 +319,12 @@
         /* Styling for the subtitle */
         #project-subtitle-display {
             display: block;
-            font-size: 1.5vmin;
-            font-weight: 700;
-            color: var(--accent-color); /* Variable */
-            margin-top: -.6vmin;
+            font-size: 1.2vmin;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text-main);
+            opacity: 0.8;
+            margin-top: 0.5vmin;
         }
 
         #project-title-display.is-visible {
@@ -303,6 +344,8 @@
             justify-content: center;
             padding: 1vmin 2vmin;
             background-color: var(--social-bg); /* Variable */
+            backdrop-filter: blur(5px); /* Add blur to social bar */
+            -webkit-backdrop-filter: blur(5px);
             gap:5vmin;
             transition: background-color 0.4s ease;
         }
@@ -318,12 +361,12 @@
         }
 
         /* Keep specific colors for icons */
-        .resume-icon { color: #FF0000; }
-        .email-icon { color: #FFA500; }
-        .github-icon { color: #008000; }
-        .linkedin-icon { color: #0A66C2; }
-        .imdb-icon { color: #FFFF00; }
-        .file-icon { color: #800080; }
+        .resume-icon { color: #ef4444; } /* Red-500 */
+        .email-icon { color: #f59e0b; } /* Amber-500 */
+        .github-icon { color: #22c55e; } /* Green-500 */
+        .linkedin-icon { color: #0ea5e9; } /* Sky-500 */
+        .imdb-icon { color: #eab308; } /* Yellow-500 */
+        .file-icon { color: #a855f7; } /* Purple-500 */
 
         @media (hover: hover) {
             .social-icon {
@@ -331,10 +374,11 @@
             }
             .social-icon:hover {
                 transform: scale(1.1);
-                opacity: 0.8; 
+                opacity: 0.9; 
+                filter: drop-shadow(0 0 8px currentColor); /* Icon Glow */
             }
             .project-card:hover .project-overlay {
-                opacity: .8;
+                opacity: 1;
             }
         }
 
@@ -395,20 +439,20 @@
             
             /* Text size override for mobile if needed */
             .hex-text {
-                font-size: 4vmin;
+                font-size: 3.5vmin;
+                padding: 1vmin 2vmin; /* Larger touch targets */
             }
 
             #project-title-display {
-                font-size: 14vmin;
-                top:5%;
+                font-size: 8vmin; /* Smaller than previous huge mobile text */
+                top: 8%;
                 left: 50%;
                 transform: translate(-50%, 0);
-                color: var(--accent-color); /* Variable */
                 text-align: center;
             }
             #project-subtitle-display {
-                font-size:4vmin;
-                font-weight: 700;
+                font-size: 3vmin;
+                margin-top: 1vmin;
             }
         }
         
@@ -426,6 +470,8 @@
                 background-color: transparent;
                 padding: 0;
                 gap: 2.5vmin;
+                backdrop-filter: none; /* No blur needed on side */
+                -webkit-backdrop-filter: none;
              }
              .social-icon { font-size: 6vmin; }
         }
@@ -448,6 +494,7 @@
             width: 100%;
             height: 100%;
             background-color: var(--modal-overlay); /* Variable */
+            backdrop-filter: blur(5px); /* Blur background behind modal */
             z-index: 6000; /* Increased to ensure it's above the project overlay (3000) */
             display: flex;
             justify-content: center;
@@ -466,13 +513,13 @@
             border: var(--modal-border); /* Use theme variable */
             
             /* UPDATED: Fixed units for padding */
-            padding: 1rem;
+            padding: 2rem; /* More breathing room */
             
-            border-radius: 10px; /* Fixed radius */
+            border-radius: 12px; /* Smoother radius */
             width: 90%;
             max-width: 500px;
             position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* Added shadow for depth */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Deep shadow */
             
             /* UPDATED: height: auto shrinks the modal to fit content */
             height: auto;
@@ -486,22 +533,27 @@
         }
         .contact-modal .close-button {
             position: absolute;
-            top: 0.5rem; /* UPDATED: Moved closer to top */
-            right: 0.5rem; /* UPDATED: Moved closer to right */
-            font-size: 2rem; /* Fixed size */
+            top: 1rem; 
+            right: 1.5rem; 
+            font-size: 1.5rem; /* Cleaner size */
             cursor: pointer;
             color: var(--modal-text); /* Use theme variable */
+            opacity: 0.7;
+            transition: opacity 0.2s;
         }
         .contact-modal .close-button:hover {
+            opacity: 1;
             color: var(--accent-color); /* Highlight on hover */
         }
         .contact-modal h2 {
             margin-top: 0;
             text-align: center;
             flex-shrink: 0; /* Prevents header from shrinking */
-            /* UPDATED: Fixed font size and margin */
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
         }
         
         /* Flexbox for Form Structure to fill height */
@@ -537,11 +589,18 @@
             width: 100%;
             padding: 0.75rem;
             margin-bottom: 0; /* Let 'gap' handle spacing */
-            border-radius: 4px;
+            border-radius: 6px;
             border: var(--input-border); /* Use theme variable */
             font-family: 'Inter', sans-serif;
             color: var(--input-text); /* Use theme variable */
             background-color: var(--input-bg); /* Use theme variable */
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .contact-modal input:focus, .contact-modal textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
         }
 
         .contact-modal textarea {
@@ -555,20 +614,22 @@
             padding: 0.5rem;
             line-height: 1.5;
             cursor: pointer;
+            font-size: 0.9rem;
         }
         .contact-modal input[type="file"]::file-selector-button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.25rem 0.5rem;
-            margin-right: 0.5rem;
+            background-color: var(--card-fill);
+            color: var(--modal-text);
+            border: 1px solid var(--input-border);
+            padding: 0.25rem 0.75rem;
+            margin-right: 0.75rem;
             border-radius: 4px;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
-            font-weight: 600;
+            font-weight: 500;
+            transition: background-color 0.2s;
         }
         .contact-modal input[type="file"]::file-selector-button:hover {
-            opacity: 0.9;
+            background-color: var(--input-border);
         }
 
         /* Remove extra spacing from the last input/label to let button margin control spacing */
@@ -596,27 +657,37 @@
             position: relative;
             flex-shrink: 0; 
             
-            background-color: var(--card-bg); 
+            background-color: var(--accent-color); 
             
             /* Symmetrical Flat-Topped Hexagon */
             clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
             
             border: none;
             cursor: pointer;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
         /* Inner Grey Fill for Button */
         .contact-modal button::before {
             content: '';
             position: absolute;
-            top: 3px;
-            left: 3px;
-            width: calc(100% - 6px);
-            height: calc(100% - 6px);
+            top: 2px;
+            left: 2px;
+            width: calc(100% - 4px);
+            height: calc(100% - 4px);
             background-color: var(--card-fill); 
             clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
             z-index: 1;
+            transition: background-color 0.3s;
+        }
+        
+        /* Hover state for button */
+        .contact-modal button:hover::before {
+            background-color: var(--accent-color); /* Fill with color on hover */
+        }
+        .contact-modal button:hover .btn-text {
+            color: white; /* Ensure text remains white */
         }
 
         /* Text styling */
@@ -629,11 +700,12 @@
             text-transform: uppercase;
             letter-spacing: 0.1em; 
             color: white; 
+            transition: color 0.3s;
         }
 
         .contact-modal button:hover {
-            transform: scale(1.1);
-            opacity: 0.9;
+            transform: scale(1.05);
+            filter: drop-shadow(0 6px 12px rgba(59, 130, 246, 0.4));
         }
         
         #form-success-message {
@@ -698,9 +770,11 @@
             background: transparent; 
             padding: 10px; 
             text-shadow: 0 0 5px rgba(0,0,0,0.5); /* Added shadow for contrast */
+            transition: transform 0.2s;
         }
         .project-content-modal .close-button:hover {
-            color: #ccc; /* Light grey on hover */
+            color: #ffffff; /* White on hover */
+            transform: scale(1.1);
         }
     </style>
 </head>
