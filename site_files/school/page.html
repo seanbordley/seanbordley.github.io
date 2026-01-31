@@ -6,28 +6,33 @@
     <meta name="description" content="Class project for Sean Bordley at San Mateo City College.">
     <title>Mobile Web Application Development - Sean Bordley</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
     <header>
-        <h1>Mobile Web Application Development</h1>
+        <h1 id="main-heading">Mobile Web Application Development</h1>
     </header>
 
+    <div class="button-container">
+        <button id="start-animation">Start Animation</button>
+    </div>
+
     <main>
-        <div class="profile-section">
-            <img src="sausages.jpg" alt="A picture of Sean Bordley holding a plate of breakfast foods wearing a red hoody and shorts" class="profile-pic">
+        <section>
+            <img src="sausages.jpg" id="profile-img" alt="a picture of Sean Bordley, holding a plate of breakfast foods wearing a red hoody and shorts" class="profile-pic">
             <p>
                 My name is Sean Bordley, work in tech, and also attend San Mateo City College. I enjoy working on led projects, being on the water and Doctor Who Conventions.
             </p>
-        </div>
+        </section>
 
-        <div class="clear-float">
+        <section class="clear-float">
             <p>
                 I am attending this class because I want to bridge the gap between my hardware 
                 background and the software that powers modern interfaces. Also because I like 
                 making little apps to make my life easier.
             </p>
-        </div>
+        </section>
 
         <section>
             <h2 class="center-text">Technologies for this class</h2>
@@ -53,5 +58,6 @@
         </section>
     </main>
 
+    <script src="script.js"></script>
 </body>
 </html>
