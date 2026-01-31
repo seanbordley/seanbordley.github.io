@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    $("#RAZZLE DAZZLE").click(function() {
+    $("#start-animation").click(function() {
         
         const heading = $("#main-heading");
         const image = $("#profile-img");
