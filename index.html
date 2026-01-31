@@ -9,8 +9,8 @@
         const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        // 1.0.48: Removed text bubbles/framing. Restored text legibility styles.
-        const SITE_VERSION = "1.0.48";
+        // 1.0.50: Set social icons to 100% opacity by default.
+        const SITE_VERSION = "1.0.50";
     </script>
     <!-- =================================================================== -->
 
@@ -27,17 +27,19 @@
         /* --- THEME VARIABLES --- */
         :root {
             /* Dark Mode (Default) */
-            --bg-color: #050505; /* Slightly softer black */
-            --text-main: #cbd5e1; /* slate-300 */
+            --bg-base: #020617; /* Very dark slate, almost black */
+            --bg-gradient-center: #1e293b; /* Slate-800 for spotlight */
             
-            /* Modern Electric Blue Palette */
-            --accent-color: #3b82f6; /* Blue-500 */
-            --card-bg: #1d4ed8;      /* Blue-700 (Border Color) */
-            --card-fill: #1e293b;    /* Slate-800 (Inner Hex Color) */
+            --text-main: #f1f5f9; /* Slate-100 */
+            
+            /* Professional Gradient Accent */
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); /* Blue to Cyan */
+            --accent-color: #3b82f6; /* Fallback/Text color */
+            
+            --card-fill: #0f172a;    /* Slate-900 (Inner Hex Color) */
             
             --social-bg: rgba(0,0,0,0.5);
-            --social-icon-color-base: inherit; 
-            --modal-overlay: rgba(0, 0, 0, 0.8);
+            --modal-overlay: rgba(2, 6, 23, 0.85); /* Darker, richer overlay */
 
             /* Modal Aesthetics (Dark) */
             --modal-bg: #1e293b; 
@@ -50,11 +52,14 @@
 
         /* Light Mode Overrides */
         [data-theme="light"] {
-            --bg-color: #f8fafc;      /* Slate-50 */
+            --bg-base: #f1f5f9;      /* Slate-100 */
+            --bg-gradient-center: #ffffff; 
+
             --text-main: #334155;     /* Slate-700 */
             
-            --accent-color: #2563eb;  /* Blue-600 */
-            --card-bg: #2563eb;       /* Blue-600 */
+            --accent-gradient: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
+            --accent-color: #2563eb; 
+            
             --card-fill: #e2e8f0;     /* Slate-200 */
             
             --social-bg: rgba(255,255,255,0.6);
@@ -64,7 +69,7 @@
             --modal-bg: #ffffff;
             --modal-border: 1px solid #2563eb;
             --modal-text: #1e293b;
-            --input-bg: #f1f5f9;
+            --input-bg: #f8fafc;
             --input-text: #1e293b;
             --input-border: 1px solid #cbd5e1;
         }
@@ -75,10 +80,14 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color); /* Variable */
-            color: var(--text-main);           /* Variable */
+            
+            /* Cinematic Radial Gradient Background */
+            background: radial-gradient(circle at center, var(--bg-gradient-center) 0%, var(--bg-base) 100%);
+            background-attachment: fixed; /* Prevents scroll issues */
+            
+            color: var(--text-main);           
             overflow: hidden;
-            transition: background-color 0.4s ease, color 0.4s ease; /* Smooth transition */
+            transition: color 0.4s ease; /* Background transition handled by CSS gradient limitation, mostly static */
         }
         main {
             position: relative;
@@ -94,9 +103,6 @@
             transform: translate(-50%, -50%);
             width: 79.2vmin; 
             height: 79.2vmin;
-            /* REMOVED MAX CAPS FOR SCALING */
-            /* max-width: 585px; */
-            /* max-height: 585px; */
             transition: opacity 0.3s ease;
         }
 
@@ -110,25 +116,26 @@
             position: absolute;
             width: 25.61vmin; 
             height: 29.44vmin; 
-            /* REMOVED MAX CAPS FOR SCALING */
-            /* max-width: 189px; */
-            /* max-height: 218px; */
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1; 
             transition: opacity 0.5s ease;
-            background-color: var(--card-bg); /* Border Color */
+            
+            /* Gradient Border */
+            background: var(--accent-gradient);
+            
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            /* Added drop shadow */
-            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); 
+            
+            /* Soft, high-end shadow */
+            filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4)); 
         }
         .center-photo img {
-            width: 98%; /* Slightly thinner border */
+            width: 98%; 
             height: 98%;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             background-color: var(--card-fill); /* Inner Grey Color */
@@ -139,16 +146,13 @@
             position: absolute;
             width: 24.56vmin; 
             height: 28.19vmin; 
-            /* REMOVED MAX CAPS FOR SCALING */
-            /* max-width: 198px; */
-            /* max-height: 228px; */
             top: 50%;
             left: 50%;
             margin-top: -14.1vmin; 
             margin-left: -12.28vmin; 
             z-index: 5; 
             
-            opacity: .8; /* Slightly more visible by default */
+            opacity: .85; /* Slightly more visible for pro feel */
 
             transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.3s ease;
             backface-visibility: hidden; 
@@ -156,19 +160,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: var(--card-bg); /* This creates the Border */
+            
+            /* GRADIENT BORDER */
+            background: var(--accent-gradient);
+            
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             
-            /* MODERNIZATION: Real depth via filter */
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
+            /* Ambient Shadow */
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
         }
 
         /* Hover Glow Effect */
         @media (hover: hover) {
             .project-card:hover {
-                filter: drop-shadow(0 0 20px var(--accent-color));
+                /* Subtle elevation lift */
+                transform: translateY(-5px) scale(1.02); 
+                /* Colored glow */
+                filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.6));
                 opacity: 1;
-                z-index: 20; /* Bring above others */
+                z-index: 20; 
             }
         }
 
@@ -179,7 +189,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 98%; /* MODERNIZATION: Thinner, cleaner border (was 96%) */
+            width: 98%; 
             height: 98%;
             background-color: var(--card-fill); /* Grey fill variable */
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -193,7 +203,7 @@
         }
         
         .project-card img {
-            width: 98%; /* Match the before element */
+            width: 98%; 
             height: 98%;
             object-fit: cover;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -201,30 +211,22 @@
             transition: opacity 0.3s ease;
         }
 
-        /* --- NEW MODERN TEXT STYLES --- */
+        /* --- MODERN TEXT STYLES (Clean) --- */
         .hex-text {
             position: absolute;
             z-index: 10;
             color: white; 
             
-            /* REMOVED Glassmorphism/Bubble styles */
-            /* background: rgba(0, 0, 0, 0.45); */
-            /* backdrop-filter: blur(4px); */
-            /* -webkit-backdrop-filter: blur(4px); */
-            /* padding: 0.4vmin 1.2vmin; */
-            /* border-radius: 99px; */
-            /* border: 1px solid rgba(255,255,255,0.15); */
-            
-            font-weight: 700; /* Reverted to bolder weight for visibility */
-            font-size: 3vmin; /* Reverted to larger size */
+            font-weight: 700; 
+            font-size: 3vmin; 
             text-align: center;
             pointer-events: none;
             
-            /* Stronger shadow for contrast against images */
-            text-shadow: 0 2px 4px rgba(0,0,0,0.9);
+            /* High contrast shadow for legibility without background */
+            text-shadow: 0 4px 12px rgba(0,0,0,0.9);
             
             letter-spacing: 0.15em; 
-            /* box-shadow: 0 4px 6px rgba(0,0,0,0.1); */
+            text-transform: uppercase;
         }
 
         /* Hide text when card is enlarged */
@@ -244,10 +246,10 @@
         /* --- JS-Controlled Animation States --- */
         
         .project-card.is-faded {
-            opacity: 0.2; /* Deeper fade for better contrast */
+            opacity: 0.2; 
             z-index: 4;
             transition: opacity 0.4s ease;
-            filter: grayscale(0.5) blur(1px); /* Add blur to non-focused items */
+            filter: grayscale(0.8) blur(2px); /* Professional focus depth effect */
         }
         .hexagon-showcase-container.is-active .center-photo {
             opacity: 0;
@@ -266,10 +268,10 @@
         .project-card.is-enlarged {
             transform: translate(0, 0) scale(2.8);
             z-index: 15;
-            background-color: transparent;
+            background: transparent; /* Remove gradient background when expanded */
             clip-path: inset(0% round 1vmin);
             overflow: visible;
-            filter: drop-shadow(0 0 50px rgba(0,0,0,0.8)); /* Deep shadow when open */
+            filter: drop-shadow(0 0 50px rgba(0,0,0,0.8)); 
         }
 
         .project-card.is-enlarged img {
@@ -287,7 +289,7 @@
 
         .project-overlay {
             position: absolute; top:0; left:0; right:0; bottom:0;
-            background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.3)); /* Gradient overlay */
+            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.6)); /* Subtle vignette */
             opacity: 0;
             transition: opacity 0.4s ease;
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
@@ -296,18 +298,24 @@
         /* Styling for the fixed project title display */
         #project-title-display {
             position: fixed;
-            top: 2%; /* Slightly lower */
+            top: 2%; 
             left: 50%;
             transform: translate(-50%, 0);
-            color: var(--accent-color); /* Variable */
             
-            /* MODERNIZATION: Cinematic Typography */
+            /* Gradient Text for Title */
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: var(--accent-color); /* Fallback */
+            
+            /* Cinematic Typography */
             font-size: 5vmin;
-            font-weight: 300; /* Thinner */
-            letter-spacing: 0.2em; /* Wider */
+            font-weight: 300; /* Thin & Elegant */
+            letter-spacing: 0.3em; /* Very wide spacing */
             text-transform: uppercase;
             
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5); /* Softer shadow */
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
             opacity: 0;
             white-space: nowrap;
             transition: opacity 0.4s ease-out;
@@ -322,8 +330,12 @@
             font-size: 1.2vmin;
             font-weight: 600;
             letter-spacing: 0.1em;
+            
+            /* Reset gradient for subtitle to be plain */
+            -webkit-text-fill-color: var(--text-main);
             color: var(--text-main);
-            opacity: 0.8;
+            
+            opacity: 0.6;
             margin-top: 0.5vmin;
         }
 
@@ -338,14 +350,18 @@
             left: 0;
             right: 0;
             width: 100%;
-            z-index: 4000; /* Increased to stay above overlay (3000) */
+            z-index: 4000; 
             display: flex;
             flex-direction: row;
             justify-content: center;
             padding: 1vmin 2vmin;
-            background-color: var(--social-bg); /* Variable */
-            backdrop-filter: blur(5px); /* Add blur to social bar */
-            -webkit-backdrop-filter: blur(5px);
+            
+            /* Glassmorphism Bar */
+            background-color: var(--social-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            
             gap:5vmin;
             transition: background-color 0.4s ease;
         }
@@ -357,25 +373,26 @@
             flex-direction: column; 
             align-items: center;
             gap:6vmin; 
+            /* UPDATED: Changed opacity from 0.8 to 1 */
             opacity: 1; 
         }
 
         /* Keep specific colors for icons */
-        .resume-icon { color: #ef4444; } /* Red-500 */
-        .email-icon { color: #f59e0b; } /* Amber-500 */
-        .github-icon { color: #22c55e; } /* Green-500 */
-        .linkedin-icon { color: #0ea5e9; } /* Sky-500 */
-        .imdb-icon { color: #eab308; } /* Yellow-500 */
-        .file-icon { color: #a855f7; } /* Purple-500 */
+        .resume-icon { color: #ef4444; } 
+        .email-icon { color: #f59e0b; } 
+        .github-icon { color: #22c55e; } 
+        .linkedin-icon { color: #0ea5e9; } 
+        .imdb-icon { color: #eab308; } 
+        .file-icon { color: #a855f7; } 
 
         @media (hover: hover) {
             .social-icon {
                 transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
             }
             .social-icon:hover {
-                transform: scale(1.1);
-                opacity: 0.9; 
-                filter: drop-shadow(0 0 8px currentColor); /* Icon Glow */
+                transform: scale(1.15);
+                opacity: 1; 
+                filter: drop-shadow(0 0 10px currentColor); /* Neon glow */
             }
             .project-card:hover .project-overlay {
                 opacity: 1;
@@ -390,8 +407,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--bg-color); /* Variable */
-            color: var(--accent-color); /* Variable */
+            background-color: var(--bg-base); 
+            color: var(--accent-color); 
             z-index: 9999;
             flex-direction: column;
             justify-content: center;
@@ -440,7 +457,7 @@
             /* Text size override for mobile if needed */
             .hex-text {
                 font-size: 3.5vmin;
-                padding: 1vmin 2vmin; /* Larger touch targets */
+                padding: 1vmin 2vmin; 
             }
 
             #project-title-display {
@@ -453,6 +470,10 @@
             #project-subtitle-display {
                 font-size: 3vmin;
                 margin-top: 1vmin;
+                
+                /* Ensure contrast on mobile */
+                -webkit-text-fill-color: var(--text-main);
+                color: var(--text-main);
             }
         }
         
@@ -472,6 +493,7 @@
                 gap: 2.5vmin;
                 backdrop-filter: none; /* No blur needed on side */
                 -webkit-backdrop-filter: none;
+                border-top: none;
              }
              .social-icon { font-size: 6vmin; }
         }
@@ -494,8 +516,8 @@
             width: 100%;
             height: 100%;
             background-color: var(--modal-overlay); /* Variable */
-            backdrop-filter: blur(5px); /* Blur background behind modal */
-            z-index: 6000; /* Increased to ensure it's above the project overlay (3000) */
+            backdrop-filter: blur(8px); /* Increased blur */
+            z-index: 6000; 
             display: flex;
             justify-content: center;
             align-items: center;
@@ -508,25 +530,25 @@
             pointer-events: auto;
         }
         .contact-modal {
-            background-color: var(--modal-bg); /* Use theme variable */
-            color: var(--modal-text); /* Use theme variable */
-            border: var(--modal-border); /* Use theme variable */
+            background-color: var(--modal-bg); 
+            color: var(--modal-text); 
+            border: 1px solid rgba(59, 130, 246, 0.3); /* Subtle border */
             
             /* UPDATED: Fixed units for padding */
-            padding: 2rem; /* More breathing room */
+            padding: 2.5rem; 
             
-            border-radius: 12px; /* Smoother radius */
+            border-radius: 16px; /* Smoother radius */
             width: 90%;
             max-width: 500px;
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Deep shadow */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); /* Deep shadow */
             
             /* UPDATED: height: auto shrinks the modal to fit content */
             height: auto;
-            max-height: 85vh; /* UPDATED: Adjusted to 85vh for better mobile clearance */
-            overflow-y: auto; /* Scroll if content exceeds screen height */
-            -webkit-overflow-scrolling: touch; /* IMPORTANT: Enables smooth scrolling on iOS */
-            overscroll-behavior: contain; /* Prevents body scroll chaining */
+            max-height: 85vh; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; 
+            overscroll-behavior: contain; 
             
             display: flex;
             flex-direction: column;
@@ -535,25 +557,30 @@
             position: absolute;
             top: 1rem; 
             right: 1.5rem; 
-            font-size: 1.5rem; /* Cleaner size */
+            font-size: 1.5rem; 
             cursor: pointer;
-            color: var(--modal-text); /* Use theme variable */
+            color: var(--modal-text); 
             opacity: 0.7;
             transition: opacity 0.2s;
         }
         .contact-modal .close-button:hover {
             opacity: 1;
-            color: var(--accent-color); /* Highlight on hover */
+            color: var(--accent-color); 
         }
         .contact-modal h2 {
             margin-top: 0;
             text-align: center;
-            flex-shrink: 0; /* Prevents header from shrinking */
-            font-size: 1.8rem;
+            flex-shrink: 0; 
+            font-size: 2rem;
             font-weight: 300;
-            letter-spacing: 0.1em;
-            margin-bottom: 1.5rem;
+            letter-spacing: 0.2em; /* Wider spacing */
+            margin-bottom: 2rem;
             color: var(--accent-color);
+            
+            /* Gradient Text for Header */
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
         /* Flexbox for Form Structure to fill height */
@@ -587,26 +614,26 @@
         /* UPDATED: Changed vmin to rem/px for stability during resize */
         .contact-modal input, .contact-modal textarea {
             width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 0; /* Let 'gap' handle spacing */
-            border-radius: 6px;
-            border: var(--input-border); /* Use theme variable */
+            padding: 0.85rem;
+            margin-bottom: 0; 
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
             font-family: 'Inter', sans-serif;
-            color: var(--input-text); /* Use theme variable */
-            background-color: var(--input-bg); /* Use theme variable */
-            transition: border-color 0.2s, box-shadow 0.2s;
+            color: var(--input-text); 
+            background-color: rgba(15, 23, 42, 0.6); /* Slightly transparent input bg */
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
         }
 
         .contact-modal input:focus, .contact-modal textarea:focus {
             outline: none;
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background-color: rgba(15, 23, 42, 1);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
         }
 
         .contact-modal textarea {
-            /* UPDATED: Reduced height to ensure other elements fit on mobile screens */
             min-height: 120px; 
-            resize: vertical; /* Allow user to resize vertically if they want */
+            resize: vertical; 
         }
 
         /* --- STYLED FILE INPUT (Reverted to standard) --- */
@@ -615,21 +642,23 @@
             line-height: 1.5;
             cursor: pointer;
             font-size: 0.9rem;
+            border: none;
+            background: transparent;
         }
         .contact-modal input[type="file"]::file-selector-button {
-            background-color: var(--card-fill);
-            color: var(--modal-text);
-            border: 1px solid var(--input-border);
-            padding: 0.25rem 0.75rem;
-            margin-right: 0.75rem;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 0.35rem 1rem;
+            margin-right: 1rem;
             border-radius: 4px;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
             font-weight: 500;
-            transition: background-color 0.2s;
+            transition: opacity 0.2s;
         }
         .contact-modal input[type="file"]::file-selector-button:hover {
-            background-color: var(--input-border);
+            opacity: 0.9;
         }
 
         /* Remove extra spacing from the last input/label to let button margin control spacing */
@@ -657,7 +686,7 @@
             position: relative;
             flex-shrink: 0; 
             
-            background-color: var(--accent-color); 
+            background: var(--accent-gradient); 
             
             /* Symmetrical Flat-Topped Hexagon */
             clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
@@ -676,7 +705,7 @@
             left: 2px;
             width: calc(100% - 4px);
             height: calc(100% - 4px);
-            background-color: var(--card-fill); 
+            background-color: var(--modal-bg); 
             clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
             z-index: 1;
             transition: background-color 0.3s;
@@ -684,7 +713,7 @@
         
         /* Hover state for button */
         .contact-modal button:hover::before {
-            background-color: var(--accent-color); /* Fill with color on hover */
+            background: var(--accent-gradient); /* Fill with color on hover */
         }
         .contact-modal button:hover .btn-text {
             color: white; /* Ensure text remains white */
