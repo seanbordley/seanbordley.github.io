@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Class project for Sean Bordley at San Mateo City College.">
+    <meta name="description" content="Class project for Sean Bordley at San Mateo City College - Mobile Web Application Development.">
     <title>Mobile Web Application Development - Sean Bordley</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 
@@ -15,14 +14,22 @@
     </header>
 
     <main>
-        <section>
-            <img src="sausages.jpg" id="profile-img" alt="a picture of Sean Bordley, holding a plate of breakfast foods wearing a red hoody and shorts" class="profile-pic">
-            <p>
-                My name is Sean Bordley, work in tech, and also attend San Mateo City College. I enjoy working on led projects, being on the water and Doctor Who Conventions.
+        <section itemscope itemtype="https://schema.org/Person">
+            <img src="sausages.jpg" 
+                 id="profile-img" 
+                 alt="Sean Bordley holding a plate of breakfast foods, wearing a red hoodie and shorts" 
+                 class="profile-pic"
+                 itemprop="image">
+            
+            <p itemprop="description">
+                My name is <span itemprop="name">Sean Bordley</span>. I work in tech and attend 
+                <span itemprop="affiliation">San Mateo City College</span>. 
+                I enjoy working on LED projects, being on the water, and attending Doctor Who Conventions.
             </p>
         </section>
 
         <section class="clear-float">
+            <h2 class="visually-hidden" style="display:none;">Goals</h2>
             <p>
                 I am attending this class because I want to bridge the gap between my hardware 
                 background and the software that powers modern interfaces. Also because I like 
@@ -35,7 +42,6 @@
             <ul>
                 <li>HTML</li>
                 <li>CSS</li>
-                <li>JavaScript</li>
             </ul>
         </section>
 
