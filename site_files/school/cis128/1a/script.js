@@ -12,7 +12,7 @@ $(document).ready(function() {
             heading.css("color", "black");
         }, 1000);
 
-        image.css("border", "-5px solid blue");
+        image.css("border", "5px solid blue");
 
         setTimeout(function() {
             image.css("border", "none");
