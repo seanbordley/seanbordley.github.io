@@ -10,12 +10,12 @@ $(document).ready(function() {
 
         setTimeout(function() {
             heading.css("color", "black");
-        }, 2000);
+        }, 1000);
 
-        image.css("border", "5px solid blue");
+        image.css("border", "6px solid blue");
 
         setTimeout(function() {
             image.css("border", "none");
-        }, 2000);
+        }, 1000);
     });
 });
