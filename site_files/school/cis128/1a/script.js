@@ -7,15 +7,14 @@ $(document).ready(function() {
                .animate({ fontSize: "2em" }, 1000);
 
         heading.css("color", "blue");
-
         setTimeout(function() {
             heading.css("color", "black");
         }, 1000);
 
-        image.css("border", "5px solid blue");
+        image.css("border-color", "blue");
 
         setTimeout(function() {
-            image.css("border", "none");
+            image.css("border-color", "transparent");
         }, 1000);
     });
 });
