@@ -8,7 +8,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Custom Scrollbar Styling */
@@ -17,12 +16,13 @@
             width: 12px;
         }
         ::-webkit-scrollbar-track {
-            background: #000000; 
+            background: transparent; 
         }
         ::-webkit-scrollbar-thumb {
             background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid #000000; /* Creates padding around thumb */
+            border: 3px solid transparent; /* Creates padding around thumb */
+            background-clip: padding-box;
         }
         ::-webkit-scrollbar-thumb:hover {
             background-color: #555555; 
@@ -30,27 +30,28 @@
         /* Firefox */
         html {
             scrollbar-width: thin;
-            scrollbar-color: #333333 #000000;
+            scrollbar-color: #333333 transparent;
         }
 
         html, body {
             height: 100%;
             margin: 0;
+            background-color: transparent;
         }
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #000000; /* Pure black background */
+            font-family: sans-serif; /* JS will inherit parent font */
+            background-color: transparent; 
             overflow-x: hidden;
-            color: #d1d5db; /* Default text color (gray-300) */
+            color: #d1d5db; 
         }
         main {
             position: relative;
             width: 100%;
             min-height: 100%;
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Prevents top of content from cutting off */
             justify-content: center;
-            padding: 2rem;
+            padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
             transition: opacity 0.3s ease;
         }
@@ -68,26 +69,35 @@
             padding: 2rem;
         }
 
+        :root {
+            --highlight-color: #3b82f6; /* Fallback if opened outside iframe */
+            --highlight-shadow: none;
+        }
+
+        .dynamic-highlight {
+            color: var(--highlight-color);
+            text-shadow: var(--highlight-shadow);
+        }
+
         .content-title {
             font-size: 3rem; /* 48px */
             font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.5rem; /* Adjusted spacing for subtitle */
+            margin-bottom: 0.5rem; 
         }
 
         /* New Subtitle Style */
         .content-subtitle {
             font-size: 1.25rem; /* 20px */
             font-weight: 400;
-            color: #9ca3af; /* gray-400 */
-            margin-bottom: 2.5rem; /* Spacing below subtitle */
+            color: #9ca3af; 
+            margin-bottom: 2.5rem; 
         }
 
         .content-body {
             font-size: 1.125rem; /* 18px */
             line-height: 1.75; /* 28px */
-            color: #d1d5db; /* gray-300 */
-            text-align: left; /* Align body text to the left for readability */
+            color: #d1d5db; 
+            text-align: left; 
         }
         .content-body p {
             margin-bottom: 1.5rem;
@@ -97,14 +107,19 @@
         .content-body img,
         .content-body .video-wrapper {
             max-width: 100%;
-            height: auto;
             border-radius: 0.75rem; /* 12px */
             margin-top: 2rem;
             margin-bottom: 2rem;
-            display: block; /* Changed to block for better centering control */
+            display: block; 
             margin-left: auto;
             margin-right: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-body img {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
+            object-fit: cover;
         }
 
         /* YouTube-like video container for aspect ratio */
@@ -122,7 +137,6 @@
             height: 100%;
         }
 
-
         /* === SOCIAL ICONS CSS === */
         .social-icons {
             position: fixed;
@@ -134,7 +148,7 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            padding: 0.8vmin 1.6vmin; /* Converted from rem */
+            padding: 0.8vmin 1.6vmin; 
             background-color: rgba(0,0,0,0.7);
             gap:5vmin;
         }
@@ -175,7 +189,7 @@
             .social-icons {
                 position: fixed;
                 top: 50%;
-                left: 2.4vmin; /* Converted from rem */
+                left: 2.4vmin; 
                 right: auto;
                 bottom: auto;
                 width: auto;
@@ -198,7 +212,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             background-color: #000;
-            color: blue;
+            color: var(--highlight-color);
             z-index: 9999;
             flex-direction: column;
             justify-content: center;
@@ -219,9 +233,6 @@
         /* --- Responsive Design --- */
         
         @media (max-width: 700px) {
-            body {
-                overflow-y: auto;
-            }
             .content-container {
                 padding: 1.6vmin;
             }
@@ -295,13 +306,13 @@
             margin-bottom: 1.6vmin;
             border-radius: 5px;
             border: 1px solid #ccc;
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
             color: black;
             background-color: white;
             box-sizing: border-box;
         }
         .contact-modal button {
-            background-color: blue;
+            background-color: var(--highlight-color);
             color: white;
             cursor: pointer;
             border: none;
@@ -317,12 +328,44 @@
         #form-success-message p {
             text-align: center; 
             font-size: 5vmin; 
-            color: blue;
             font-weight: bold;
         }
     </style>
 </head>
 <body class="text-slate-300">
+
+    <script>
+        // --- INHERIT STYLES FROM PARENT ---
+        if (window !== window.parent) {
+            try {
+                const parentDoc = window.parent.document;
+                
+                // 1. Inherit Font Family
+                const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
+                document.body.style.fontFamily = parentBodyStyle.fontFamily;
+
+                // 2. Inherit "Hover Font" Color
+                const parentTitle = parentDoc.getElementById('project-title-display');
+                if (parentTitle) {
+                    const titleStyle = window.parent.getComputedStyle(parentTitle);
+                    document.documentElement.style.setProperty('--highlight-color', titleStyle.color);
+                    if (titleStyle.textShadow !== 'none') {
+                        document.documentElement.style.setProperty('--highlight-shadow', titleStyle.textShadow);
+                    }
+                }
+
+                // 3. Clone stylesheet links
+                const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
+                parentStyles.forEach(node => {
+                    if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
+                        document.head.appendChild(node.cloneNode(true));
+                    }
+                });
+            } catch (err) {
+                console.warn("Could not inherit styles from parent due to cross-origin restrictions.");
+            }
+        }
+    </script>
     
     <!-- 
     <div class="social-icons">
@@ -350,29 +393,29 @@
     <!-- Orientation Lock Message -->
     <div id="orientation-lock-message">
         <div>
-            <i class="fas fa-mobile-alt"></i>
+            <i class="fas fa-mobile-alt dynamic-highlight"></i>
             <p>Please rotate your device to portrait mode for the best experience.</p>
         </div>
     </div>
 
     <main id="main-content">
         <div class="content-container">
-            <h1 class="content-title">Welcome to the New Page Layout</h1>
+            <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
             <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
             <div class="content-body">
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
                 <!-- How to embed an image -->
                 <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
-                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+                <img src="main.jpg" alt="Project Cover Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
                 <!-- How to embed a video -->
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
-                <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-wrapper" id="video-container">
+                    <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 
-                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
                 
                 <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
@@ -386,6 +429,7 @@
             <span id="close-modal-button" class="close-button">&times;</span>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
                 <div id="form-content">
+                    <h2 class="dynamic-highlight">CONTACT</h2>
                     <label class="contact-label">
                         Your email:
                         <input type="email" name="email">
@@ -397,7 +441,7 @@
                     <button type="submit">Send</button>
                 </div>
                 <div id="form-success-message">
-                    <p>Thank you!</p>
+                    <p class="dynamic-highlight">Thank you!</p>
                 </div>
             </form>
         </div>
@@ -411,6 +455,16 @@
         const contactForm = document.getElementById('contact-form');
         const formContent = document.getElementById('form-content');
         const successMessage = document.getElementById('form-success-message');
+
+        // --- CONDITIONAL VIDEO RENDERING ---
+        const videoFrame = document.getElementById('video-frame');
+        const videoContainer = document.getElementById('video-container');
+        if (videoFrame && videoContainer) {
+            const src = videoFrame.getAttribute('src');
+            if (!src || src.trim() === '') {
+                videoContainer.style.display = 'none';
+            }
+        }
 
         /*
         emailIconButton.addEventListener('click', (e) => {
@@ -465,30 +519,21 @@
         let touchStartX = 0;
         let touchEndX = 0;
 
-        // This function will handle the swipe logic
         function handleHomePageSwipe() {
-            // We only want this to trigger on mobile portrait views.
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
             
-            // Check if orientation lock message is VISIBLE.
-            // If it is display: flex (or not none), we are technically in a state where we shouldn't navigate home via swipe on content,
-            // BUT the user asked: "if the orientation screen is up do nothing".
-            // The orientation screen only shows up in LANDSCAPE on mobile (due to media query).
-            // The isMobilePortrait check already ensures we are NOT in landscape.
-            // So, if we are in portrait, the lock screen is hidden.
-            // Therefore, simply checking isMobilePortrait is sufficient to ensure we don't trigger this while the lock screen is up.
-            
-            // Check for a significant horizontal swipe (e.g., more than 100px)
             if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
-                // Navigate to the site's root URL, which acts as the "home page".
-                window.location.href = window.location.origin; 
+                try {
+                    window.top.location.href = '/'; 
+                } catch (e) {
+                    window.location.href = '/';
+                }
             }
         }
 
-        // Add listeners to the main content area to detect touch start and end points.
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true }); // Using passive listener for better scroll performance
+        }, { passive: true });
 
         mainContent.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
