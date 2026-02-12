@@ -33,24 +33,27 @@
             scrollbar-color: #333333 transparent;
         }
 
+        /* SCROLLING FIX: Removed height limits so body can grow naturally */
         html, body {
-            height: 100%;
             margin: 0;
+            padding: 0;
             background-color: transparent;
         }
+        
         body {
             font-family: sans-serif; /* JS will inherit parent font */
             background-color: transparent; 
             overflow-x: hidden;
+            overflow-y: auto; /* Forces vertical scrolling */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
             color: #d1d5db; 
         }
+        
+        /* SCROLLING FIX: Switched to block layout to eliminate clipping bugs */
         main {
             position: relative;
             width: 100%;
-            min-height: 100%;
-            display: flex;
-            align-items: flex-start; /* Prevents top of content from cutting off */
-            justify-content: center;
+            display: block; 
             padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
             transition: opacity 0.3s ease;
@@ -67,6 +70,7 @@
             width: 100%;
             text-align: center;
             padding: 2rem;
+            margin: 0 auto; /* Horizontally centers the block safely */
         }
 
         :root {
@@ -235,6 +239,7 @@
         @media (max-width: 700px) {
             .content-container {
                 padding: 1.6vmin;
+                padding-bottom: 10vmin; /* Give extra space for bottom mobile view */
             }
             .content-title {
                 font-size: 3.6vmin;
