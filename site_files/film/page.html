@@ -39,6 +39,7 @@
             font-family: sans-serif; 
             background-color: transparent;
             overflow-x: hidden;
+            overflow-y: auto; /* Guarantees vertical scroll is enabled */
             color: #f1f5f9;
         }
         
@@ -46,7 +47,6 @@
             position: relative;
             width: 100%;
             min-height: 100vh;
-            /* Changed to standard block layout to guarantee the top is never cut off */
             display: block; 
             padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
@@ -58,7 +58,7 @@
             width: 100%;
             text-align: center;
             padding-bottom: 6rem; /* Bottom padding to clear parent's social icons */
-            margin: 0 auto; /* Centers horizontally without messing up vertical scroll */
+            margin: 0 auto; /* Centers horizontally */
         }
 
         :root {
@@ -89,10 +89,21 @@
         }
 
         /* Styling for embedded media */
-        .content-body img,
+        .content-body img {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
+            object-fit: cover; /* Ensures image fills the aspect ratio without distorting */
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
         .content-body .video-wrapper {
             max-width: 100%;
-            height: auto;
             border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -177,13 +188,14 @@
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
                 <!-- How to embed an image -->
-                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page and match the video frame size.</p>
                 <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
                 <!-- How to embed a video -->
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
-                <div class="video-wrapper">
-                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-wrapper" id="video-container">
+                    <!-- Simply clear the src attribute below (src="") to hide this entire video frame automatically -->
+                    <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 
                 <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
@@ -196,6 +208,17 @@
 
     <script>
         const mainContent = document.getElementById('main-content');
+
+        // --- CONDITIONAL VIDEO RENDERING ---
+        // Checks if the iframe has a valid source link. If it doesn't, it hides the video container.
+        const videoFrame = document.getElementById('video-frame');
+        const videoContainer = document.getElementById('video-container');
+        if (videoFrame && videoContainer) {
+            const src = videoFrame.getAttribute('src');
+            if (!src || src.trim() === '') {
+                videoContainer.style.display = 'none';
+            }
+        }
 
         // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
         let touchStartX = null;
