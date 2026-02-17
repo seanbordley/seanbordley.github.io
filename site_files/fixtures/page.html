@@ -6,13 +6,9 @@
     <title>Sean Bordley - Project Details</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- CUSTOM SCROLLBAR STYLING (Works on Desktop & Mobile) --- */
-        
-        /* Webkit (Chrome, Safari, Edge, Mobile Browsers) */
+        /* Custom Scrollbar Styling */
         ::-webkit-scrollbar {
             width: 12px;
-            height: 12px;
-            display: block; /* Forces visibility on some mobile engines */
         }
         ::-webkit-scrollbar-track {
             background: transparent; 
@@ -20,33 +16,32 @@
         ::-webkit-scrollbar-thumb {
             background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid transparent; 
+            border: 3px solid transparent;
             background-clip: padding-box;
         }
         ::-webkit-scrollbar-thumb:hover {
             background-color: #555555; 
         }
-
+        
         /* Firefox */
         html {
             scrollbar-width: thin;
             scrollbar-color: #333333 transparent;
+            /* FIX: Allow natural expansion */
+            height: auto;
+            overflow-y: auto;
         }
 
-        /* --- LAYOUT & CORE STYLES --- */
-        html, body {
+        body {
             margin: 0;
             padding: 0;
             background-color: transparent;
-            min-height: 100%;
-            /* Momentum scrolling for mobile */
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        body {
+            /* FIX: min-height instead of fixed height to allow scrolling */
+            min-height: 100vh;
+            height: auto;
             font-family: sans-serif; 
-            overflow-x: hidden;
+            overflow-x: hidden; 
+            overflow-y: visible;
             color: #f1f5f9;
         }
         
@@ -63,8 +58,8 @@
             max-width: 800px;
             width: 100%;
             text-align: center;
-            padding-bottom: 6rem;
-            margin: 0 auto;
+            padding-bottom: 6rem; 
+            margin: 0 auto; 
         }
 
         :root {
@@ -78,13 +73,13 @@
         }
 
         .content-title {
-            font-size: 3rem;
+            font-size: 3rem; 
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
 
         .content-body {
-            font-size: 1.125rem;
+            font-size: 1.125rem; 
             line-height: 1.75;
             color: #f1f5f9;
             text-align: left;
@@ -96,8 +91,8 @@
 
         .content-body img {
             width: 100%;
-            aspect-ratio: 16 / 9;
-            object-fit: cover;
+            aspect-ratio: 16 / 9; 
+            object-fit: cover; 
             border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -109,7 +104,7 @@
 
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; 
             height: 0;
             overflow: hidden;
             border-radius: 0.75rem;
@@ -125,7 +120,6 @@
             height: 100%;
         }
 
-        /* --- Responsive Design --- */
         @media (max-width: 700px) {
             main {
                 padding: 2rem 1.6vmin;
@@ -134,27 +128,24 @@
                 padding-bottom: 10vmin; 
             }
             .content-title {
-                font-size: 8vmin;
+                font-size: 3.6vmin;
             }
             .content-body {
-                font-size: 4.5vmin;
+                font-size: 1.6vmin;
             }
         }
     </style>
 </head>
-<body>
+<body class="text-slate-300">
 
     <script>
         // --- INHERIT STYLES FROM PARENT ---
         if (window !== window.parent) {
             try {
                 const parentDoc = window.parent.document;
-                
-                // 1. Inherit Font Family
                 const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
                 document.body.style.fontFamily = parentBodyStyle.fontFamily;
 
-                // 2. Inherit Highlight Colors
                 const parentTitle = parentDoc.getElementById('project-title-display');
                 if (parentTitle) {
                     const titleStyle = window.parent.getComputedStyle(parentTitle);
@@ -164,7 +155,6 @@
                     }
                 }
 
-                // 3. Clone stylesheets for fonts
                 const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
                 parentStyles.forEach(node => {
                     if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
@@ -184,8 +174,7 @@
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
                 <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page and match the video frame size.</p>
-                
-                <img src="main.jpg" alt="Main Project Image" onerror="this.style.display='none';">
+                <img src="main.jpg" alt="Main Project Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
                 <div class="video-wrapper" id="video-container">
@@ -203,6 +192,16 @@
     <script>
         const mainContent = document.getElementById('main-content');
 
+        // --- IFRAME RESIZING ---
+        function sendHeight() {
+            if (window !== window.parent) {
+                const height = document.documentElement.scrollHeight;
+                window.parent.postMessage({ frameHeight: height, type: 'resize' }, '*');
+            }
+        }
+        window.addEventListener('load', sendHeight);
+        window.addEventListener('resize', sendHeight);
+
         // --- CONDITIONAL VIDEO RENDERING ---
         const videoFrame = document.getElementById('video-frame');
         const videoContainer = document.getElementById('video-container');
@@ -213,25 +212,31 @@
             }
         }
 
-        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
+        // --- SWIPE TO GO HOME ---
         let touchStartX = null;
+        let touchStartY = null;
 
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
         mainContent.addEventListener('touchend', e => {
             if (touchStartX === null) return;
             const touchEndX = e.changedTouches[0].screenX;
+            const touchEndY = e.changedTouches[0].screenY;
             
+            const dx = touchEndX - touchStartX;
+            const dy = touchEndY - touchStartY;
+
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
-            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
-                if (window.location.origin !== "null" && !window.location.origin.includes("file://")) {
-                    try {
-                        window.top.location.href = '/'; 
-                    } catch (err) {
-                        window.location.href = '/';
-                    }
+            
+            if (isMobilePortrait && Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy)) { 
+                if (window.location.origin === "null" || window.location.origin.includes("file://")) return;
+                try {
+                    window.top.location.href = '/'; 
+                } catch (err) {
+                    window.location.href = '/';
                 }
             }
             touchStartX = null;
