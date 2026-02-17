@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Bordley - Project Details</title>
+    <title>Sean Bordley</title>
     <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,149 +12,178 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Custom Scrollbar Styling */
-        /* Webkit (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
             width: 12px;
         }
         ::-webkit-scrollbar-track {
-            background: transparent; 
+            background: rgba(0, 0, 0, 0.1); 
         }
         ::-webkit-scrollbar-thumb {
             background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid transparent; /* Creates padding around thumb */
-            background-clip: padding-box;
+            border: 3px solid transparent;
+            background-clip: content-box;
         }
         ::-webkit-scrollbar-thumb:hover {
             background-color: #555555; 
         }
-        /* Firefox */
+
         html {
             scrollbar-width: thin;
             scrollbar-color: #333333 transparent;
+            background-color: transparent; 
         }
 
-        /* RESET & SCROLLING SETUP */
-        html {
-            height: auto;
-            min-height: 100%;
-        }
-        
-        body {
-            /* Inherited from parent JS, fallback to sans-serif */
-            font-family: sans-serif; 
-            background-color: transparent; 
-            /* Standard scrolling behavior */
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
-            overflow-y: auto;
-            color: #f1f5f9;
+            background-color: transparent; 
         }
-        
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            color: #d1d5db; 
+        }
+
         main {
             position: relative;
             width: 100%;
-            display: block; 
-            padding: 4rem 2rem 4rem 2rem;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
             box-sizing: border-box;
+            transition: opacity 0.3s ease;
         }
 
-        /* Container for the content */
+        main.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .content-container {
             max-width: 800px;
             width: 100%;
             text-align: center;
-            margin: 0 auto; 
-            padding-bottom: 6rem;
-        }
-
-        :root {
-            --highlight-color: #3b82f6; /* Fallback if opened outside iframe */
-            --highlight-shadow: none;
-        }
-
-        .dynamic-highlight {
-            color: var(--highlight-color);
-            text-shadow: var(--highlight-shadow);
+            padding: 2rem;
         }
 
         .content-title {
-            font-size: 3rem; /* 48px */
+            font-size: 3rem;
             font-weight: 700;
+            color: #ffffff;
             margin-bottom: 0.5rem;
         }
 
+        .content-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: #9ca3af;
+            margin-bottom: 2.5rem;
+        }
+
         .content-body {
-            font-size: 1.125rem; /* 18px */
+            font-size: 1.125rem;
             line-height: 1.75;
-            color: #f1f5f9;
+            color: #d1d5db;
             text-align: left;
         }
-        
+
         .content-body p {
             margin-bottom: 1.5rem;
         }
 
-        /* Styling for embedded media */
-        .content-body img,
-        .content-body .video-wrapper {
-            max-width: 100%;
-            border-radius: 0.75rem; /* 12px */
+        /* Unified Media Styling */
+        .media-container {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Ensures image and video are the same size */
+            border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
-            display: block; 
-            margin-left: auto;
-            margin-right: auto;
+            overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background-color: rgba(0,0,0,0.2);
+            display: block;
+        }
+
+        /* Hide container if no source is present */
+        .media-container:not(:has(img[src])), 
+        .media-container:has(img[src=""]),
+        .media-container:not(:has(iframe[src])),
+        .media-container:has(iframe[src=""]) {
+            display: none;
         }
 
         .content-body img {
             width: 100%;
-            aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
+            height: 100%;
             object-fit: cover;
+            display: block;
         }
 
-        /* YouTube-like video container for aspect ratio */
         .video-wrapper {
+            width: 100%;
+            height: 100%;
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
-            height: 0;
-            overflow: hidden;
         }
+
         .video-wrapper iframe {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            border: none;
         }
 
-        /* --- Responsive Design --- */
+        /* Orientation Lock Message */
+        #orientation-lock-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: #3b82f6;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        #orientation-lock-message i {
+            font-size: 6vmin;
+            margin-bottom: 2vmin;
+            animation: rotate-animation 1.5s ease-in-out infinite;
+        }
+
+        @keyframes rotate-animation {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
         @media (max-width: 700px) {
-            main {
-                padding: 2rem 1.6vmin 12vmin 1.6vmin; 
-            }
-            .content-title {
-                font-size: 3.6vmin;
-            }
-            .content-body {
-                font-size: 1.6vmin;
-            }
-             .contact-label {
-                display: none;
-            }
+            body { overflow-y: auto; }
+            .content-container { padding: 1.6vmin; }
+            .content-title { font-size: 8vmin; }
+            .content-subtitle { font-size: 4vmin; }
+            .content-body { font-size: 4vmin; }
         }
 
-        /* === CONTACT FORM STYLES === */
+        @media (max-width: 850px) and (orientation: landscape) {
+            #main-content { display: none; }
+            #orientation-lock-message { display: flex; }
+        }
+
+        /* Contact Form Styles */
         .contact-modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
             z-index: 2000;
             display: flex;
             justify-content: center;
@@ -163,180 +192,105 @@
             pointer-events: none;
             transition: opacity 0.3s ease;
         }
+
         .contact-modal-overlay.is-visible {
             opacity: 1;
             pointer-events: auto;
         }
+
         .contact-modal {
-            background-color: #777777;
-            padding: 3vmin;
-            border-radius: 10px;
+            background-color: #262626;
+            padding: 2rem;
+            border-radius: 12px;
             width: 90%;
             max-width: 500px;
             position: relative;
-            color: black;
+            color: white;
+            border: 1px solid #404040;
         }
+
         .contact-modal .close-button {
             position: absolute;
-            top: .5vmin;
-            right: 2vmin;
-            font-size: 4vmin;
+            top: 1rem; right: 1rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            color: #333;
+            color: #a3a3a3;
         }
-        .contact-modal h2 {
-            margin-top: 0;
-            text-align: center;
-        }
+
         .contact-modal input, .contact-modal textarea, .contact-modal button {
             width: 100%;
-            padding: 1.2vmin;
-            margin-bottom: 1.6vmin;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-family: inherit;
-            color: black;
-            background-color: white;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            border: 1px solid #404040;
+            font-family: 'Inter', sans-serif;
+            color: white;
+            background-color: #171717;
             box-sizing: border-box;
         }
+
         .contact-modal button {
-            background-color: var(--highlight-color);
+            background-color: #2563eb;
             color: white;
             cursor: pointer;
             border: none;
+            font-weight: 600;
         }
-        .contact-modal label {
-            display: block;
-            margin-bottom: 0.8vmin;
-            text-align: left;
-        }
-        #form-success-message {
-            display: none;
-        }
-        #form-success-message p {
-            text-align: center; 
-            font-size: 5vmin; 
-            color: blue;
-            font-weight: bold;
-        }
-        
-        /* Orientation Lock Message */
-        #orientation-lock-message {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: #000;
-            color: var(--highlight-color);
-            z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        #orientation-lock-message i {
-            font-size: 6vmin;
-            margin-bottom: 2vmin;
-            animation: rotate-animation 1.5s ease-in-out infinite;
-        }
-        @keyframes rotate-animation {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-            100% { transform: rotate(-90deg); }
-        }
-        
-        @media (max-width: 850px) and (orientation: landscape) {
-            main { display: none; }
-            #orientation-lock-message { display: flex; }
-        }
+
+        #form-success-message { display: none; text-align: center; }
+        #form-success-message p { font-size: 1.25rem; color: #3b82f6; font-weight: bold; }
     </style>
 </head>
-<body class="text-slate-300">
+<body>
 
-    <script>
-        // --- INHERIT STYLES FROM PARENT ---
-        if (window !== window.parent) {
-            try {
-                const parentDoc = window.parent.document;
-                
-                // 1. Inherit Font Family
-                const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
-                document.body.style.fontFamily = parentBodyStyle.fontFamily;
-
-                // 2. Inherit "Hover Font" Color
-                const parentTitle = parentDoc.getElementById('project-title-display');
-                if (parentTitle) {
-                    const titleStyle = window.parent.getComputedStyle(parentTitle);
-                    document.documentElement.style.setProperty('--highlight-color', titleStyle.color);
-                    if (titleStyle.textShadow !== 'none') {
-                        document.documentElement.style.setProperty('--highlight-shadow', titleStyle.textShadow);
-                    }
-                }
-
-                // 3. Clone stylesheet links
-                const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
-                parentStyles.forEach(node => {
-                    if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
-                        document.head.appendChild(node.cloneNode(true));
-                    }
-                });
-            } catch (err) {
-                console.warn("Could not inherit styles from parent due to cross-origin restrictions.");
-            }
-        }
-    </script>
-
-    <!-- Orientation Lock Message -->
     <div id="orientation-lock-message">
         <div>
-            <i class="fas fa-mobile-alt dynamic-highlight"></i>
+            <i class="fas fa-mobile-alt"></i>
             <p>Please rotate your device to portrait mode for the best experience.</p>
         </div>
     </div>
 
     <main id="main-content">
         <div class="content-container">
-            <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
-            
+            <h1 class="content-title">Welcome to the New Page Layout</h1>
+            <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
             <div class="content-body">
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
-                <!-- How to embed an image -->
                 <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
-                <img src="main.jpg" alt="Project Cover Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+                <div class="media-container">
+                    <img src="main.jpg" alt="Embedded Image" onerror="this.parentElement.style.display='none';">
+                </div>
 
-                <!-- How to embed a video -->
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
-                <div class="video-wrapper" id="video-container">
-                    <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="media-container">
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" allowfullscreen></iframe>
+                    </div>
                 </div>
                 
-                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
                 
-                <hr class="border-blue-700 my-8" style="border-color: var(--highlight-color); opacity: 0.3;">
+                <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
         </div>
     </main>
 
-    <!-- Contact Form Modal -->
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
                 <div id="form-content">
-                    <h2 class="dynamic-highlight">CONTACT</h2>
-                    
-                    <label class="contact-label">Your email:</label>
-                    <input type="email" name="email">
-                    
-                    <label class="contact-label">Your message:</label>
-                    <textarea name="message"></textarea>
-                    
-                    <button type="submit">Send</button>
+                    <h2 class="text-xl font-bold mb-4 text-center">Get in Touch</h2>
+                    <label class="block mb-1 text-sm text-gray-400">Your email:</label>
+                    <input type="email" name="email" required>
+                    <label class="block mb-1 text-sm text-gray-400">Your message:</label>
+                    <textarea name="message" rows="4" required></textarea>
+                    <button type="submit">Send Message</button>
                 </div>
                 <div id="form-success-message">
-                    <p class="dynamic-highlight">Thank you!</p>
+                    <p>Thank you!</p>
                 </div>
             </form>
         </div>
@@ -350,28 +304,9 @@
         const formContent = document.getElementById('form-content');
         const successMessage = document.getElementById('form-success-message');
 
-        // --- CONDITIONAL VIDEO RENDERING ---
-        const videoFrame = document.getElementById('video-frame');
-        const videoContainer = document.getElementById('video-container');
-        if (videoFrame && videoContainer) {
-            const src = videoFrame.getAttribute('src');
-            if (!src || src.trim() === '') {
-                videoContainer.style.display = 'none';
-            }
-        }
-
-        // --- CONTACT FORM LOGIC ---
-        // Open modal logic to be called by parent
-        window.openContactModal = () => {
-            contactModalOverlay.classList.add('is-visible');
-            mainContent.style.opacity = '0'; // Hide main content visual
-            mainContent.style.pointerEvents = 'none';
-        };
-
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
-            mainContent.style.opacity = '1';
-            mainContent.style.pointerEvents = 'auto';
+            mainContent.classList.remove('is-hidden');
             setTimeout(() => {
                 contactForm.reset();
                 formContent.style.display = 'block';
@@ -381,66 +316,38 @@
 
         closeModalButton.addEventListener('click', closeModal);
         contactModalOverlay.addEventListener('click', (e) => {
-            if (e.target === contactModalOverlay) {
-                closeModal();
-            }
-        });
-
-        // Listen for message from parent to open modal
-        window.addEventListener('message', (event) => {
-            if (event.data === 'openContactModal') {
-                window.openContactModal();
-            }
+            if (e.target === contactModalOverlay) closeModal();
         });
 
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const formData = new FormData(this);
             fetch(this.action, {
                 method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
+                body: new FormData(this),
+                headers: { 'Accept': 'application/json' }
             }).then(response => {
                 if (response.ok) {
-                    this.reset(); 
+                    this.reset();
                     formContent.style.display = 'none';
                     successMessage.style.display = 'block';
-                    setTimeout(closeModal, 2000); 
-                } else {
-                    alert('Oops! There was a problem submitting your form.');
+                    setTimeout(closeModal, 2000);
                 }
-            }).catch(error => {
-                alert('Oops! There was a problem submitting your form.');
             });
         });
 
-        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
         let touchStartX = 0;
         let touchEndX = 0;
-
-        function handleHomePageSwipe() {
-            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
-            
-            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
-                try {
-                    window.top.location.href = '/'; 
-                } catch (e) {
-                    window.location.href = '/';
-                }
-            }
-        }
-
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
 
         mainContent.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
-            handleHomePageSwipe();
+            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
+            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
+                window.location.href = window.location.origin; 
+            }
         });
     </script>
-
 </body>
 </html>
