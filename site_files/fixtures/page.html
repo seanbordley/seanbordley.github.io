@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,49 +11,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* --- RESET & SCROLLING --- */
+        /* Custom Scrollbar Styling */
+        /* Webkit (Chrome, Safari, Edge) */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #333333; 
+            border-radius: 6px;
+            border: 3px solid transparent; /* Creates padding around thumb */
+            background-clip: padding-box;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #555555; 
+        }
+        /* Firefox */
         html {
-            /* Allow the document to grow naturally for scrolling */
-            height: auto;
-            min-height: 100%;
             scrollbar-width: thin;
             scrollbar-color: #333333 transparent;
         }
+
+        /* RESET & SCROLLING SETUP */
+        html {
+            height: auto;
+            min-height: 100%;
+        }
+        
         body {
-            /* Standard document flow - simplest way to ensure scrolling works */
+            /* Inherited from parent JS, fallback to sans-serif */
+            font-family: sans-serif; 
+            background-color: transparent; 
+            /* Standard scrolling behavior */
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            background-color: transparent;
-            font-family: 'Inter', sans-serif;
-            color: #d1d5db;
             overflow-x: hidden;
+            overflow-y: auto;
+            color: #f1f5f9;
         }
-
-        /* --- CUSTOM SCROLLBAR (Webkit) --- */
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb {
-            background-color: #333333;
-            border-radius: 6px;
-            border: 3px solid transparent;
-            background-clip: padding-box;
-        }
-        ::-webkit-scrollbar-thumb:hover { background-color: #555555; }
-
-        /* --- LAYOUT --- */
+        
         main {
-            display: block;
+            position: relative;
             width: 100%;
-            max-width: 800px; /* Constrain width for readability */
-            margin: 0 auto;   /* Center horizontally */
-            padding: 4rem 2rem 8rem 2rem; /* Top/Bottom padding for spacing */
+            display: block; 
+            padding: 4rem 2rem 4rem 2rem;
             box-sizing: border-box;
         }
 
-        /* --- TYPOGRAPHY & THEME --- */
+        /* Container for the content */
+        .content-container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            margin: 0 auto; 
+            padding-bottom: 6rem;
+        }
+
         :root {
-            --highlight-color: #3b82f6; /* Default Blue */
+            --highlight-color: #3b82f6; /* Fallback if opened outside iframe */
             --highlight-shadow: none;
         }
 
@@ -62,68 +80,80 @@
             text-shadow: var(--highlight-shadow);
         }
 
-        h1.content-title {
-            font-size: 3rem;
+        .content-title {
+            font-size: 3rem; /* 48px */
             font-weight: 700;
             margin-bottom: 0.5rem;
-            text-align: center;
         }
 
-        /* Subtitle removed as requested */
-
         .content-body {
-            font-size: 1.125rem;
+            font-size: 1.125rem; /* 18px */
             line-height: 1.75;
             color: #f1f5f9;
             text-align: left;
         }
-        .content-body p { margin-bottom: 1.5rem; }
-
-        /* --- MEDIA STYLES --- */
-        img.project-image {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            object-fit: cover;
-            border-radius: 0.75rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            display: block;
+        
+        .content-body p {
+            margin-bottom: 1.5rem;
         }
 
+        /* Styling for embedded media */
+        .content-body img,
+        .content-body .video-wrapper {
+            max-width: 100%;
+            border-radius: 0.75rem; /* 12px */
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .content-body img {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
+            object-fit: cover;
+        }
+
+        /* YouTube-like video container for aspect ratio */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
             height: 0;
             overflow: hidden;
-            border-radius: 0.75rem;
-            margin: 2rem 0;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
         .video-wrapper iframe {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
 
-        /* --- WEBAPP LIST --- */
-        #webapp-list {
-            list-style: none;
-            padding: 0;
-            margin-bottom: 2rem;
+        /* --- Responsive Design --- */
+        @media (max-width: 700px) {
+            main {
+                padding: 2rem 1.6vmin 12vmin 1.6vmin; 
+            }
+            .content-title {
+                font-size: 3.6vmin;
+            }
+            .content-body {
+                font-size: 1.6vmin;
+            }
+             .contact-label {
+                display: none;
+            }
         }
-        #webapp-list li { margin-bottom: 0.5rem; }
-        #webapp-list a {
-            color: var(--highlight-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-        #webapp-list a:hover { text-decoration: underline; opacity: 0.8; }
 
-        /* --- CONTACT MODAL --- */
+        /* === CONTACT FORM STYLES === */
         .contact-modal-overlay {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 2000;
             display: flex;
@@ -138,77 +168,102 @@
             pointer-events: auto;
         }
         .contact-modal {
-            background-color: #0f172a;
+            background-color: #777777;
             padding: 3vmin;
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
             position: relative;
-            color: #f1f5f9;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8);
-            border: 1px solid #1e293b;
+            color: black;
         }
         .contact-modal .close-button {
             position: absolute;
-            top: 0.5vmin; right: 2vmin;
+            top: .5vmin;
+            right: 2vmin;
             font-size: 4vmin;
             cursor: pointer;
-            color: #cbd5e1;
+            color: #333;
         }
-        .contact-modal h2 { margin-top: 0; text-align: center; }
-        .contact-modal input, .contact-modal textarea {
+        .contact-modal h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .contact-modal input, .contact-modal textarea, .contact-modal button {
             width: 100%;
             padding: 1.2vmin;
             margin-bottom: 1.6vmin;
             border-radius: 5px;
-            border: 1px solid #334155;
-            background-color: #1e293b;
-            color: #ffffff;
+            border: 1px solid #ccc;
             font-family: inherit;
+            color: black;
+            background-color: white;
             box-sizing: border-box;
         }
-        .contact-modal input:focus, .contact-modal textarea:focus {
-            outline: none;
-            border-color: var(--highlight-color);
-        }
         .contact-modal button {
-            width: 100%;
-            padding: 1.2vmin;
             background-color: var(--highlight-color);
             color: white;
-            font-weight: 600;
-            border: none;
-            border-radius: 5px;
             cursor: pointer;
+            border: none;
         }
-        .contact-modal button:hover { opacity: 0.9; }
-        .contact-label { display: none; } /* Labels hidden on mobile per request */
+        .contact-modal label {
+            display: block;
+            margin-bottom: 0.8vmin;
+            text-align: left;
+        }
         #form-success-message {
             display: none;
-            text-align: center;
-            font-size: 5vmin;
-            font-weight: bold;
-            color: var(--highlight-color);
         }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 700px) {
-            main { padding: 2rem 1.5rem 8rem 1.5rem; }
-            h1.content-title { font-size: 2.25rem; }
-            .content-body { font-size: 1rem; }
+        #form-success-message p {
+            text-align: center; 
+            font-size: 5vmin; 
+            color: blue;
+            font-weight: bold;
+        }
+        
+        /* Orientation Lock Message */
+        #orientation-lock-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            color: var(--highlight-color);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #orientation-lock-message i {
+            font-size: 6vmin;
+            margin-bottom: 2vmin;
+            animation: rotate-animation 1.5s ease-in-out infinite;
+        }
+        @keyframes rotate-animation {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+        
+        @media (max-width: 850px) and (orientation: landscape) {
+            main { display: none; }
+            #orientation-lock-message { display: flex; }
         }
     </style>
 </head>
-<body>
+<body class="text-slate-300">
 
-    <!-- Parent Style Inheritance Script -->
     <script>
+        // --- INHERIT STYLES FROM PARENT ---
         if (window !== window.parent) {
             try {
                 const parentDoc = window.parent.document;
-                const parentBody = window.parent.getComputedStyle(parentDoc.body);
-                document.body.style.fontFamily = parentBody.fontFamily;
+                
+                // 1. Inherit Font Family
+                const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
+                document.body.style.fontFamily = parentBodyStyle.fontFamily;
 
+                // 2. Inherit "Hover Font" Color
                 const parentTitle = parentDoc.getElementById('project-title-display');
                 if (parentTitle) {
                     const titleStyle = window.parent.getComputedStyle(parentTitle);
@@ -217,155 +272,175 @@
                         document.documentElement.style.setProperty('--highlight-shadow', titleStyle.textShadow);
                     }
                 }
-                
-                // Clone fonts
+
+                // 3. Clone stylesheet links
                 const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
                 parentStyles.forEach(node => {
                     if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
                         document.head.appendChild(node.cloneNode(true));
                     }
                 });
-            } catch (e) { console.warn("Cross-origin style inheritance blocked."); }
+            } catch (err) {
+                console.warn("Could not inherit styles from parent due to cross-origin restrictions.");
+            }
         }
     </script>
 
+    <!-- Orientation Lock Message -->
+    <div id="orientation-lock-message">
+        <div>
+            <i class="fas fa-mobile-alt dynamic-highlight"></i>
+            <p>Please rotate your device to portrait mode for the best experience.</p>
+        </div>
+    </div>
+
     <main id="main-content">
-        <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
-        
-        <div class="content-body">
-            <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
+        <div class="content-container">
+            <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
+            
+            <div class="content-body">
+                <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
-            <!-- Local Image -->
-            <img src="main.jpg" class="project-image" alt="Project Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+                <!-- How to embed an image -->
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
+                <img src="main.jpg" alt="Project Cover Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
-            <!-- Video Wrapper (Hidden if no source) -->
-            <div class="video-wrapper" id="video-container">
-                <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <!-- How to embed a video -->
+                <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
+                <div class="video-wrapper" id="video-container">
+                    <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
+                
+                <hr class="border-blue-700 my-8" style="border-color: var(--highlight-color); opacity: 0.3;">
+                <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
-            
-            <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
-            
-            <p>Webapps:</p>
-            <ul id="webapp-list"></ul>
-
-            <hr class="border-blue-700 my-8" style="border-color: var(--highlight-color); opacity: 0.3;">
-            <p>If you would like to know more, explore my project drive, and send me an email.</p>
         </div>
     </main>
 
-    <!-- Contact Modal -->
+    <!-- Contact Form Modal -->
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
                 <div id="form-content">
-                    <h2 class="dynamic-highlight" style="font-size: 1.5rem; margin-bottom: 1rem;">CONTACT</h2>
+                    <h2 class="dynamic-highlight">CONTACT</h2>
+                    
                     <label class="contact-label">Your email:</label>
-                    <input type="email" name="email" placeholder="Your Email" required>
+                    <input type="email" name="email">
+                    
                     <label class="contact-label">Your message:</label>
-                    <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+                    <textarea name="message"></textarea>
+                    
                     <button type="submit">Send</button>
                 </div>
                 <div id="form-success-message">
-                    <p>Thank you!</p>
+                    <p class="dynamic-highlight">Thank you!</p>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // --- LOGIC: Video Hiding ---
-        const videoFrame = document.getElementById('video-frame');
-        const videoContainer = document.getElementById('video-container');
-        if (videoFrame && (!videoFrame.getAttribute('src') || videoFrame.getAttribute('src').trim() === '')) {
-            videoContainer.style.display = 'none';
-        }
-
-        // --- LOGIC: Fetch Webapps ---
-        const listContainer = document.getElementById('webapp-list');
-        fetch('pages.json')
-            .then(r => r.ok ? r.json() : [])
-            .then(pages => {
-                if (!pages || pages.length === 0) {
-                    listContainer.innerHTML = '<li>No webapps found.</li>';
-                    return;
-                }
-                pages.forEach(p => {
-                    const li = document.createElement('li');
-                    const a = document.createElement('a');
-                    a.href = p.url;
-                    a.textContent = p.title;
-                    li.appendChild(a);
-                    listContainer.appendChild(li);
-                });
-            })
-            .catch(e => console.error(e));
-
-        // --- LOGIC: Swipe to Home (Mobile Portrait) ---
-        const mainEl = document.getElementById('main-content');
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        mainEl.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
-        mainEl.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            const isPortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
-            if (isPortrait && Math.abs(touchEndX - touchStartX) > 100) {
-                try { window.top.location.href = '/'; } catch(e) { window.location.href = '/'; }
-            }
-        });
-
-        // --- LOGIC: Contact Modal ---
-        const modalOverlay = document.getElementById('contact-modal-overlay');
-        const closeBtn = document.getElementById('close-modal-button');
+        const mainContent = document.getElementById('main-content');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
         const contactForm = document.getElementById('contact-form');
         const formContent = document.getElementById('form-content');
-        const successMsg = document.getElementById('form-success-message');
+        const successMessage = document.getElementById('form-success-message');
 
-        // Function to open modal (can be called by parent via postMessage if needed, or by button)
+        // --- CONDITIONAL VIDEO RENDERING ---
+        const videoFrame = document.getElementById('video-frame');
+        const videoContainer = document.getElementById('video-container');
+        if (videoFrame && videoContainer) {
+            const src = videoFrame.getAttribute('src');
+            if (!src || src.trim() === '') {
+                videoContainer.style.display = 'none';
+            }
+        }
+
+        // --- CONTACT FORM LOGIC ---
+        // Open modal logic to be called by parent
         window.openContactModal = () => {
-            modalOverlay.classList.add('is-visible');
-            mainEl.style.opacity = '0'; // Hide main content visually
-            mainEl.style.pointerEvents = 'none';
+            contactModalOverlay.classList.add('is-visible');
+            mainContent.style.opacity = '0'; // Hide main content visual
+            mainContent.style.pointerEvents = 'none';
         };
 
         const closeModal = () => {
-            modalOverlay.classList.remove('is-visible');
-            mainEl.style.opacity = '1';
-            mainEl.style.pointerEvents = 'auto';
+            contactModalOverlay.classList.remove('is-visible');
+            mainContent.style.opacity = '1';
+            mainContent.style.pointerEvents = 'auto';
             setTimeout(() => {
                 contactForm.reset();
                 formContent.style.display = 'block';
-                successMsg.style.display = 'none';
+                successMessage.style.display = 'none';
             }, 300);
         };
 
-        closeBtn.addEventListener('click', closeModal);
-        modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const data = new FormData(this);
-            fetch(this.action, {
-                method: 'POST',
-                body: data,
-                headers: {'Accept': 'application/json'}
-            }).then(r => {
-                if(r.ok) {
-                    this.reset();
-                    formContent.style.display = 'none';
-                    successMsg.style.display = 'block';
-                    setTimeout(closeModal, 2000);
-                } else { alert('Error submitting form.'); }
-            }).catch(() => alert('Error submitting form.'));
+        closeModalButton.addEventListener('click', closeModal);
+        contactModalOverlay.addEventListener('click', (e) => {
+            if (e.target === contactModalOverlay) {
+                closeModal();
+            }
         });
-        
-        // Listen for message from parent to open modal (if social icon clicked in parent)
+
+        // Listen for message from parent to open modal
         window.addEventListener('message', (event) => {
             if (event.data === 'openContactModal') {
                 window.openContactModal();
             }
         });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    this.reset(); 
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000); 
+                } else {
+                    alert('Oops! There was a problem submitting your form.');
+                }
+            }).catch(error => {
+                alert('Oops! There was a problem submitting your form.');
+            });
+        });
+
+        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleHomePageSwipe() {
+            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
+            
+            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
+                try {
+                    window.top.location.href = '/'; 
+                } catch (e) {
+                    window.location.href = '/';
+                }
+            }
+        }
+
+        mainContent.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        mainContent.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleHomePageSwipe();
+        });
     </script>
+
 </body>
 </html>
