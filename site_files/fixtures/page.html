@@ -1,4 +1,4 @@
-<!-- Version 1.0.4 - Enforced background transparency and synced 16:9 media sizing -->
+<!-- Version 1.0.5 - Absolute background transparency for iframe integration -->
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -17,22 +17,24 @@
             width: 12px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1); 
+            background: transparent; 
         }
         ::-webkit-scrollbar-thumb {
-            background-color: #333333; 
+            background-color: rgba(255, 255, 255, 0.1); 
             border-radius: 6px;
             border: 3px solid transparent;
             background-clip: content-box;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background-color: #555555; 
+            background-color: rgba(255, 255, 255, 0.2); 
         }
 
+        /* Essential Transparency Overrides */
         html {
             scrollbar-width: thin;
-            scrollbar-color: #333333 transparent;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
             background-color: transparent !important; 
+            background: transparent !important;
         }
 
         html, body {
@@ -40,12 +42,14 @@
             margin: 0;
             background-color: transparent !important; 
             background: transparent !important;
+            border: none;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             color: #d1d5db; 
+            -webkit-tap-highlight-color: transparent;
         }
 
         main {
@@ -59,6 +63,7 @@
             box-sizing: border-box;
             transition: opacity 0.3s ease;
             background: transparent !important;
+            background-color: transparent !important;
         }
 
         main.is-hidden {
@@ -71,6 +76,7 @@
             width: 100%;
             text-align: center;
             padding: 2rem;
+            background: transparent !important;
         }
 
         .content-title {
@@ -101,13 +107,13 @@
         /* Unified Media Styling */
         .media-container {
             width: 100%;
-            aspect-ratio: 16 / 9; /* Ensures image and video are the same size */
+            aspect-ratio: 16 / 9; 
             border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            background-color: rgba(0,0,0,0.2);
+            background-color: rgba(0,0,0,0.4); /* Darker backdrop for media if it hasn't loaded */
             display: block;
         }
 
@@ -147,7 +153,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
+            background-color: rgba(0, 0, 0, 0.98);
             color: #3b82f6;
             z-index: 9999;
             flex-direction: column;
@@ -186,7 +192,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
+            background-color: rgba(0, 0, 0, 0.9);
             z-index: 2000;
             display: flex;
             justify-content: center;
@@ -202,14 +208,14 @@
         }
 
         .contact-modal {
-            background-color: #262626;
+            background-color: #1a1a1a;
             padding: 2rem;
             border-radius: 12px;
             width: 90%;
             max-width: 500px;
             position: relative;
             color: white;
-            border: 1px solid #404040;
+            border: 1px solid #333;
         }
 
         .contact-modal .close-button {
@@ -217,7 +223,7 @@
             top: 1rem; right: 1rem;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #a3a3a3;
+            color: #666;
         }
 
         .contact-modal input, .contact-modal textarea, .contact-modal button {
@@ -225,10 +231,10 @@
             padding: 0.75rem;
             margin-bottom: 1rem;
             border-radius: 6px;
-            border: 1px solid #404040;
+            border: 1px solid #333;
             font-family: 'Inter', sans-serif;
             color: white;
-            background-color: #171717;
+            background-color: #0d0d0d;
             box-sizing: border-box;
         }
 
