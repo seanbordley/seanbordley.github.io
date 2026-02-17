@@ -1,6 +1,5 @@
 body, h1, h2, h3, p, img, ul, li{
         border:0; margin:0; padding:0;
-        box-sizing: border-box;
     }
         /*the above is a very basic reset rule.  Every browser has a slightly different default for HTML tags.  By using this simple CSS reset, all the more glaring styles 
         are reset and can now be set to whatever properties that would suit your website best. */
@@ -31,7 +30,7 @@ body, h1, h2, h3, p, img, ul, li{
         margin:0 auto; /* by declaring a width on any block element (like a div), giving it a css property of margin:0 auto will center that block element on page */
         min-height:130px;   /* setting a minimum height of an element means that it can grow to be bigger, if there is a lot of content in it. However, if it doesn't have enough content, it will be at the very least (in this example) 130 pixels tall */
         padding:45px 15px 15px; /* by setting a padding, the content within a HTML element will not touch the edges of that element (by adding padding to an element, it actually makes that element appear wider and/or taller.  In this case, the header div is now 15px wider and taller on each side. */
-        width:900px;    /* sets the width of the div to 900px. Remember that if you add padding to this element it will increase the size by the number of pixels in the padding. In this example the width is 900px and we have 15px to the left and right so the total width of the header will be (870px + 15px+15px=930px */
+        width:870px;    /* sets the width of the div to 900px. Remember that if you add padding to this element it will increase the size by the number of pixels in the padding. In this example the width is 900px and we have 15px to the left and right so the total width of the header will be (870px + 15px+15px=930px */
     }
         
     ul.navigation {
@@ -133,29 +132,29 @@ body, h1, h2, h3, p, img, ul, li{
         clear:both; /* this clears floats.  This would be used to cancel out a float's behavior on content below it.  */
     }
 
-    @media screen and (max-width: 900px) {
+    @media screen and (max-width: 930px) {
         div#header, div.content, div#footer {
             width: 100%;
             padding: 20px 15px;
+            box-sizing: border-box;
         }
         
         div.content {
             grid-template-columns: 1fr;
+            margin: 0;
         }
 
         div.col-right, div.sidebar-left {
             grid-column: 1;
             width: 100%;
-            float: none;
+            padding: 10px 15px;
+            box-sizing: border-box;
         }
 
         div.col-right { order: 1; }
         div.sidebar-left { order: 2; margin-top: 20px; }
 
-        .float-left {
-            float: none;
-            display: block;
-            margin: 0 auto 10px;
+        img {
             max-width: 100%;
             height: auto;
         }
