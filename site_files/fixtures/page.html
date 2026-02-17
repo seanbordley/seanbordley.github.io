@@ -1,15 +1,12 @@
-<!-- Version 1.0.5 - Absolute background transparency for iframe integration -->
+<!-- Version 1.0.6 - Styled integration with font inheritance and absolute background transparency -->
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Bordley</title>
+    <title>Sean Bordley - Project Details</title>
     <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Custom Scrollbar Styling */
@@ -20,131 +17,112 @@
             background: transparent; 
         }
         ::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.1); 
+            background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid transparent;
-            background-clip: content-box;
+            border: 3px solid transparent; 
+            background-clip: padding-box;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(255, 255, 255, 0.2); 
+            background-color: #555555; 
         }
 
-        /* Essential Transparency Overrides */
+        /* Essential Transparency and Inheritance Setup */
         html {
             scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-            background-color: transparent !important; 
-            background: transparent !important;
+            scrollbar-color: #333333 transparent;
+            background-color: transparent !important;
         }
 
         html, body {
-            height: 100%;
             margin: 0;
-            background-color: transparent !important; 
+            padding: 0;
+            background-color: transparent !important;
             background: transparent !important;
-            border: none;
+            min-height: 100%;
+        }
+        
+        body {
+            /* Inherited from parent JS, fallback to sans-serif */
+            font-family: sans-serif; 
+            overflow-x: hidden;
+            color: #f1f5f9;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            color: #d1d5db; 
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --highlight-color: #3b82f6; /* Fallback highlight color */
+            --highlight-shadow: none;
+        }
+
+        .dynamic-highlight {
+            color: var(--highlight-color);
+            text-shadow: var(--highlight-shadow);
         }
 
         main {
             position: relative;
             width: 100%;
-            min-height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
+            min-height: 100vh;
+            display: block; 
+            padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
-            transition: opacity 0.3s ease;
             background: transparent !important;
-            background-color: transparent !important;
         }
 
-        main.is-hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
+        /* Container for the content */
         .content-container {
             max-width: 800px;
             width: 100%;
             text-align: center;
-            padding: 2rem;
-            background: transparent !important;
+            padding-bottom: 6rem;
+            margin: 0 auto;
         }
 
         .content-title {
             font-size: 3rem;
             font-weight: 700;
-            color: #ffffff;
             margin-bottom: 0.5rem;
-        }
-
-        .content-subtitle {
-            font-size: 1.25rem;
-            font-weight: 400;
-            color: #9ca3af;
-            margin-bottom: 2.5rem;
         }
 
         .content-body {
             font-size: 1.125rem;
             line-height: 1.75;
-            color: #d1d5db;
+            color: #f1f5f9;
             text-align: left;
         }
-
+        
         .content-body p {
             margin-bottom: 1.5rem;
         }
 
-        /* Unified Media Styling */
-        .media-container {
+        /* Synced Media Styling (16:9) */
+        .content-body img {
             width: 100%;
-            aspect-ratio: 16 / 9; 
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
             border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
-            overflow: hidden;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-            background-color: rgba(0,0,0,0.4); /* Darker backdrop for media if it hasn't loaded */
-            display: block;
-        }
-
-        /* Hide container if no source is present */
-        .media-container:not(:has(img[src])), 
-        .media-container:has(img[src=""]),
-        .media-container:not(:has(iframe[src])),
-        .media-container:has(iframe[src=""]) {
-            display: none;
-        }
-
-        .content-body img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
         }
 
         .video-wrapper {
-            width: 100%;
-            height: 100%;
             position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
         .video-wrapper iframe {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
         }
 
         /* Orientation Lock Message */
@@ -172,19 +150,6 @@
             0% { transform: rotate(0deg); }
             50% { transform: rotate(-90deg); }
             100% { transform: rotate(-90deg); }
-        }
-
-        @media (max-width: 700px) {
-            body { overflow-y: auto; }
-            .content-container { padding: 1.6vmin; }
-            .content-title { font-size: 8vmin; }
-            .content-subtitle { font-size: 4vmin; }
-            .content-body { font-size: 4vmin; }
-        }
-
-        @media (max-width: 850px) and (orientation: landscape) {
-            #main-content { display: none; }
-            #orientation-lock-message { display: flex; }
         }
 
         /* Contact Form Styles */
@@ -232,7 +197,7 @@
             margin-bottom: 1rem;
             border-radius: 6px;
             border: 1px solid #333;
-            font-family: 'Inter', sans-serif;
+            font-family: inherit;
             color: white;
             background-color: #0d0d0d;
             box-sizing: border-box;
@@ -248,9 +213,50 @@
 
         #form-success-message { display: none; text-align: center; }
         #form-success-message p { font-size: 1.25rem; color: #3b82f6; font-weight: bold; }
+
+        @media (max-width: 700px) {
+            main { padding: 2rem 1.6vmin; }
+            .content-container { padding-bottom: 10vmin; }
+            .content-title { font-size: 8vmin; }
+            .content-body { font-size: 4vmin; }
+        }
+
+        @media (max-width: 850px) and (orientation: landscape) {
+            #main-content { display: none; }
+            #orientation-lock-message { display: flex; }
+        }
     </style>
 </head>
-<body>
+<body class="text-slate-300">
+
+    <script>
+        // --- INHERIT STYLES FROM PARENT ---
+        if (window !== window.parent) {
+            try {
+                const parentDoc = window.parent.document;
+                const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
+                document.body.style.fontFamily = parentBodyStyle.fontFamily;
+
+                const parentTitle = parentDoc.getElementById('project-title-display');
+                if (parentTitle) {
+                    const titleStyle = window.parent.getComputedStyle(parentTitle);
+                    document.documentElement.style.setProperty('--highlight-color', titleStyle.color);
+                    if (titleStyle.textShadow !== 'none') {
+                        document.documentElement.style.setProperty('--highlight-shadow', titleStyle.textShadow);
+                    }
+                }
+
+                const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
+                parentStyles.forEach(node => {
+                    if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
+                        document.head.appendChild(node.cloneNode(true));
+                    }
+                });
+            } catch (err) {
+                console.warn("Could not inherit styles from parent.");
+            }
+        }
+    </script>
 
     <div id="orientation-lock-message">
         <div>
@@ -261,31 +267,27 @@
 
     <main id="main-content">
         <div class="content-container">
-            <h1 class="content-title">Welcome to the New Page Layout</h1>
-            <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
+            <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
             <div class="content-body">
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
-                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
-                <div class="media-container">
-                    <img src="main.jpg" alt="Embedded Image" onerror="this.parentElement.style.display='none';">
-                </div>
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page and match the video frame size.</p>
+                <img id="main-image" src="main.jpg" alt="Main Project Image" onerror="this.style.display='none';">
 
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
-                <div class="media-container">
-                    <div class="video-wrapper">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" allowfullscreen></iframe>
-                    </div>
+                <div class="video-wrapper" id="video-container">
+                    <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 
-                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly</p>
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
                 
-                <hr class="border-blue-700 my-8">
+                <hr class="my-8" style="border-color: var(--highlight-color); opacity: 0.3;">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
         </div>
     </main>
 
+    <!-- Contact Form Modal -->
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
@@ -315,7 +317,7 @@
 
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
-            mainContent.classList.remove('is-hidden');
+            mainContent.style.opacity = '1';
             setTimeout(() => {
                 contactForm.reset();
                 formContent.style.display = 'block';
@@ -344,18 +346,32 @@
             });
         });
 
-        let touchStartX = 0;
-        let touchEndX = 0;
+        // Hide video container if src is missing/empty
+        const videoFrame = document.getElementById('video-frame');
+        const videoContainer = document.getElementById('video-container');
+        if (videoFrame && videoContainer) {
+            const src = videoFrame.getAttribute('src');
+            if (!src || src.trim() === '') {
+                videoContainer.style.display = 'none';
+            }
+        }
+
+        // Swipe to home logic
+        let touchStartX = null;
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
 
         mainContent.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX === null) return;
+            const touchEndX = e.changedTouches[0].screenX;
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
             if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
-                window.location.href = window.location.origin; 
+                if (window.location.origin !== "null" && !window.location.origin.includes("file://")) {
+                    try { window.top.location.href = '/'; } catch (e) { window.location.href = '/'; }
+                }
             }
+            touchStartX = null;
         });
     </script>
 </body>
