@@ -1,17 +1,18 @@
-<!-- Version 1.0.6 - Styled integration with font inheritance and absolute background transparency -->
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sean Bordley - Project Details</title>
-    <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Custom Scrollbar Styling */
+        /* --- CUSTOM SCROLLBAR STYLING (Works on Desktop & Mobile) --- */
+        
+        /* Webkit (Chrome, Safari, Edge, Mobile Browsers) */
         ::-webkit-scrollbar {
             width: 12px;
+            height: 12px;
+            display: block; /* Forces visibility on some mobile engines */
         }
         ::-webkit-scrollbar-track {
             background: transparent; 
@@ -26,38 +27,29 @@
             background-color: #555555; 
         }
 
-        /* Essential Transparency and Inheritance Setup */
+        /* Firefox */
         html {
             scrollbar-width: thin;
             scrollbar-color: #333333 transparent;
-            background-color: transparent !important;
         }
 
+        /* --- LAYOUT & CORE STYLES --- */
         html, body {
             margin: 0;
             padding: 0;
-            background-color: transparent !important;
-            background: transparent !important;
+            background-color: transparent;
             min-height: 100%;
+            /* Momentum scrolling for mobile */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         body {
-            /* Inherited from parent JS, fallback to sans-serif */
             font-family: sans-serif; 
             overflow-x: hidden;
             color: #f1f5f9;
         }
-
-        :root {
-            --highlight-color: #3b82f6; /* Fallback highlight color */
-            --highlight-shadow: none;
-        }
-
-        .dynamic-highlight {
-            color: var(--highlight-color);
-            text-shadow: var(--highlight-shadow);
-        }
-
+        
         main {
             position: relative;
             width: 100%;
@@ -65,16 +57,24 @@
             display: block; 
             padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
-            background: transparent !important;
         }
 
-        /* Container for the content */
         .content-container {
             max-width: 800px;
             width: 100%;
             text-align: center;
             padding-bottom: 6rem;
             margin: 0 auto;
+        }
+
+        :root {
+            --highlight-color: #3b82f6;
+            --highlight-shadow: none;
+        }
+
+        .dynamic-highlight {
+            color: var(--highlight-color);
+            text-shadow: var(--highlight-shadow);
         }
 
         .content-title {
@@ -94,7 +94,6 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Synced Media Styling (16:9) */
         .content-body img {
             width: 100%;
             aspect-ratio: 16 / 9;
@@ -110,7 +109,7 @@
 
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
             border-radius: 0.75rem;
@@ -118,125 +117,44 @@
             margin-bottom: 2rem;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
-
         .video-wrapper iframe {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
-
-        /* Orientation Lock Message */
-        #orientation-lock-message {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.98);
-            color: #3b82f6;
-            z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        #orientation-lock-message i {
-            font-size: 6vmin;
-            margin-bottom: 2vmin;
-            animation: rotate-animation 1.5s ease-in-out infinite;
-        }
-
-        @keyframes rotate-animation {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-            100% { transform: rotate(-90deg); }
-        }
-
-        /* Contact Form Styles */
-        .contact-modal-overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .contact-modal-overlay.is-visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .contact-modal {
-            background-color: #1a1a1a;
-            padding: 2rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 500px;
-            position: relative;
-            color: white;
-            border: 1px solid #333;
-        }
-
-        .contact-modal .close-button {
-            position: absolute;
-            top: 1rem; right: 1rem;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .contact-modal input, .contact-modal textarea, .contact-modal button {
+            top: 0;
+            left: 0;
             width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            border: 1px solid #333;
-            font-family: inherit;
-            color: white;
-            background-color: #0d0d0d;
-            box-sizing: border-box;
+            height: 100%;
         }
 
-        .contact-modal button {
-            background-color: #2563eb;
-            color: white;
-            cursor: pointer;
-            border: none;
-            font-weight: 600;
-        }
-
-        #form-success-message { display: none; text-align: center; }
-        #form-success-message p { font-size: 1.25rem; color: #3b82f6; font-weight: bold; }
-
+        /* --- Responsive Design --- */
         @media (max-width: 700px) {
-            main { padding: 2rem 1.6vmin; }
-            .content-container { padding-bottom: 10vmin; }
-            .content-title { font-size: 8vmin; }
-            .content-body { font-size: 4vmin; }
-        }
-
-        @media (max-width: 850px) and (orientation: landscape) {
-            #main-content { display: none; }
-            #orientation-lock-message { display: flex; }
+            main {
+                padding: 2rem 1.6vmin;
+            }
+            .content-container {
+                padding-bottom: 10vmin; 
+            }
+            .content-title {
+                font-size: 8vmin;
+            }
+            .content-body {
+                font-size: 4.5vmin;
+            }
         }
     </style>
 </head>
-<body class="text-slate-300">
+<body>
 
     <script>
         // --- INHERIT STYLES FROM PARENT ---
         if (window !== window.parent) {
             try {
                 const parentDoc = window.parent.document;
+                
+                // 1. Inherit Font Family
                 const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
                 document.body.style.fontFamily = parentBodyStyle.fontFamily;
 
+                // 2. Inherit Highlight Colors
                 const parentTitle = parentDoc.getElementById('project-title-display');
                 if (parentTitle) {
                     const titleStyle = window.parent.getComputedStyle(parentTitle);
@@ -246,6 +164,7 @@
                     }
                 }
 
+                // 3. Clone stylesheets for fonts
                 const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
                 parentStyles.forEach(node => {
                     if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
@@ -258,13 +177,6 @@
         }
     </script>
 
-    <div id="orientation-lock-message">
-        <div>
-            <i class="fas fa-mobile-alt"></i>
-            <p>Please rotate your device to portrait mode for the best experience.</p>
-        </div>
-    </div>
-
     <main id="main-content">
         <div class="content-container">
             <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
@@ -272,7 +184,8 @@
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
                 <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page and match the video frame size.</p>
-                <img id="main-image" src="main.jpg" alt="Main Project Image" onerror="this.style.display='none';">
+                
+                <img src="main.jpg" alt="Main Project Image" onerror="this.style.display='none';">
 
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
                 <div class="video-wrapper" id="video-container">
@@ -287,66 +200,10 @@
         </div>
     </main>
 
-    <!-- Contact Form Modal -->
-    <div id="contact-modal-overlay" class="contact-modal-overlay">
-        <div class="contact-modal">
-            <span id="close-modal-button" class="close-button">&times;</span>
-            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
-                <div id="form-content">
-                    <h2 class="text-xl font-bold mb-4 text-center">Get in Touch</h2>
-                    <label class="block mb-1 text-sm text-gray-400">Your email:</label>
-                    <input type="email" name="email" required>
-                    <label class="block mb-1 text-sm text-gray-400">Your message:</label>
-                    <textarea name="message" rows="4" required></textarea>
-                    <button type="submit">Send Message</button>
-                </div>
-                <div id="form-success-message">
-                    <p>Thank you!</p>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
         const mainContent = document.getElementById('main-content');
-        const contactModalOverlay = document.getElementById('contact-modal-overlay');
-        const closeModalButton = document.getElementById('close-modal-button');
-        const contactForm = document.getElementById('contact-form');
-        const formContent = document.getElementById('form-content');
-        const successMessage = document.getElementById('form-success-message');
 
-        const closeModal = () => {
-            contactModalOverlay.classList.remove('is-visible');
-            mainContent.style.opacity = '1';
-            setTimeout(() => {
-                contactForm.reset();
-                formContent.style.display = 'block';
-                successMessage.style.display = 'none';
-            }, 300);
-        };
-
-        closeModalButton.addEventListener('click', closeModal);
-        contactModalOverlay.addEventListener('click', (e) => {
-            if (e.target === contactModalOverlay) closeModal();
-        });
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            fetch(this.action, {
-                method: 'POST',
-                body: new FormData(this),
-                headers: { 'Accept': 'application/json' }
-            }).then(response => {
-                if (response.ok) {
-                    this.reset();
-                    formContent.style.display = 'none';
-                    successMessage.style.display = 'block';
-                    setTimeout(closeModal, 2000);
-                }
-            });
-        });
-
-        // Hide video container if src is missing/empty
+        // --- CONDITIONAL VIDEO RENDERING ---
         const videoFrame = document.getElementById('video-frame');
         const videoContainer = document.getElementById('video-container');
         if (videoFrame && videoContainer) {
@@ -356,8 +213,9 @@
             }
         }
 
-        // Swipe to home logic
+        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
         let touchStartX = null;
+
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
         }, { passive: true });
@@ -365,14 +223,20 @@
         mainContent.addEventListener('touchend', e => {
             if (touchStartX === null) return;
             const touchEndX = e.changedTouches[0].screenX;
+            
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
             if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
                 if (window.location.origin !== "null" && !window.location.origin.includes("file://")) {
-                    try { window.top.location.href = '/'; } catch (e) { window.location.href = '/'; }
+                    try {
+                        window.top.location.href = '/'; 
+                    } catch (err) {
+                        window.location.href = '/';
+                    }
                 }
             }
             touchStartX = null;
         });
     </script>
+
 </body>
 </html>
