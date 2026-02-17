@@ -34,16 +34,27 @@
             scrollbar-color: #333333 #000000;
         }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            background-color: transparent;
+        /* SCROLLING FIX FOR MOBILE IFRAMES */
+        html {
+            height: 100%;
+            overflow: hidden; /* Lock html to prevent double scrollbars */
         }
         
         body {
+            height: 100%; /* Fill the iframe height */
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            
+            /* Enable scrolling on body */
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            
+            /* CRITICAL for iOS momentum scrolling */
+            -webkit-overflow-scrolling: touch; 
+            
             /* Inherited from parent JS, fallback to sans-serif */
             font-family: 'Inter', sans-serif; 
-            overflow-x: hidden; /* Prevents horizontal scrolling */
             color: #d1d5db;
         }
         
@@ -53,6 +64,8 @@
             display: block; 
             padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
+            /* Ensure content inside expands */
+            min-height: 100%; 
         }
 
         /* Container for the content */
@@ -397,8 +410,6 @@
         }
 
         // --- CONTACT FORM LOGIC ---
-        // Note: The open logic should be handled by the parent frame or a button in this frame. 
-        // Currently there is no visible button in this frame to open it, as the social icons are hidden.
         
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
