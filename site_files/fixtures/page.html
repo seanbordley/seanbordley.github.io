@@ -17,12 +17,12 @@
             width: 12px;
         }
         ::-webkit-scrollbar-track {
-            background: transparent; 
+            background: #000000; 
         }
         ::-webkit-scrollbar-thumb {
             background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid transparent; /* Creates padding around thumb */
+            border: 3px solid #000000; /* Creates padding around thumb */
             background-clip: padding-box;
         }
         ::-webkit-scrollbar-thumb:hover {
@@ -31,34 +31,27 @@
         /* Firefox */
         html {
             scrollbar-width: thin;
-            scrollbar-color: #333333 transparent;
+            scrollbar-color: #333333 #000000;
         }
 
-        /* SCROLLING FIX: Reset html/body to standard flow properties */
-        html {
-            height: 100%;
-            overflow-y: auto; /* Forces the scrollbar onto the root element */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-        }
-
-        body {
-            /* Inherited from parent JS, fallback to sans-serif */
-            font-family: sans-serif; 
-            background-color: transparent;
-            min-height: 100%; /* Allows body to grow with content */
+        html, body {
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            color: #f1f5f9;
-            position: relative;
+            background-color: transparent;
+        }
+        
+        body {
+            /* Inherited from parent JS, fallback to sans-serif */
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; /* Prevents horizontal scrolling */
+            color: #d1d5db;
         }
         
         main {
             position: relative;
             width: 100%;
             display: block; 
-            /* Added substantial padding to ensure content clears edges and fixed elements */
-            padding: 4rem 1.5rem 8rem 1.5rem; 
+            padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
         }
 
@@ -67,7 +60,8 @@
             max-width: 800px;
             width: 100%;
             text-align: center;
-            margin: 0 auto; 
+            padding-bottom: 6rem; /* Bottom padding to clear parent's social icons */
+            margin: 0 auto; /* Centers horizontally */
         }
 
         :root {
@@ -83,13 +77,14 @@
         .content-title {
             font-size: 3rem; /* 48px */
             font-weight: 700;
+            color: #ffffff;
             margin-bottom: 0.5rem;
         }
 
         .content-body {
             font-size: 1.125rem; /* 18px */
             line-height: 1.75;
-            color: #f1f5f9;
+            color: #d1d5db;
             text-align: left;
         }
         
@@ -98,22 +93,28 @@
         }
 
         /* Styling for embedded media */
-        .content-body img,
-        .content-body .video-wrapper {
-            max-width: 100%;
-            border-radius: 0.75rem; /* 12px */
+        .content-body img {
+            width: 100%;
+            aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
+            object-fit: cover; /* Ensures image fills the aspect ratio without distorting */
+            border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
-            display: block; 
+            display: block;
             margin-left: auto;
             margin-right: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
-        .content-body img {
-            width: 100%;
-            aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
-            object-fit: cover;
+        .content-body .video-wrapper {
+            max-width: 100%;
+            border-radius: 0.75rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
         /* YouTube-like video container for aspect ratio */
@@ -131,16 +132,64 @@
             height: 100%;
         }
 
+        /* Webapp List Styling */
+        #webapp-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+        #webapp-list li {
+            margin-bottom: 0.5rem;
+        }
+        #webapp-list a {
+            color: var(--highlight-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.2s;
+        }
+        #webapp-list a:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        /* Orientation Lock Message */
+        #orientation-lock-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #000;
+            color: blue;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #orientation-lock-message i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: rotate-animation 1.5s ease-in-out infinite;
+        }
+        @keyframes rotate-animation {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
         /* --- Responsive Design --- */
         @media (max-width: 700px) {
             main {
-                padding: 2rem 1.6vmin 12vmin 1.6vmin; /* More bottom padding for mobile */
+                padding: 2rem 1.6vmin;
+            }
+            .content-container {
+                padding: 1rem;
             }
             .content-title {
-                font-size: 3.6vmin;
+                font-size: 2.25rem;
             }
             .content-body {
-                font-size: 1.6vmin;
+                font-size: 1rem;
             }
              .contact-label {
                 display: none;
@@ -178,7 +227,7 @@
         }
         .contact-modal {
             background-color: #777777;
-            padding: 3vmin;
+            padding: 2rem;
             border-radius: 10px;
             width: 90%;
             max-width: 500px;
@@ -187,9 +236,9 @@
         }
         .contact-modal .close-button {
             position: absolute;
-            top: .5vmin;
-            right: 2vmin;
-            font-size: 4vmin;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
             cursor: pointer;
             color: #333;
         }
@@ -199,24 +248,28 @@
         }
         .contact-modal input, .contact-modal textarea, .contact-modal button {
             width: 100%;
-            padding: 1.2vmin;
-            margin-bottom: 1.6vmin;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
             border-radius: 5px;
             border: 1px solid #ccc;
-            font-family: inherit;
+            font-family: 'Inter', sans-serif;
             color: black;
             background-color: white;
             box-sizing: border-box;
         }
+        .contact-modal input:focus, .contact-modal textarea:focus {
+            outline: none;
+            border-color: blue;
+        }
         .contact-modal button {
-            background-color: var(--highlight-color);
+            background-color: blue;
             color: white;
             cursor: pointer;
             border: none;
         }
         .contact-modal label {
             display: block;
-            margin-bottom: 0.8vmin;
+            margin-bottom: 0.5rem;
             text-align: left;
         }
         #form-success-message {
@@ -225,32 +278,8 @@
         #form-success-message p {
             text-align: center; 
             font-size: 5vmin; 
+            color: blue;
             font-weight: bold;
-        }
-
-        /* Orientation Lock Message */
-        #orientation-lock-message {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: #000;
-            color: var(--highlight-color);
-            z-index: 9999;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-        #orientation-lock-message i {
-            font-size: 6vmin;
-            margin-bottom: 2vmin;
-            animation: rotate-animation 1.5s ease-in-out infinite;
-        }
-        @keyframes rotate-animation {
-            0% { transform: rotate(0deg); }
-            50% { transform: rotate(-90deg); }
-            100% { transform: rotate(-90deg); }
         }
     </style>
 </head>
@@ -292,7 +321,7 @@
     <!-- Orientation Lock Message -->
     <div id="orientation-lock-message">
         <div>
-            <i class="fas fa-mobile-alt dynamic-highlight"></i>
+            <i class="fas fa-mobile-alt"></i>
             <p>Please rotate your device to portrait mode for the best experience.</p>
         </div>
     </div>
@@ -300,6 +329,7 @@
     <main id="main-content">
         <div class="content-container">
             <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
+            
             <div class="content-body">
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
@@ -315,7 +345,10 @@
                 
                 <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
                 
-                <hr class="my-8" style="border-color: var(--highlight-color); opacity: 0.3;">
+                <p>Webapps:</p>
+                <ul id="webapp-list"></ul>
+
+                <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
         </div>
@@ -327,7 +360,7 @@
             <span id="close-modal-button" class="close-button">&times;</span>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
                 <div id="form-content">
-                    <h2 class="dynamic-highlight">CONTACT</h2>
+                    <h2>CONTACT</h2>
                     <label class="contact-label">
                         Your email:
                         <input type="email" name="email">
@@ -339,7 +372,7 @@
                     <button type="submit">Send</button>
                 </div>
                 <div id="form-success-message">
-                    <p class="dynamic-highlight">Thank you!</p>
+                    <p>Thank you!</p>
                 </div>
             </form>
         </div>
@@ -363,10 +396,10 @@
             }
         }
 
-        // Logic for opening modal is triggered by parent page button (via query param or message potentially), 
-        // but here we just need the closing logic if it ever gets opened.
-        // Assuming this page might be repurposed or the modal code is just kept for future utility.
-
+        // --- CONTACT FORM LOGIC ---
+        // Note: The open logic should be handled by the parent frame or a button in this frame. 
+        // Currently there is no visible button in this frame to open it, as the social icons are hidden.
+        
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
             mainContent.classList.remove('is-hidden');
@@ -431,6 +464,35 @@
             touchEndX = e.changedTouches[0].screenX;
             handleHomePageSwipe();
         });
+
+        // --- LOAD WEBAPPS LIST ---
+        const listContainer = document.getElementById('webapp-list');
+
+        fetch('pages.json') 
+            .then(response => {
+                if (!response.ok) {
+                    // Fail silently or handle error appropriately for visual design
+                    return null;
+                }
+                return response.json();
+            })
+            .then(pages => {
+                if (!pages || pages.length === 0) {
+                    listContainer.innerHTML = '<li>No webapps found.</li>';
+                    return;
+                }
+                pages.forEach(page => {
+                    const listItem = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.href = page.url;
+                    link.textContent = page.title;
+                    listItem.appendChild(link);
+                    listContainer.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching or displaying app list:', error);
+            });
     </script>
 
 </body>
