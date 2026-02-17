@@ -1,6 +1,6 @@
 body, h1, h2, h3, p, img, ul, li{
         border:0; margin:0; padding:0;
-        box-sizing: border-box; /* Added to ensure padding doesn't break the responsive widths */
+        box-sizing: border-box;
     }
         /*the above is a very basic reset rule.  Every browser has a slightly different default for HTML tags.  By using this simple CSS reset, all the more glaring styles 
         are reset and can now be set to whatever properties that would suit your website best. */
@@ -55,7 +55,6 @@ body, h1, h2, h3, p, img, ul, li{
         text-decoration:none; /* this removes the normal underline that links usually have */
     }
                         
-    /* EXTRA CREDIT 2: Hover capability check */
     @media (hover: hover) {
         ul.navigation li a:hover{
             background-color:#000; /*this is a hover pseudo class.  By designating a different background color, than the class for the a tag above, when a mouse hovers over these particular links, in the navigation bar, the background color will change to what's defined here */
@@ -65,7 +64,6 @@ body, h1, h2, h3, p, img, ul, li{
     div.content{
         margin:15px auto; /* this adds a margin of 15px to the top and bottom of the div with the class of content.  The auto margin applies to the left and right side of the div which is what centers the div in the middle of the page. */
         width:900px;
-        /* Using Grid to replace floats for RWD purposes while keeping desktop layout the same */
         display: grid;
         grid-template-columns: 220px 680px;
     }
@@ -78,7 +76,7 @@ body, h1, h2, h3, p, img, ul, li{
     div.sidebar-left{
         grid-column: 1;
         padding:0 10px;
-        width:220px;    /* 200px base + 10px left padding + 10px right padding = 220px */
+        width:220px;
     }
         
     div.sidebar-left a{
@@ -112,7 +110,6 @@ body, h1, h2, h3, p, img, ul, li{
         width:900px;
     }
 
-    /* EXTRA CREDIT 1: CSS3 Animation */
     @keyframes pulse {
         0% { transform: scale(1); }
         50% { transform: scale(1.03); }
@@ -136,7 +133,6 @@ body, h1, h2, h3, p, img, ul, li{
         clear:both; /* this clears floats.  This would be used to cancel out a float's behavior on content below it.  */
     }
 
-    /* RWD TECHNIQUE: Media Query for Mobile */
     @media screen and (max-width: 900px) {
         div#header, div.content, div#footer {
             width: 100%;
@@ -144,7 +140,7 @@ body, h1, h2, h3, p, img, ul, li{
         }
         
         div.content {
-            grid-template-columns: 1fr; /* Stack columns on mobile */
+            grid-template-columns: 1fr;
         }
 
         div.col-right, div.sidebar-left {
@@ -153,7 +149,6 @@ body, h1, h2, h3, p, img, ul, li{
             float: none;
         }
 
-        /* Sidebar usually looks better below content on mobile */
         div.col-right { order: 1; }
         div.sidebar-left { order: 2; margin-top: 20px; }
 
