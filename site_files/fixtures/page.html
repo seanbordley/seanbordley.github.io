@@ -27,7 +27,7 @@
         html {
             scrollbar-width: thin;
             scrollbar-color: #333333 transparent;
-            /* FIX: Allow natural expansion */
+            /* Allow natural expansion */
             height: auto;
             overflow-y: auto;
         }
@@ -36,13 +36,15 @@
             margin: 0;
             padding: 0;
             background-color: transparent;
-            /* FIX: min-height instead of fixed height to allow scrolling */
+            /* Allow scrolling by letting body grow with content */
             min-height: 100vh;
             height: auto;
             font-family: sans-serif; 
             overflow-x: hidden; 
             overflow-y: visible;
             color: #f1f5f9;
+            /* Momentum scrolling for iOS */
+            -webkit-overflow-scrolling: touch;
         }
         
         main {
@@ -128,10 +130,10 @@
                 padding-bottom: 10vmin; 
             }
             .content-title {
-                font-size: 3.6vmin;
+                font-size: 8vmin; /* Adjusted for better mobile visibility */
             }
             .content-body {
-                font-size: 1.6vmin;
+                font-size: 4.5vmin; /* Adjusted for readability */
             }
         }
     </style>
@@ -174,7 +176,9 @@
                 <p>This is the body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
                 <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page and match the video frame size.</p>
-                <img src="main.jpg" alt="Main Project Image" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+                
+                <!-- Use main.jpg or hide entirely if not found -->
+                <img src="main.jpg" alt="Main Project Image" onerror="this.style.display='none';">
 
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
                 <div class="video-wrapper" id="video-container">
@@ -231,6 +235,7 @@
 
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
             
+            // Significant horizontal swipe
             if (isMobilePortrait && Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy)) { 
                 if (window.location.origin === "null" || window.location.origin.includes("file://")) return;
                 try {
