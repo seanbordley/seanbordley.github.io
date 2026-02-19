@@ -116,13 +116,12 @@ body, h1, h2, h3, p, img, ul, li{
         clear:both; 
     }
 
-    /* RWD TECHNIQUE & EXTRA CREDIT */
     @media screen and (max-width: 930px) {
         div#header, div.content, div#footer {
             width: auto;
             margin: 10px;
             padding: 20px 15px;
-            box-sizing: border-box; /* Applied locally to prevent overflow on mobile only */
+            box-sizing: border-box;
         }
         div.col-right, div.sidebar-left {
             float: none;
@@ -137,10 +136,9 @@ body, h1, h2, h3, p, img, ul, li{
         h2 { font-size: 1.1rem; }
     }
 
-    /* Extra Credit 1: Animation */
     @keyframes pulse {
         0% { opacity: 0.7; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.02); }
+        50% { opacity: 1; transform: scale(1.05); }
         100% { opacity: 0.7; transform: scale(1); }
     }
     div#footer p {
@@ -148,7 +146,6 @@ body, h1, h2, h3, p, img, ul, li{
         animation: pulse 4s infinite ease-in-out;
     }
 
-    /* Extra Credit 2: Hover capability fallback style */
     @media (hover: none) {
         ul.navigation li a { background-color: #222; }
         div.sidebar-left a { text-decoration: underline; font-weight: bold; }
