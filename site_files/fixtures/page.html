@@ -3,116 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Bordley - Project Details</title>
+    <title>Sean Bordley</title>
+    <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Custom Scrollbar Styling */
+        /* Webkit (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
             width: 12px;
         }
         ::-webkit-scrollbar-track {
-            background: transparent; 
+            background: transparent; /* Changed to transparent */
         }
         ::-webkit-scrollbar-thumb {
             background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid transparent;
+            border: 3px solid transparent; /* Changed border to transparent to avoid black gap */
             background-clip: padding-box;
         }
         ::-webkit-scrollbar-thumb:hover {
             background-color: #555555; 
         }
-        
         /* Firefox */
         html {
             scrollbar-width: thin;
-            scrollbar-color: #333333 transparent;
-            /* Allow natural expansion */
-            height: auto;
-            overflow-y: auto;
+            scrollbar-color: #333333 transparent; /* Changed track to transparent */
         }
 
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
-            padding: 0;
-            background-color: transparent;
-            /* Allow scrolling by letting body grow with content */
-            min-height: 100vh;
-            height: auto;
-            font-family: sans-serif; 
-            overflow-x: hidden; 
-            overflow-y: visible;
-            color: #f1f5f9;
-            /* Momentum scrolling for iOS */
-            -webkit-overflow-scrolling: touch;
         }
-        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: transparent; /* Changed to transparent */
+            overflow-x: hidden;
+            color: #d1d5db; /* Default text color (gray-300) */
+        }
         main {
             position: relative;
             width: 100%;
-            min-height: 100vh;
-            display: block; 
-            padding: 4rem 2rem 2rem 2rem;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
             box-sizing: border-box;
+            transition: opacity 0.3s ease;
         }
 
+        main.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Container for the new content */
         .content-container {
             max-width: 800px;
             width: 100%;
             text-align: center;
-            padding-bottom: 6rem; 
-            margin: 0 auto; 
-        }
-
-        :root {
-            --highlight-color: #3b82f6;
-            --highlight-shadow: none;
-        }
-
-        .dynamic-highlight {
-            color: var(--highlight-color);
-            text-shadow: var(--highlight-shadow);
+            padding: 2rem;
         }
 
         .content-title {
-            font-size: 3rem; 
+            font-size: 3rem; /* 48px */
             font-weight: 700;
-            margin-bottom: 0.5rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem; /* Adjusted spacing for subtitle */
+        }
+
+        /* New Subtitle Style */
+        .content-subtitle {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 400;
+            color: #9ca3af; /* gray-400 */
+            margin-bottom: 2.5rem; /* Spacing below subtitle */
         }
 
         .content-body {
-            font-size: 1.125rem; 
-            line-height: 1.75;
-            color: #f1f5f9;
-            text-align: left;
+            font-size: 1.125rem; /* 18px */
+            line-height: 1.75; /* 28px */
+            color: #d1d5db; /* gray-300 */
+            text-align: left; /* Align body text to the left for readability */
         }
-        
         .content-body p {
             margin-bottom: 1.5rem;
         }
 
-        .content-body img {
-            width: 100%;
-            aspect-ratio: 16 / 9; 
-            object-fit: cover; 
-            border-radius: 0.75rem;
+        /* Styling for embedded media */
+        .content-body img,
+        .content-body .video-wrapper {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.75rem; /* 12px */
             margin-top: 2rem;
             margin-bottom: 2rem;
-            display: block;
+            display: block; /* Changed to block for better centering control */
             margin-left: auto;
             margin-right: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
+        /* YouTube-like video container for aspect ratio */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; 
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
             height: 0;
             overflow: hidden;
-            border-radius: 0.75rem;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
         .video-wrapper iframe {
             position: absolute;
@@ -122,129 +123,352 @@
             height: 100%;
         }
 
+
+        /* === SOCIAL ICONS CSS === */
+        .social-icons {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 0.8vmin 1.6vmin; /* Converted from rem */
+            background-color: rgba(0,0,0,0.7);
+            gap:5vmin;
+        }
+        .social-icon {
+            font-size:12vmin;
+            transition: color 0.3s ease, opacity 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column; 
+            align-items: center;
+            gap:6vmin; 
+            opacity: .8
+        }
+
+        .resume-icon { color: #FF0000; }
+        .email-icon { color: #FFA500; }
+        .github-icon { color: #008000; }
+        .linkedin-icon { color: #0A66C2; }
+        .imdb-icon { color: #FFFF00; }
+        .file-icon { color: #800080; }
+
+        @media (hover: hover) {
+            .social-icon {
+                transition: transform 0.3s ease, color 0.3s ease, opacity 0.3s ease;
+            }
+            .social-icon:hover {
+                transform: scale(1.1);
+            }
+            .resume-icon:hover { opacity: 1; }
+            .email-icon:hover { opacity: 1; }
+            .github-icon:hover { opacity: 1; }
+            .linkedin-icon:hover { opacity: 1; }
+            .imdb-icon:hover { opacity: 1; }
+            .file-icon:hover { opacity: 1; }
+        }
+        
+        @media (min-width: 701px) {
+            .social-icons {
+                position: fixed;
+                top: 50%;
+                left: 2.4vmin; /* Converted from rem */
+                right: auto;
+                bottom: auto;
+                width: auto;
+                transform: translateY(-50%);
+                flex-direction: column;
+                background-color: transparent;
+                padding: 0;
+                gap: 2.5vmin;
+            }
+            .social-icon { font-size: 6vmin; }
+        }
+        
+        /* === END OF SOCIAL ICONS CSS === */
+
+
+        /* Orientation Lock Message */
+        #orientation-lock-message {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: transparent; /* Changed to transparent */
+            color: blue;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #orientation-lock-message i {
+            font-size: 6vmin;
+            margin-bottom: 2vmin;
+            animation: rotate-animation 1.5s ease-in-out infinite;
+        }
+        @keyframes rotate-animation {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+
+        /* --- Responsive Design --- */
+        
         @media (max-width: 700px) {
-            main {
-                padding: 2rem 1.6vmin;
+            body {
+                overflow-y: auto;
             }
             .content-container {
-                padding-bottom: 10vmin; 
+                padding: 1.6vmin;
             }
             .content-title {
-                font-size: 8vmin; /* Adjusted for better mobile visibility */
+                font-size: 3.6vmin;
+            }
+            .content-subtitle {
+                font-size: 1.76vmin;
             }
             .content-body {
-                font-size: 4.5vmin; /* Adjusted for readability */
+                font-size: 1.6vmin;
             }
+             .contact-label {
+                display: none;
+            }
+        }
+
+        @media (max-width: 850px) and (orientation: landscape) {
+            #main-content, .social-icons {
+                display: none;
+            }
+            #orientation-lock-message {
+                display: flex;
+            }
+        }
+
+        /* === CONTACT FORM STYLES === */
+        .contact-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .contact-modal-overlay.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .contact-modal {
+            background-color: #777777;
+            padding: 3vmin;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            position: relative;
+            color: black;
+        }
+        .contact-modal .close-button {
+            position: absolute;
+            top: .5vmin;
+            right: 2vmin;
+            font-size: 4vmin;
+            cursor: pointer;
+            color: #333;
+        }
+        .contact-modal h2 {
+            margin-top: 0;
+            text-align: center;
+        }
+        .contact-modal input, .contact-modal textarea, .contact-modal button {
+            width: 100%;
+            padding: 1.2vmin;
+            margin-bottom: 1.6vmin;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-family: 'Inter', sans-serif;
+            color: black;
+            background-color: white;
+            box-sizing: border-box;
+        }
+        .contact-modal button {
+            background-color: blue;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        .contact-modal label {
+            display: block;
+            margin-bottom: 0.8vmin;
+            text-align: left;
+        }
+        #form-success-message {
+            display: none;
+        }
+        #form-success-message p {
+            text-align: center; 
+            font-size: 5vmin; 
+            color: blue;
+            font-weight: bold;
         }
     </style>
 </head>
 <body class="text-slate-300">
+    
+    <!-- 
+    <div class="social-icons">
+        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
+            <i class="fas fa-file-alt"></i>
+        </a>
+        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="https://www.imdb.com/name/nm4282305/" target="_blank" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
+            <i class="fab fa-imdb"></i>
+        </a>
+        <a href="https://github.com/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
+            <i class="fab fa-github"></i>
+        </a>
+        <a href="https://www.linkedin.com/in/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
+            <i class="fas fa-folder"></i>
+        </a>
+    </div> 
+    -->
 
-    <script>
-        // --- INHERIT STYLES FROM PARENT ---
-        if (window !== window.parent) {
-            try {
-                const parentDoc = window.parent.document;
-                const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
-                document.body.style.fontFamily = parentBodyStyle.fontFamily;
-
-                const parentTitle = parentDoc.getElementById('project-title-display');
-                if (parentTitle) {
-                    const titleStyle = window.parent.getComputedStyle(parentTitle);
-                    document.documentElement.style.setProperty('--highlight-color', titleStyle.color);
-                    if (titleStyle.textShadow !== 'none') {
-                        document.documentElement.style.setProperty('--highlight-shadow', titleStyle.textShadow);
-                    }
-                }
-
-                const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
-                parentStyles.forEach(node => {
-                    if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
-                        document.head.appendChild(node.cloneNode(true));
-                    }
-                });
-            } catch (err) {
-                console.warn("Could not inherit styles from parent.");
-            }
-        }
-    </script>
+    <!-- Orientation Lock Message -->
+    <div id="orientation-lock-message">
+        <div>
+            <i class="fas fa-mobile-alt"></i>
+            <p>Please rotate your device to portrait mode for the best experience.</p>
+        </div>
+    </div>
 
     <main id="main-content">
         <div class="content-container">
-            <h1 class="content-title dynamic-highlight">Welcome to the New Page Layout</h1>
+            <h1 class="content-title">Welcome to the New Page Layout</h1>
+            <p class="content-subtitle">A brief and engaging subtitle can go here.</p>
             <div class="content-body">
-                <p>This is the body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
+                <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
-                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page and match the video frame size.</p>
-                
-                <!-- Use main.jpg or hide entirely if not found -->
-                <img src="main.jpg" alt="Main Project Image" onerror="this.style.display='none';">
+                <!-- How to embed an image -->
+                <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
+                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
+                <!-- How to embed a video -->
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
-                <div class="video-wrapper" id="video-container">
-                    <iframe id="video-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 
-                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
                 
-                <hr class="my-8" style="border-color: var(--highlight-color); opacity: 0.3;">
+                <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
         </div>
     </main>
 
+    <!-- Contact Form Modal -->
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
+        <div class="contact-modal">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+                <div id="form-content">
+                    <label class="contact-label">
+                        Your email:
+                        <input type="email" name="email">
+                    </label>
+                    <label class="contact-label">
+                        Your message:
+                        <textarea name="message"></textarea>
+                    </label>
+                    <button type="submit">Send</button>
+                </div>
+                <div id="form-success-message">
+                    <p>Thank you!</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const mainContent = document.getElementById('main-content');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const contactForm = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('form-success-message');
 
-        // --- IFRAME RESIZING ---
-        function sendHeight() {
-            if (window !== window.parent) {
-                const height = document.documentElement.scrollHeight;
-                window.parent.postMessage({ frameHeight: height, type: 'resize' }, '*');
+        const closeModal = () => {
+            contactModalOverlay.classList.remove('is-visible');
+            mainContent.classList.remove('is-hidden');
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.display = 'block';
+                successMessage.style.display = 'none';
+            }, 300);
+        };
+
+        closeModalButton.addEventListener('click', closeModal);
+        contactModalOverlay.addEventListener('click', (e) => {
+            if (e.target === contactModalOverlay) {
+                closeModal();
+            }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    this.reset(); 
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000); 
+                } else {
+                    alert('Oops! There was a problem submitting your form.');
+                }
+            }).catch(error => {
+                alert('Oops! There was a problem submitting your form.');
+            });
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleHomePageSwipe() {
+            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
+            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
+                window.location.href = window.location.origin; 
             }
         }
-        window.addEventListener('load', sendHeight);
-        window.addEventListener('resize', sendHeight);
-
-        // --- CONDITIONAL VIDEO RENDERING ---
-        const videoFrame = document.getElementById('video-frame');
-        const videoContainer = document.getElementById('video-container');
-        if (videoFrame && videoContainer) {
-            const src = videoFrame.getAttribute('src');
-            if (!src || src.trim() === '') {
-                videoContainer.style.display = 'none';
-            }
-        }
-
-        // --- SWIPE TO GO HOME ---
-        let touchStartX = null;
-        let touchStartY = null;
 
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
         }, { passive: true });
 
         mainContent.addEventListener('touchend', e => {
-            if (touchStartX === null) return;
-            const touchEndX = e.changedTouches[0].screenX;
-            const touchEndY = e.changedTouches[0].screenY;
-            
-            const dx = touchEndX - touchStartX;
-            const dy = touchEndY - touchStartY;
-
-            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
-            
-            // Significant horizontal swipe
-            if (isMobilePortrait && Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy)) { 
-                if (window.location.origin === "null" || window.location.origin.includes("file://")) return;
-                try {
-                    window.top.location.href = '/'; 
-                } catch (err) {
-                    window.location.href = '/';
-                }
-            }
-            touchStartX = null;
+            touchEndX = e.changedTouches[0].screenX;
+            handleHomePageSwipe();
         });
     </script>
 
