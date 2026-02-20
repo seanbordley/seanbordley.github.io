@@ -34,6 +34,8 @@
             margin: 0;
             padding: 0;
             background-color: transparent;
+            /* Changed height to auto to allow natural scrolling */
+            height: auto;
             min-height: 100%;
         }
 
@@ -41,6 +43,7 @@
             /* Inherited from parent JS, fallback to sans-serif */
             font-family: sans-serif; 
             overflow-x: hidden; /* Prevents horizontal scrolling */
+            overflow-y: visible; /* Ensures vertical scroll is allowed */
             color: #f1f5f9;
         }
 
@@ -58,7 +61,10 @@
             position: relative;
             width: 100%;
             min-height: 100vh;
-            display: block; 
+            display: flex; /* Using flex for alignment while allowing content to grow */
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Start from top to ensure scrolling works as expected */
             padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
             transition: opacity 0.3s ease;
