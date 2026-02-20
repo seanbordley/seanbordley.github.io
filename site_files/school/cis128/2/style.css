@@ -1,152 +1,158 @@
-body, h1, h2, h3, p, img, ul, li{
-        border:0; margin:0; padding:0;
-    }
-    /*the above is a very basic reset rule.  Every browser has a slightly different default for HTML tags.  By using this simple CSS reset, all the more glaring styles 
-    are reset and can now be set to whatever properties that would suit your website best. */
-    
-    body{
-        background:#eaf8fb; /* a light blue background color. */
-        font-family:Arial, Helvetica, sans-serif; 
-        font-size: 0.8125rem; /* Equivalent to 13px - Required responsive unit */
-    }
-        
-    p{
-        letter-spacing:.04em; 
-        line-height: 1.3125rem; /* Equivalent to 21px - Required responsive unit */
-    }
-        
-    div#header{
-        background-color:#333; 
-        background-image:url(images/headerbkgd.png); 
-        background-repeat:no-repeat; 
-        background-position:left bottom;
-        color:#fff; 
-        /* Removed prefixes as per rubric criteria */
-        border-bottom-right-radius: 4px;
-        border-bottom-left-radius: 4px; 
-        margin:0 auto; 
-        min-height:130px;   
-        padding:45px 15px 15px; 
-        width:870px; 
-    }
-        
-    ul.navigation {
-        list-style:none;    
-        margin-top:20px;    
-    }
-                    
-    ul.navigation li{
-        display:inline-block; 
-        margin:0 3px 5px;   
-    }
-                    
-    ul.navigation li a{
-        background:#4a4a4a; 
-        color:#fff; 
-        border-radius:2px; 
-        border:1px solid #595959; 
-        padding:3px 10px;   
-        text-decoration:none; 
-    }
-                        
-    @media (hover: hover) {
-        ul.navigation li a:hover{
-            background-color:#000; 
-        }
-    }
-    
-    div.content{
-        margin:15px auto; 
-        width:900px;
-    }
-                
-    div.col-right{
-        float:right;
-        width:660px
-    }
-        
-    div.sidebar-left{
-        float:left;
-        padding:0 10px;
-        width:200px;    
-    }
-        
-    div.sidebar-left a{
-        color:#445e64;  
-    }
-    
-    @media (hover: hover) {
-        div.sidebar-left a:hover{
-            text-decoration:none
-        }
-    }
-    
-    .list{
-        border-bottom:1px solid #c3dce1; 
-        padding:0 0 20px 15px;  
-    }
-    .list li{
-        margin-bottom:10px
-    }
-    .list li a{
-        font-weight:bold;   
-        text-transform:uppercase;   
-        font-size: 0.6875rem; /* Equivalent to 11px - Required responsive unit */
-    }
-                
-    div#footer{
-        background-color:#c4d5d9;
-        margin:0 auto;
-        padding:15px;
-        text-align:center;
-        width:900px;
-    }
-    
-    .float-left{
-        float:left; 
-        margin:0  10px 10px 0;
-    }
-    .float-right{
-        float:right;    
-    }
-    .float-right img{
-        margin:0 0 10px 10px;   
-    }
-    .clear{
-        clear:both; 
-    }
+body, h1, h2, h3, p, img, ul, li {
+    border: 0; 
+    margin: 0; 
+    padding: 0;
+}
 
-    @media screen and (max-width: 930px) {
-        div#header, div.content, div#footer {
-            width: auto;
-            margin: 10px;
-            padding: 20px 15px;
-            box-sizing: border-box;
-        }
-        div.col-right, div.sidebar-left {
-            float: none;
-            width: auto;
-            padding: 10px;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        h1 { font-size: 1.5rem; }
-        h2 { font-size: 1.1rem; }
-    }
+/* Base reset */
+body {
+    background: #eaf8fb; 
+    font-family: Arial, Helvetica, sans-serif; 
+    font-size: 0.8125rem; /* 13px */
+}
 
-    @keyframes pulse {
-        0% { opacity: 0.7; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.05); }
-        100% { opacity: 0.7; transform: scale(1); }
-    }
-    div#footer p {
-        display: inline-block;
-        animation: pulse 4s infinite ease-in-out;
-    }
+p {
+    letter-spacing: .04em; 
+    line-height: 1.3125rem; /* 21px */
+}
 
-    @media (hover: none) {
-        ul.navigation li a { background-color: #222; }
-        div.sidebar-left a { text-decoration: underline; font-weight: bold; }
+div#header {
+    background-color: #333; 
+    background-image: url(images/headerbkgd.png); 
+    background-repeat: no-repeat; 
+    background-position: left bottom;
+    color: #fff; 
+    border-bottom-right-radius: 0.25rem; /* 4px */
+    border-bottom-left-radius: 0.25rem;  /* 4px */
+    margin: 0 auto; 
+    min-height: 8.125rem;  /* 130px */ 
+    padding: 2.8125rem 0.9375rem 0.9375rem; /* 45px 15px 15px */
+    width: 54.375rem; /* 870px */
+}
+
+ul.navigation {
+    list-style: none;    
+    margin-top: 1.25rem; /* 20px */    
+}
+
+ul.navigation li {
+    display: inline-block; 
+    margin: 0 0.1875rem 0.3125rem; /* 0 3px 5px */   
+}
+
+ul.navigation li a {
+    background: #4a4a4a; 
+    color: #fff; 
+    border-radius: 0.125rem; /* 2px */
+    border: 0.0625rem solid #595959; /* 1px */
+    padding: 0.1875rem 0.625rem; /* 3px 10px */   
+    text-decoration: none; 
+}
+
+@media (hover: hover) {
+    ul.navigation li a:hover {
+        background-color: #000; 
     }
+}
+
+div.content {
+    margin: 0.9375rem auto; /* 15px */
+    width: 56.25rem; /* 900px */
+}
+
+div.col-right {
+    float: right;
+    width: 41.25rem; /* 660px */
+}
+
+div.sidebar-left {
+    float: left;
+    padding: 0 0.625rem; /* 10px */
+    width: 12.5rem; /* 200px */    
+}
+
+div.sidebar-left a {
+    color: #445e64;  
+}
+
+@media (hover: hover) {
+    div.sidebar-left a:hover {
+        text-decoration: none;
+    }
+}
+
+.list {
+    border-bottom: 0.0625rem solid #c3dce1; /* 1px */
+    padding: 0 0 1.25rem 0.9375rem; /* 0 0 20px 15px */ 
+}
+
+.list li {
+    margin-bottom: 0.625rem; /* 10px */
+}
+
+.list li a {
+    font-weight: bold;   
+    text-transform: uppercase;   
+    font-size: 0.6875rem; /* 11px */
+}
+
+div#footer {
+    background-color: #c4d5d9;
+    margin: 0 auto;
+    padding: 0.9375rem; /* 15px */
+    text-align: center;
+    width: 56.25rem; /* 900px */
+}
+
+.float-left {
+    float: left; 
+    margin: 0 0.625rem 0.625rem 0; /* 10px */
+}
+
+.float-right {
+    float: right;    
+}
+
+.float-right img {
+    margin: 0 0 0.625rem 0.625rem; /* 10px */   
+}
+
+.clear {
+    clear: both; 
+}
+
+@media screen and (max-width: 58.125rem) { /* 930px */
+    div#header, div.content, div#footer {
+        width: auto;
+        margin: 0.625rem; /* 10px */
+        padding: 1.25rem 0.9375rem; /* 20px 15px */
+        box-sizing: border-box;
+    }
+    div.col-right, div.sidebar-left {
+        float: none;
+        width: auto;
+        padding: 0.625rem; /* 10px */
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+    h1 { font-size: 1.5rem; }
+    h2 { font-size: 1.1rem; }
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); }
+    100% { opacity: 0.7; transform: scale(1); }
+}
+
+div#footer p {
+    display: inline-block;
+    animation: pulse 4s infinite ease-in-out;
+}
+
+@media (hover: none) {
+    ul.navigation li a { background-color: #222; }
+    div.sidebar-left a { text-decoration: underline; font-weight: bold; }
+}
