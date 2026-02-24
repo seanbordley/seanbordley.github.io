@@ -34,7 +34,7 @@
             margin: 0;
             padding: 0;
             background-color: transparent;
-            /* Changed height to auto to allow natural scrolling */
+            /* Allow the document to expand naturally to fit all content */
             height: auto;
             min-height: 100%;
         }
@@ -42,9 +42,11 @@
         body {
             /* Inherited from parent JS, fallback to sans-serif */
             font-family: sans-serif; 
-            overflow-x: hidden; /* Prevents horizontal scrolling */
-            overflow-y: visible; /* Ensures vertical scroll is allowed */
+            overflow-x: hidden; 
+            /* 'visible' is the key here - it ensures the browser handles the scrollbar naturally */
+            overflow-y: visible; 
             color: #f1f5f9;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling for older iOS */
         }
 
         :root {
@@ -60,11 +62,8 @@
         main {
             position: relative;
             width: 100%;
-            min-height: 100vh;
-            display: flex; /* Using flex for alignment while allowing content to grow */
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start; /* Start from top to ensure scrolling works as expected */
+            /* Remove display: flex to prevent "centering lock" that breaks scrolling */
+            display: block; 
             padding: 4rem 2rem 2rem 2rem;
             box-sizing: border-box;
             transition: opacity 0.3s ease;
@@ -80,7 +79,7 @@
             max-width: 800px;
             width: 100%;
             text-align: center;
-            padding-bottom: 6rem; /* Bottom padding to clear parent's social icons */
+            padding-bottom: 8rem; /* Extra padding at bottom for mobile reachability */
             margin: 0 auto; /* Centers horizontally */
         }
 
@@ -105,7 +104,7 @@
         .content-body img {
             width: 100%;
             aspect-ratio: 16 / 9; /* Forces image to match video aspect ratio */
-            object-fit: cover; /* Ensures image fills the aspect ratio without distorting */
+            object-fit: cover; 
             border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
@@ -144,34 +143,31 @@
         /* --- Responsive Design --- */
         @media (max-width: 700px) {
             main {
-                padding: 2rem 1.6vmin;
+                padding: 2rem 1rem;
             }
             .content-container {
-                padding-bottom: 10vmin; 
+                padding-bottom: 12rem; 
             }
             .content-title {
-                font-size: 8vmin; /* Using larger relative units for mobile titles */
+                font-size: 2.25rem;
             }
             .content-body {
-                font-size: 4vmin; /* Using larger relative units for mobile body */
+                font-size: 1rem;
             }
         }
     </style>
 </head>
-<body class="text-slate-300">
+<body>
 
     <script>
         // --- INHERIT STYLES FROM PARENT ---
-        // If this page is loaded in an iframe on the same domain, it will grab the parent's font and hover colors.
         if (window !== window.parent) {
             try {
                 const parentDoc = window.parent.document;
                 
-                // 1. Inherit Font Family
                 const parentBodyStyle = window.parent.getComputedStyle(parentDoc.body);
                 document.body.style.fontFamily = parentBodyStyle.fontFamily;
 
-                // 2. Inherit "Hover Font" Color (from the main page's title display)
                 const parentTitle = parentDoc.getElementById('project-title-display');
                 if (parentTitle) {
                     const titleStyle = window.parent.getComputedStyle(parentTitle);
@@ -181,7 +177,6 @@
                     }
                 }
 
-                // 3. Clone stylesheet links from parent so custom web fonts load properly
                 const parentStyles = parentDoc.querySelectorAll('link[rel="stylesheet"], style');
                 parentStyles.forEach(node => {
                     if (node.tagName.toLowerCase() === 'style' || (node.href && node.href.includes('font'))) {
@@ -189,7 +184,7 @@
                     }
                 });
             } catch (err) {
-                console.warn("Could not inherit styles from parent due to cross-origin restrictions.");
+                console.warn("Could not inherit styles.");
             }
         }
     </script>
@@ -221,7 +216,6 @@
     <script>
         const mainContent = document.getElementById('main-content');
 
-        // --- CONDITIONAL VIDEO RENDERING ---
         const videoFrame = document.getElementById('video-frame');
         const videoContainer = document.getElementById('video-container');
         if (videoFrame && videoContainer) {
@@ -231,7 +225,6 @@
             }
         }
 
-        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
         let touchStartX = null;
         let touchEndX = null;
 
