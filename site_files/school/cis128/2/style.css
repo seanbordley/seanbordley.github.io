@@ -26,7 +26,7 @@ div#header {
     border-bottom-left-radius: 0.25rem;  /* 4px */
     margin: 0 auto; 
     min-height: 8.125rem;  /* 130px */ 
-    padding: 2.8125rem 0.9375rem 0.9375rem; /* 45px 15px 15px */
+    padding: 0.9375rem 0rem 0.9375rem; /* 45px 15px 15px */
     width: 54.375rem; /* 870px */
 }
 
