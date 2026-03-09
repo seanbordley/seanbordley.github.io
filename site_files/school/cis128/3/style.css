@@ -94,7 +94,7 @@ body {
 }
 
 .toy-img-product {
-    max-width: 20rem;
+    max-width: 100%;
     height: auto;
     border-radius: 0.625rem;
     margin: 0.625rem 0;
