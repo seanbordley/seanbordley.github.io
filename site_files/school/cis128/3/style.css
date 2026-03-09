@@ -1,5 +1,5 @@
 :root {
-    --nav-bg: #45B7D1;
+    --nav-bg: #89CFF0;
 }
 
 body {
@@ -151,17 +151,20 @@ body {
 }
 
 @media (max-width: 36rem) {
-    .brand-slogan { 
-        display: none; 
+    .brand-slogan {
+        display: none;
     }
+
     .container {
         padding-left: 0;
         padding-right: 0;
     }
+
     .section-container {
         padding-left: 0.9375rem;
         padding-right: 0.9375rem;
     }
+
     .accordion-item {
         border-left: none;
         border-right: none;
