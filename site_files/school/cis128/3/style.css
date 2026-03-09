@@ -1,0 +1,169 @@
+:root {
+    --nav-bg: #45B7D1;
+}
+
+body {
+    font-family: sans-serif;
+    background-color: #ffffff;
+    padding-top: 4.375rem;
+    color: #333;
+}
+
+.navbar-brand-container {
+    display: flex;
+    align-items: center;
+    color: white;
+    white-space: nowrap;
+}
+
+.brand-name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+}
+
+.brand-slogan {
+    font-size: 0.9rem;
+    margin-left: 0.625rem;
+    padding-left: 0.625rem;
+    border-left: 0.0625rem solid rgba(255,255,255,0.4);
+    color: white;
+}
+
+.navbar {
+    background-color: var(--nav-bg) !important;
+    border: none;
+}
+
+.nav-link {
+    color: white !important;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.nav-link.active {
+    text-decoration: underline;
+}
+
+.section-container {
+    display: none;
+    padding-bottom: 3.75rem;
+}
+
+.section-container.active {
+    display: block;
+}
+
+.intro-spacing {
+    margin-top: 4rem;
+}
+
+.mission-text {
+    margin: 2rem 0;
+    padding: 1.5rem 0;
+    border-top: 0.0625rem solid #eee;
+    border-bottom: 0.0625rem solid #eee;
+    font-style: italic;
+}
+
+.toy-img-home {
+    max-width: 100%;
+    height: auto;
+    border-radius: 1.875rem;
+    display: block;
+    margin: 1.25rem auto;
+}
+
+.accordion-item {
+    border: 0.0625rem solid #dee2e6;
+    margin-bottom: 0.3125rem;
+}
+
+.accordion-button {
+    background-color: #f8f9fa;
+    color: #333;
+    font-size: 1rem;
+    box-shadow: none !important;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+.toy-img-product {
+    max-width: 15.625rem;
+    height: auto;
+    border-radius: 0.625rem;
+    margin: 0.625rem 0;
+}
+
+.map-frame {
+    border: 0.5rem solid #f8f9fa;
+    border-radius: 2.1875rem;
+    overflow: hidden;
+    margin: 1.25rem auto;
+    max-width: 28.125rem;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    box-shadow: 0 0.25rem 0.9375rem rgba(0,0,0,0.05);
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.contact-form-container {
+    max-width: 37.5rem;
+    margin: 0 auto;
+}
+
+.form-label {
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-bottom: 0.3125rem;
+}
+
+.form-control {
+    border: 0.0625rem solid #ced4da;
+    padding: 0.75rem;
+    margin-bottom: 0.9375rem;
+    border-radius: 0.5rem;
+}
+
+.btn-submit {
+    background-color: #212529;
+    color: white;
+    border-radius: 3.125rem;
+    padding: 0.75rem;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+    margin-top: 0.625rem;
+}
+
+.btn-submit:hover {
+    background-color: #343a40;
+    color: white;
+}
+
+@media (max-width: 36rem) {
+    .brand-slogan { 
+        display: none; 
+    }
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .section-container {
+        padding-left: 0.9375rem;
+        padding-right: 0.9375rem;
+    }
+    .accordion-item {
+        border-left: none;
+        border-right: none;
+    }
+}

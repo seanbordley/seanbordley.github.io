@@ -4,155 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ABC Toys - Making Learning Fun</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2345B7D1'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='central' text-anchor='middle' font-family='sans-serif' font-size='60' fill='white' font-weight='bold'%3EABC%3C/text%3E%3C/svg%3E">
-    <!-- Bootstrap 5 CSS via HTTPS -->
+    <link rel="icon" href="abc.jpg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Leaflet CSS for Map via HTTPS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <style>
-        :root {
-            --nav-bg: #45B7D1;
-        }
-        body {
-            font-family: sans-serif;
-            background-color: #ffffff;
-            padding-top: 70px;
-            color: #333;
-        }
-        /* Navigation Branding - Static Text */
-        .navbar-brand-container {
-            display: flex;
-            align-items: center;
-            color: white;
-            white-space: nowrap;
-        }
-        .brand-name {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin: 0;
-            color: white;
-        }
-        .brand-slogan {
-            font-size: 0.9rem;
-            margin-left: 10px;
-            padding-left: 10px;
-            border-left: 1px solid rgba(255,255,255,0.4);
-            color: white;
-        }
-        .navbar {
-            background-color: var(--nav-bg) !important;
-            border: none;
-        }
-        .nav-link {
-            color: white !important;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-        .nav-link.active {
-            text-decoration: underline;
-        }
-        /* General Layout */
-        .section-container {
-            display: none;
-            padding-bottom: 60px;
-        }
-        .section-container.active {
-            display: block;
-        }
-        /* Home Page Styling */
-        .intro-spacing {
-            margin-top: 4rem;
-        }
-        .mission-text {
-            margin: 2rem 0;
-            padding: 1.5rem 0;
-            border-top: 1px solid #eee;
-            border-bottom: 1px solid #eee;
-            font-style: italic;
-        }
-        .toy-img-home {
-            max-width: 100%;
-            height: auto;
-            border-radius: 30px;
-            display: block;
-            margin: 20px auto;
-        }
-        /* Products Page: Plain Collapsible */
-        .accordion-item {
-            border: 1px solid #dee2e6;
-            margin-bottom: 5px;
-        }
-        .accordion-button {
-            background-color: #f8f9fa;
-            color: #333;
-            box-shadow: none !important;
-        }
-        .accordion-button:not(.collapsed) {
-            background-color: #e9ecef;
-            color: #000;
-        }
-        .toy-img-product {
-            max-width: 250px;
-            height: auto;
-            border-radius: 10px;
-            margin: 10px 0;
-        }
-        /* Location Page: Rounded Square Frame */
-        .map-frame {
-            border: 8px solid #f8f9fa;
-            border-radius: 35px;
-            overflow: hidden;
-            margin: 20px auto;
-            max-width: 450px;
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-        /* Contact Form Styling */
-        .contact-form-container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .form-label {
-            font-weight: bold;
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-        }
-        .form-control {
-            border: 1px solid #ced4da;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-        }
-        .btn-submit {
-            background-color: #212529;
-            color: white;
-            border-radius: 50px;
-            padding: 12px;
-            font-weight: bold;
-            width: 100%;
-            border: none;
-            margin-top: 10px;
-        }
-        .btn-submit:hover {
-            background-color: #343a40;
-            color: white;
-        }
-        /* Mobile Breakpoint for Slogan */
-        @media (max-width: 576px) {
-            .brand-slogan { display: none; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Fixed Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container-fluid">
             <div class="navbar-brand-container">
@@ -176,7 +34,6 @@
 
     <main class="container">
 
-        <!-- HOME SECTION -->
         <section id="home" class="section-container active">
             <div class="text-center">
                 <div class="intro-spacing">
@@ -186,11 +43,13 @@
                     "The mission of our company is to create toys that are safe for kindergarten kids but that challenge the kids' mind and motor skills making learning a fun task."
                 </p>
                 <p class="h5">By the way, parents love our toys too!</p>
-                <img src="https://images.unsplash.com/photo-1532330393533-443990a51d10?auto=format&fit=crop&q=80&w=800" alt="Fun Toys" class="toy-img-home">
+                <picture>
+                    <source srcset="train_mobile.jpg" media="(max-width: 36rem)">
+                    <img src="train.jpg" alt="Fun Toys" class="toy-img-home">
+                </picture>
             </div>
         </section>
 
-        <!-- PRODUCTS SECTION -->
         <section id="products" class="section-container">
             <h2 class="text-center mb-4">TOYS</h2>
             <div class="accordion" id="toyAccordion">
@@ -200,7 +59,10 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#toyAccordion">
                         <div class="accordion-body text-center">
-                            <img src="https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=300" alt="Toy 1" class="toy-img-product">
+                            <picture>
+                                <source srcset="blocks_mobile.jpg" media="(max-width: 36rem)">
+                                <img src="blocks.jpg" alt="Toy 1" class="toy-img-product">
+                            </picture>
                             <p>Classic wooden building blocks designed to challenge motor skills and encourage creativity.</p>
                         </div>
                     </div>
@@ -211,7 +73,10 @@
                     </h2>
                     <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#toyAccordion">
                         <div class="accordion-body text-center">
-                            <img src="https://images.unsplash.com/photo-1515488764276-beab7607c1e6?auto=format&fit=crop&q=80&w=300" alt="Toy 2" class="toy-img-product">
+                            <picture>
+                                <source srcset="magnetic_mobile.jpg" media="(max-width: 36rem)">
+                                <img src="magnetic.jpg" alt="Toy 2" class="toy-img-product">
+                            </picture>
                             <p>Colorful magnetic tiles that help kids learn about geometry and architectural structures while having fun.</p>
                         </div>
                     </div>
@@ -222,7 +87,10 @@
                     </h2>
                     <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#toyAccordion">
                         <div class="accordion-body text-center">
-                            <img src="https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?auto=format&fit=crop&q=80&w=300" alt="Toy 3" class="toy-img-product">
+                            <picture>
+                                <source srcset="globe_mobile.jpg" media="(max-width: 36rem)">
+                                <img src="globe.jpg" alt="Toy 3" class="toy-img-product">
+                            </picture>
                             <p>An educational interactive globe that teaches geography through games and voice-guided tours.</p>
                         </div>
                     </div>
@@ -230,7 +98,6 @@
             </div>
         </section>
 
-        <!-- CONTACT US SECTION -->
         <section id="contact" class="section-container">
             <h2 class="mb-4">Contact Us</h2>
             <div class="row">
@@ -261,7 +128,6 @@
             </div>
         </section>
 
-        <!-- LOCATION SECTION -->
         <section id="location" class="section-container">
             <h2 class="text-center mb-4">Store Location</h2>
             <div class="text-center mb-4">
@@ -274,7 +140,6 @@
             <p class="text-center text-muted small mt-3">Location automatically detected from your device.</p>
         </section>
 
-        <!-- EXTRA SECTION -->
         <section id="extra" class="section-container">
             <h2 class="text-center mb-4">Device Capabilities</h2>
             <div class="table-responsive">
