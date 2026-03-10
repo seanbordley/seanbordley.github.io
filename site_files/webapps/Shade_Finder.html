@@ -88,6 +88,10 @@
         #leaflet-bg {
             filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(120%);
         }
+        /* Hide Leaflet UI completely just in case */
+        .leaflet-control-container {
+            display: none !important;
+        }
     </style>
 </head>
 <body class="text-gray-300 flex flex-col min-h-screen m-0 p-0 font-sans">
@@ -99,7 +103,7 @@
     </div>
 
     <!-- Map Container (Edge to Edge width, perfectly square) -->
-    <div class="relative w-full aspect-square bg-gray-900 z-10 flex-shrink-0">
+    <div class="relative w-full aspect-square bg-gray-900 z-10 flex-shrink-0" id="map-container">
         <!-- Leaflet Map rendered underneath the SVG -->
         <div id="leaflet-bg" class="absolute inset-0 z-0"></div>
         
@@ -417,13 +421,15 @@
                     });
                     
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 22,
+                        maxNativeZoom: 19, // Use max zoom 19, stretch it for anything deeper
+                        maxZoom: 25,       // Allow stretching to very close zooms (small umbrellas)
                         attribution: '© OpenStreetMap'
                     }).addTo(map);
                 }
                 
                 // Forces map to perfectly match the SVG square
                 map.fitBounds(bounds, { animate: false, padding: [0, 0] });
+                map.invalidateSize();
             }
 
             // Ensures map adapts to window resizing

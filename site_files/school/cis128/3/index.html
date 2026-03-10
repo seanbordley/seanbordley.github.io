@@ -35,6 +35,7 @@
     <main class="container">
 
         <section id="home" class="section-container">
+            <h2 class="visually-hidden">Home</h2>
             <div class="text-center">
                 <div class="intro-spacing">
                     <p class="lead">ABC Toys is a company that opened its doors in 2001 and it has kept its mission for all those years.</p>
@@ -45,7 +46,7 @@
                 <p class="h5">By the way, parents love our toys too!</p>
                 <picture>
                     <source srcset="media/train_mobile.jpg" media="(max-width: 36rem)">
-                    <img src="media/train.jpg" alt="Fun Toys" class="toy-img-home">
+                    <img src="media/train.jpg" alt="wooden train set" class="toy-img-home">
                 </picture>
             </div>
         </section>
@@ -61,7 +62,7 @@
                         <div class="accordion-body text-center">
                             <picture>
                                 <source srcset="media/blocks_mobile.jpg" media="(max-width: 36rem)">
-                                <img src="media/blocks.jpg" alt="Toy 1" class="toy-img-product">
+                                <img src="media/blocks.jpg" alt="variety of wooden building blocks in different geometric shapes" class="toy-img-product">
                             </picture>
                             <p>Classic wooden building blocks designed to challenge motor skills and encourage creativity.</p>
                         </div>
@@ -75,7 +76,7 @@
                         <div class="accordion-body text-center">
                             <picture>
                                 <source srcset="media/magnetic_mobile.jpg" media="(max-width: 36rem)">
-                                <img src="media/magnetic.jpg" alt="Toy 2" class="toy-img-product">
+                                <img src="media/magnetic.jpg" alt="transparent magnetic tiles connected to form a 3D structure" class="toy-img-product">
                             </picture>
                             <p>Colorful magnetic tiles that help kids learn about geometry and architectural structures while having fun.</p>
                         </div>
@@ -89,7 +90,7 @@
                         <div class="accordion-body text-center">
                             <picture>
                                 <source srcset="media/globe_mobile.jpg" media="(max-width: 36rem)">
-                                <img src="media/globe.jpg" alt="Toy 3" class="toy-img-product">
+                                <img src="media/globe.jpg" alt="educational interactive world globe for children with labeled continents" class="toy-img-product">
                             </picture>
                             <p>An educational interactive globe that teaches geography through games and voice-guided tours.</p>
                         </div>
@@ -174,9 +175,7 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         function showSection() {
-            // Get section from URL hash (e.g., #products) or default to home
             const hash = window.location.hash.replace('#', '') || 'home';
-            
             const sections = document.querySelectorAll('.section-container');
             sections.forEach(s => s.classList.remove('active'));
             
@@ -184,26 +183,24 @@
             if (target) {
                 target.classList.add('active');
             } else {
-                // Fallback if hash is invalid
                 document.getElementById('home').classList.add('active');
             }
 
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(l => l.classList.remove('active'));
-            const activeLink = document.getElementById('nav-' + hash);
+            const activeLink = document.getElementById('nav-' + (target ? hash : 'home'));
             if (activeLink) activeLink.classList.add('active');
 
             const navbarCollapse = document.querySelector('.navbar-collapse');
             if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
-                if (bsCollapse) bsCollapse.hide();
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse) || new bootstrap.Collapse(navbarCollapse);
+                bsCollapse.hide();
             }
 
             if (hash === 'location') initGeolocation();
             window.scrollTo(0, 0);
         }
 
-        // Listen for back/forward buttons and hash changes
         window.addEventListener('hashchange', showSection);
 
         let map, marker;
@@ -215,7 +212,7 @@
                     document.getElementById('lat').textContent = lat.toFixed(4);
                     document.getElementById('lon').textContent = lon.toFixed(4);
                     updateMap(lat, lon);
-                }, function(error) {
+                }, function() {
                     document.getElementById('lat').textContent = "Denied";
                     document.getElementById('lon').textContent = "Denied";
                 });
@@ -241,7 +238,6 @@
             setTimeout(() => { document.getElementById('formMsg').style.display = 'none'; }, 2000);
         }
 
-        // Run on initial load
         window.onload = showSection;
     </script>
 </body>
