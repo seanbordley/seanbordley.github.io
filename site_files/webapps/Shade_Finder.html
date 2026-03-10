@@ -96,8 +96,8 @@
 </head>
 <body class="text-gray-300 h-[100dvh] w-full m-0 p-0 font-sans bg-black flex flex-col items-center justify-center overflow-hidden">
     
-    <!-- Main wrapper: scales to max 72vh on desktop to be huge but prevent vertical scroll, full width on mobile -->
-    <div class="w-full h-full mx-auto flex flex-col bg-black relative" style="max-width: min(100vw, 72vh);">
+    <!-- Main wrapper: tightly hugs content and scales to max 72vh on desktop -->
+    <div class="w-full mx-auto flex flex-col bg-black relative" style="max-width: min(100vw, 72vh);">
 
         <!-- Header -->
         <div class="w-full text-center py-2 md:py-4 z-20 bg-black border-b border-gray-800 flex-shrink-0">
@@ -207,8 +207,8 @@
             </div>
         </div>
 
-        <!-- Bottom Controls -->
-        <div class="w-full px-4 md:px-6 py-2 md:py-4 flex flex-col justify-evenly flex-grow space-y-3 md:space-y-4">
+        <!-- Bottom Controls (Removed flex-grow and justify-evenly so items stay tightly packed) -->
+        <div class="w-full px-4 md:px-6 py-4 md:py-6 flex flex-col space-y-4 md:space-y-6">
             
             <!-- Legend -->
             <div class="flex justify-center items-center flex-wrap gap-x-4 md:gap-x-6 gap-y-2 text-gray-400 text-xs md:text-sm">
