@@ -300,14 +300,14 @@
             </div>
             
             <!-- Action Buttons (Unit Toggle & Install) -->
-            <div class="flex justify-center items-center gap-md w-full">
+            <div class="relative flex justify-center items-center w-full">
                 <div class="flex items-center border border-gray-600 rounded-[calc(var(--u)*1.5)] overflow-hidden" role="group" aria-label="Unit selection">
                     <button id="unit-imperial" aria-label="Switch to Imperial units (feet)" class="btn-padding unit-toggle active-unit font-medium text-btn">Imperial</button>
                     <button id="unit-metric" aria-label="Switch to Metric units (meters)" class="btn-padding unit-toggle font-medium text-btn">Metric</button>
                 </div>
                 
                 <!-- Install PWA Button -->
-                <button id="install-btn" aria-label="Install Shade Finder App to device" class="hidden items-center gap-xs bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 btn-padding rounded-[calc(var(--u)*1.5)] text-btn font-medium transition-colors shadow-lg">
+                <button id="install-btn" aria-label="Install Shade Finder App to device" class="hidden absolute right-0 items-center gap-xs bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 btn-padding rounded-[calc(var(--u)*1.5)] text-btn font-medium transition-colors shadow-lg">
                     <svg class="legend-icon" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v6m0 0l-3-3m3 3l3-3"></path></svg>
                     <span>Install</span>
                 </button>
