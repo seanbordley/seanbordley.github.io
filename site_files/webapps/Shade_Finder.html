@@ -18,105 +18,144 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        /* MATHEMATICAL PROPORTIONAL SCALING ENGINE */
+        :root {
+            /* Ratio = 1.48 (Header 0.12 + Map 1.00 + Footer 0.36) 
+              This perfectly calculates 1 "Unit" (--u) to guarantee it fits entirely inside 96% of the window height.
+            */
+            --u: calc(min(100vw, 96dvh / 1.48) / 100);
+        }
+
         html, body {
-            overscroll-behavior: none; /* Disables pull-to-refresh */
+            overscroll-behavior: none; 
             touch-action: pan-x pan-y;
-            background-color: black;
-        }
-        /* Lock scrolling on mobile/tablet */
-        @media (max-width: 1023px) {
-            html, body {
-                overflow: hidden;
-                position: fixed;
-                width: 100%;
-                height: 100%;
-            }
-        }
-        body {
+            background-color: #050505;
             font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0;
+            width: 100%; height: 100dvh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; /* Absolutely prevents viewport scrollbars */
         }
+
+        /* Layout Panels */
+        .scale-wrapper { 
+            width: calc(var(--u) * 100); 
+            height: calc(var(--u) * 148); /* Explicitly locks height to prevent layout stretching */
+            background: black; 
+            display: flex; 
+            flex-direction: column; 
+            border-radius: calc(var(--u) * 2); 
+            overflow: hidden; 
+            box-shadow: 0 0 0 1px #1f2937, 0 25px 50px -12px rgba(0, 0, 0, 0.5); 
+            box-sizing: border-box;
+        }
+        @media (max-width: 1023px) { 
+            .scale-wrapper { border-radius: 0; box-shadow: none; } 
+        }
+        
+        .scale-header { height: calc(var(--u) * 12); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .scale-map { width: calc(var(--u) * 100); height: calc(var(--u) * 100); position: relative; }
+        .scale-footer { height: calc(var(--u) * 36); padding: calc(var(--u) * 3) calc(var(--u) * 4); display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* Typography Scaling */
+        .text-title { font-size: calc(var(--u) * 5.5); line-height: 1; }
+        .text-sub { font-size: calc(var(--u) * 2.8); line-height: 1.2; }
+        .text-legend { font-size: calc(var(--u) * 2.8); }
+        .text-btn { font-size: calc(var(--u) * 3); }
+        .text-input { font-size: calc(var(--u) * 3.5); }
+        .text-overlay { font-size: calc(var(--u) * 2.6); }
+        .text-night { font-size: calc(var(--u) * 8); }
+        .text-error { font-size: calc(var(--u) * 2.6); margin-top: calc(var(--u) * 1.5); }
+
+        /* Component Scaling */
+        .legend-line {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            gap: calc(var(--u) * 2.5);
+            white-space: nowrap; /* Forces one line */
+        }
+        .legend-icon { width: calc(var(--u) * 3); height: calc(var(--u) * 3); flex-shrink: 0; }
+        
+        .btn-padding { padding: calc(var(--u) * 1.5) calc(var(--u) * 4); }
+        .input-padding { padding: calc(var(--u) * 2) calc(var(--u) * 2.5); border-radius: calc(var(--u) * 1.5); }
+        
+        .overlay-btn { padding: calc(var(--u) * 1.5); border-radius: calc(var(--u) * 1.2); }
+        .overlay-icon { width: calc(var(--u) * 4); height: calc(var(--u) * 4); }
+        .overlay-input { padding: calc(var(--u) * 1.2) calc(var(--u) * 1.5); border-radius: calc(var(--u) * 1.2); height: calc(var(--u) * 7); }
+        
+        .zoom-btn { width: calc(var(--u) * 8); height: calc(var(--u) * 8); border-radius: calc(var(--u) * 1.5); display: flex; align-items: center; justify-content: center; }
+        .zoom-icon { width: calc(var(--u) * 5); height: calc(var(--u) * 5); }
+        
+        .gap-xs { gap: calc(var(--u) * 1); }
+        .gap-sm { gap: calc(var(--u) * 1.5); }
+        .gap-md { gap: calc(var(--u) * 3); }
+        .gap-lg { gap: calc(var(--u) * 4); }
+
+        /* Map Positioning */
+        .pos-overlay-left { bottom: calc(var(--u) * 2); left: calc(var(--u) * 2); width: calc(var(--u) * 45); }
+        .pos-overlay-right { bottom: calc(var(--u) * 2); right: calc(var(--u) * 2); width: calc(var(--u) * 48); }
+        .pos-zoom { top: calc(var(--u) * 2); right: calc(var(--u) * 2); }
+
         .loader {
-            border: 0.5vmin solid #4a5568; 
-            border-top: 0.5vmin solid #4299e1;
+            border: calc(var(--u) * 0.8) solid #4a5568; 
+            border-top: calc(var(--u) * 0.8) solid #4299e1;
             border-radius: 50%;
-            width: 5vmin;
-            height: 5vmin;
+            width: calc(var(--u) * 10);
+            height: calc(var(--u) * 10);
             animation: spin 1s linear infinite;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* General Utilities */
+        input:disabled { background-color: #2d3748; cursor: not-allowed; color: #718096; }
+        input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
+        input[type="time"]::-webkit-calendar-picker-indicator, input[type="date"]::-webkit-calendar-picker-indicator { display: none; }
+        
+        .unit-toggle { 
+            background-color: transparent; 
+            transition: background-color 0.2s, color 0.2s; 
+            color: #9ca3af; /* Fixes unselected contrast */
         }
-        input:disabled {
-            background-color: #2d3748;
-            cursor: not-allowed;
-            color: #718096;
+        .unit-toggle.active-unit { 
+            background-color: #3b82f6; 
+            color: #ffffff; 
         }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-        .unit-toggle {
-            background-color: transparent;
-            transition: background-color 0.2s;
-        }
-        .active-unit {
-            background-color: #3b82f6;
-            color: white;
-        }
-        input[type="time"]::-webkit-calendar-picker-indicator,
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            display: none;
-        }
-        #shadow-ellipse {
-            cursor: grab;
-            touch-action: none;
-        }
-        #shadow-ellipse:active {
-            cursor: grabbing;
-        }
-        select {
-            scrollbar-width: thin;
-            scrollbar-color: #4a5568 #1a202c;
-        }
-        /* Leaflet Dark Mode Filter */
-        #leaflet-bg {
-            filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(120%);
-        }
-        /* Hide Leaflet UI completely just in case */
-        .leaflet-control-container {
-            display: none !important;
-        }
+
+        #shadow-ellipse { cursor: grab; touch-action: none; }
+        #shadow-ellipse:active { cursor: grabbing; }
+        select { scrollbar-width: none; }
+        select::-webkit-scrollbar { display: none; }
+        #leaflet-bg { filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(120%); }
+        .leaflet-control-container { display: none !important; }
     </style>
 </head>
-<body class="text-gray-300 h-[100dvh] w-full m-0 p-0 font-sans bg-black flex flex-col items-center justify-center overflow-hidden">
+<body>
     
-    <!-- Main wrapper: tightly hugs content and scales to max 72vh on desktop -->
-    <div class="w-full mx-auto flex flex-col bg-black relative" style="max-width: min(100vw, 72vh);">
+    <div class="scale-wrapper">
 
         <!-- Header -->
-        <div class="w-full text-center py-2 md:py-4 z-20 bg-black border-b border-gray-800 flex-shrink-0">
-            <h1 class="font-bold text-blue-400 text-2xl md:text-4xl tracking-tight">Shade Finder</h1>
-            <p class="text-gray-400 text-xs md:text-sm mt-0.5 md:mt-1">Plan your perfect spot in the shade.</p>
+        <div class="scale-header z-20 bg-black border-b border-gray-800 flex-shrink-0">
+            <h1 class="font-bold text-blue-400 text-title tracking-tight">Shade Finder</h1>
+            <p class="text-gray-400 text-sub mt-[calc(var(--u)*1.5)]">Plan your perfect spot in the shade.</p>
         </div>
 
-        <!-- Map Container (Square) -->
-        <div class="relative w-full aspect-square bg-gray-900 z-10 flex-shrink-0" id="map-container">
-            <!-- Leaflet Map rendered underneath the SVG -->
+        <!-- Map Container -->
+        <div class="scale-map bg-gray-900 z-10 flex-shrink-0" id="map-container">
             <div id="leaflet-bg" class="absolute inset-0 z-0"></div>
             
             <!-- Map Zoom Controls -->
-            <div class="absolute top-2 md:top-4 right-2 md:right-4 flex flex-col gap-1.5 md:gap-2 z-20 pointer-events-auto">
-                <button id="zoom-in-btn" title="Zoom In" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-md md:rounded-lg bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white">
-                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12M6 12h12"></path></svg>
+            <div class="absolute pos-zoom flex flex-col gap-sm z-20 pointer-events-auto">
+                <button id="zoom-in-btn" title="Zoom In" class="zoom-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white">
+                    <svg class="zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12M6 12h12"></path></svg>
                 </button>
-                <button id="zoom-out-btn" title="Zoom Out" class="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-md md:rounded-lg bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white">
-                    <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+                <button id="zoom-out-btn" title="Zoom Out" class="zoom-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white">
+                    <svg class="zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                 </button>
             </div>
 
@@ -160,100 +199,101 @@
                 <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
                 <g id="hourly-dots-group"></g>
                 
-                <!-- Explicitly turn pointer-events back on for the interactive ellipse -->
                 <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1" style="pointer-events: auto;"/>
                 <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5" style="pointer-events: none;"/>
             </svg>
 
-            <!-- Dynamic Feedback Overlay -->
-            <div id="night-message" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold hidden text-xl sm:text-2xl md:text-3xl z-20" style="pointer-events: none;">
+            <!-- Overlays -->
+            <div id="night-message" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold hidden text-night z-20" style="pointer-events: none;">
                 <p>It's Nighttime!</p>
             </div>
             <div id="loader" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center z-30">
                 <div class="loader"></div>
             </div>
 
-            <!-- Floating UI Overlays -->
-            <div class="absolute bottom-2 md:bottom-4 left-2 md:left-4 grid grid-cols-[auto_1fr] gap-x-1.5 md:gap-x-2 gap-y-1.5 md:gap-y-2 items-center z-20 pointer-events-auto w-[45%] max-w-[180px] md:max-w-[220px]">
-                <button id="getLocationBtn" title="Get Current Location" class="p-1.5 md:p-2 rounded-md bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
-                    <svg class="w-4 h-4 md:w-5 md:h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <!-- Location Inputs Overlay -->
+            <div class="absolute pos-overlay-left grid grid-cols-[auto_1fr] gap-xs items-center z-20 pointer-events-auto">
+                <button id="getLocationBtn" title="Get Current Location" class="overlay-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
+                    <svg class="overlay-icon text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 </button>
-                <input type="number" id="lat" step="0.0001" class="bg-gray-900/80 backdrop-blur-md rounded-md p-1 md:p-1.5 border border-gray-600 w-full text-left text-white text-xs md:text-sm shadow-lg" placeholder="Latitude">
+                <input type="number" id="lat" step="0.0001" class="overlay-input bg-gray-900/80 backdrop-blur-md border border-gray-600 w-full text-left text-white text-overlay shadow-lg" placeholder="Latitude">
                 
-                <div class="w-4 h-4 md:w-5 md:h-5 hidden sm:block"></div> 
-                <input type="number" id="lon" step="0.0001" class="bg-gray-900/80 backdrop-blur-md rounded-md p-1 md:p-1.5 border border-gray-600 w-full text-left text-white text-xs md:text-sm shadow-lg col-span-2 sm:col-span-1" placeholder="Longitude">
+                <div></div> 
+                <input type="number" id="lon" step="0.0001" class="overlay-input bg-gray-900/80 backdrop-blur-md border border-gray-600 w-full text-left text-white text-overlay shadow-lg" placeholder="Longitude">
             </div>
 
-            <div class="absolute bottom-2 md:bottom-4 right-2 md:right-4 grid grid-cols-[auto_1fr] gap-x-1.5 md:gap-x-2 gap-y-1.5 md:gap-y-2 items-center z-20 pointer-events-auto w-[50%] max-w-[200px] md:max-w-[240px]">
-                <button id="date-reset-btn" title="Set to today" class="p-1.5 md:p-2 rounded-md bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <!-- Time Inputs Overlay -->
+            <div class="absolute pos-overlay-right grid grid-cols-[auto_1fr] gap-xs items-center z-20 pointer-events-auto">
+                <button id="date-reset-btn" title="Set to today" class="overlay-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
+                        <svg class="overlay-icon text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </button>
-                <input type="date" id="date" class="bg-gray-900/80 backdrop-blur-md rounded-md p-1 md:p-1.5 border border-gray-600 w-full text-white text-xs md:text-sm shadow-lg">
+                <input type="date" id="date" class="overlay-input bg-gray-900/80 backdrop-blur-md border border-gray-600 w-full text-white text-overlay shadow-lg">
 
-                <button id="time-reset-btn" title="Set to current time" class="p-1.5 md:p-2 rounded-md bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <button id="time-reset-btn" title="Set to current time" class="overlay-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
+                        <svg class="overlay-icon text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </button>
-                <input type="text" id="time-input-box" class="bg-gray-900/80 backdrop-blur-md rounded-md px-1.5 py-1 md:p-1.5 border border-gray-600 w-full text-white text-xs md:text-sm shadow-lg" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:mm">
+                <input type="text" id="time-input-box" class="overlay-input bg-gray-900/80 backdrop-blur-md border border-gray-600 w-full text-white text-overlay shadow-lg" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:mm">
                 
-                <button id="timezone-reset-btn" title="Auto-detect time zone" class="p-1.5 md:p-2 rounded-md bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
-                        <svg class="w-4 h-4 md:w-5 md:h-5 text-gray-300 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <button id="timezone-reset-btn" title="Auto-detect time zone" class="overlay-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg">
+                        <svg class="overlay-icon text-gray-300 transform rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.51 9h16.98M3.51 15h16.98M12 3a9 9 0 015.657 15.343"></path>
                         </svg>
                 </button>
-                <div class="w-full">
-                        <select id="timezone-picker" class="bg-gray-900/80 backdrop-blur-md rounded-md p-1 md:p-1.5 border border-gray-600 w-full text-white text-xs md:text-sm shadow-lg"></select>
-                </div>
+                <select id="timezone-picker" class="overlay-input bg-gray-900/80 backdrop-blur-md border border-gray-600 w-full text-white text-overlay shadow-lg"></select>
             </div>
         </div>
 
-        <!-- Bottom Controls (Removed flex-grow and justify-evenly so items stay tightly packed) -->
-        <div class="w-full px-4 md:px-6 py-4 md:py-6 flex flex-col space-y-4 md:space-y-6">
+        <!-- Footer -->
+        <div class="scale-footer flex-shrink-0">
             
-            <!-- Legend -->
-            <div class="flex justify-center items-center flex-wrap gap-x-4 md:gap-x-6 gap-y-2 text-gray-400 text-xs md:text-sm">
-                <div class="flex items-center space-x-1.5 md:space-x-2">
-                    <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-gray-400/50 border border-gray-500"></span>
+            <!-- Legend (1 line perfectly aligned) -->
+            <div class="legend-line text-gray-400 text-legend">
+                <div class="flex items-center gap-xs">
+                    <span class="legend-icon rounded-full bg-gray-400/50 border border-gray-500"></span>
                     <span>Umbrella</span>
                 </div>
-                <div class="flex items-center space-x-1.5 md:space-x-2">
-                    <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-blue-500/50 border border-blue-600"></span>
+                <div class="flex items-center gap-xs">
+                    <span class="legend-icon rounded-full bg-blue-500/50 border border-blue-600"></span>
                     <span>Shade</span>
                 </div>
-                 <div class="flex items-center space-x-1.5 md:space-x-2">
-                    <span class="w-3 h-3 md:w-4 md:h-4 rounded-full bg-blue-500/40"></span>
+                 <div class="flex items-center gap-xs">
+                    <span class="legend-icon rounded-full bg-blue-500/40"></span>
                     <span>Day's Path</span>
                 </div>
-                 <div class="flex items-center space-x-1.5 md:space-x-2">
-                    <svg viewBox="0 0 12 12" class="w-3 h-3 md:w-4 md:h-4 opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
+                 <div class="flex items-center gap-xs">
+                    <svg viewBox="0 0 12 12" class="legend-icon opacity-100"><path d="M0 6 L12 6 M6 0 L6 12" stroke="currentColor" stroke-width="0.5"></path></svg>
                     <span id="grid-legend-text">2ft Grid</span>
                 </div>
             </div>
             
-            <!-- Inputs -->
-            <div class="space-y-3 md:space-y-4">
-                <div class="flex justify-center items-center gap-3">
-                    <div class="flex items-center border border-gray-600 rounded-md md:rounded-lg overflow-hidden text-sm md:text-base">
-                        <button id="unit-imperial" class="px-5 md:px-8 py-1.5 md:py-2 unit-toggle active-unit font-medium">Imperial</button>
-                        <button id="unit-metric" class="px-5 md:px-8 py-1.5 md:py-2 unit-toggle font-medium">Metric</button>
-                    </div>
-                    <button id="install-btn" class="hidden items-center gap-1.5 bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 px-4 py-1.5 md:py-2 rounded-md md:rounded-lg text-sm md:text-base font-medium transition-colors shadow-lg">
-                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v6m0 0l-3-3m3 3l3-3"></path></svg>
-                        <span>Install</span>
-                    </button>
+            <!-- Action Buttons (Unit Toggle & Install) -->
+            <div class="flex justify-center items-center gap-md w-full">
+                <div class="flex items-center border border-gray-600 rounded-[calc(var(--u)*1.5)] overflow-hidden">
+                    <button id="unit-imperial" class="btn-padding unit-toggle active-unit font-medium text-btn">Imperial</button>
+                    <button id="unit-metric" class="btn-padding unit-toggle font-medium text-btn">Metric</button>
                 </div>
-                <div class="grid grid-cols-2 gap-4 md:gap-6">
-                    <div>
-                        <label for="height" id="height-label" class="block font-medium text-gray-300 text-xs md:text-sm mb-1 md:mb-1.5">Height to Edge (ft)</label>
-                        <input id="height" type="number" value="5.5" step="0.1" class="w-full p-2 md:p-2.5 rounded-md md:rounded-lg border bg-gray-800 border-gray-600 text-white text-sm md:text-base focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-                    <div>
-                       <label for="diameter" id="diameter-label" class="block font-medium text-gray-300 text-xs md:text-sm mb-1 md:mb-1.5">Umbrella Dia. (ft)</label>
-                       <input id="diameter" type="number" value="5" step="0.1" class="w-full p-2 md:p-2.5 rounded-md md:rounded-lg border bg-gray-800 border-gray-600 text-white text-sm md:text-base focus:ring-blue-500 focus:border-blue-500">
-                    </div>
+                
+                <!-- Install PWA Button -->
+                <button id="install-btn" class="hidden items-center gap-xs bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 btn-padding rounded-[calc(var(--u)*1.5)] text-btn font-medium transition-colors shadow-lg">
+                    <svg class="legend-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v6m0 0l-3-3m3 3l3-3"></path></svg>
+                    <span>Install</span>
+                </button>
+            </div>
+
+            <!-- Dimensions Grid -->
+            <div class="grid grid-cols-2 gap-lg w-full">
+                <div>
+                    <label for="height" id="height-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1.5)] truncate">Height to Edge (ft)</label>
+                    <input id="height" type="number" value="5.5" step="0.1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                   <label for="diameter" id="diameter-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1.5)] truncate">Umbrella Dia. (ft)</label>
+                   <input id="diameter" type="number" value="5" step="0.1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
-            <p id="error-message" class="text-red-500 hidden text-center text-xs md:text-sm font-medium"></p>
+            
+            <p id="error-message" class="text-red-500 hidden text-center text-error font-medium w-full"></p>
         </div>
 
     </div>
@@ -265,11 +305,8 @@
             const installBtn = document.getElementById('install-btn');
 
             window.addEventListener('beforeinstallprompt', (e) => {
-                // Prevent Chrome from automatically showing the prompt
                 e.preventDefault();
-                // Stash the event so it can be triggered later
                 deferredPrompt = e;
-                // Show the Install button
                 installBtn.classList.remove('hidden');
                 installBtn.classList.add('flex');
             });
@@ -314,7 +351,7 @@
 
             // Service worker with aggressive caching for offline support
             const swCode = `
-                const CACHE_NAME = 'shade-finder-v2';
+                const CACHE_NAME = 'shade-finder-v3';
                 const ASSETS = [
                     'https://cdn.tailwindcss.com',
                     'https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js',
@@ -340,7 +377,7 @@
                                     const resClone = fetchRes.clone();
                                     caches.open(CACHE_NAME).then(c => c.put(e.request, resClone));
                                     return fetchRes;
-                                }).catch(() => res); // Return cached version if offline
+                                }).catch(() => res); 
                             })
                         );
                     }
@@ -511,8 +548,8 @@
                     });
                     
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxNativeZoom: 19, // Use max zoom 19, stretch it for anything deeper
-                        maxZoom: 25,       // Allow stretching to very close zooms
+                        maxNativeZoom: 19, 
+                        maxZoom: 25,       
                         attribution: '© OpenStreetMap'
                     }).addTo(map);
                 }
