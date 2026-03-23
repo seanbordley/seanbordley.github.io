@@ -36,13 +36,13 @@
             margin: 0; padding: 0;
             width: 100%; height: 100dvh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            overflow: hidden; /* Absolutely prevents viewport scrollbars */
+            overflow: hidden; 
         }
 
         /* Layout Panels */
         .scale-wrapper { 
             width: calc(var(--u) * 100); 
-            height: calc(var(--u) * 148); /* Explicitly locks height to prevent layout stretching */
+            height: calc(var(--u) * 148); 
             background: black; 
             display: flex; 
             flex-direction: column; 
@@ -77,7 +77,7 @@
             align-items: center;
             width: 100%;
             gap: calc(var(--u) * 2.5);
-            white-space: nowrap; /* Forces one line */
+            white-space: nowrap; 
         }
         .legend-icon { width: calc(var(--u) * 3); height: calc(var(--u) * 3); flex-shrink: 0; }
         
@@ -111,10 +111,17 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Compass Rotation Animation */
-        #map-rotater {
+        /* Oversized map so corners don't clip when rotated */
+        #leaflet-bg { 
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(120%); 
             transition: transform 0.2s ease-out;
             transform-origin: center center;
+            z-index: 0;
         }
 
         /* General Utilities */
@@ -126,7 +133,7 @@
         .unit-toggle { 
             background-color: transparent; 
             transition: background-color 0.2s, color 0.2s; 
-            color: #9ca3af; /* Fixes unselected contrast */
+            color: #9ca3af; 
         }
         .unit-toggle.active-unit { 
             background-color: #3b82f6; 
@@ -137,7 +144,6 @@
         #shadow-ellipse:active { cursor: grabbing; }
         select { scrollbar-width: none; }
         select::-webkit-scrollbar { display: none; }
-        #leaflet-bg { filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(120%); }
         .leaflet-control-container { display: none !important; }
     </style>
 </head>
@@ -154,54 +160,7 @@
         <!-- Map Container -->
         <div class="scale-map bg-gray-900 z-10 flex-shrink-0" id="map-container">
             
-            <!-- ROTATABLE LAYER (Compass mode rotates this, leaving overlays alone) -->
-            <div id="map-rotater" class="absolute inset-0 w-full h-full">
-                <div id="leaflet-bg" class="absolute inset-0 z-0"></div>
-                
-                <!-- SVG Interactive Grid -->
-                <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full z-10 pointer-events-none">
-                    <defs>
-                        <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
-                            <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
-                            <feFlood flood-color="black" flood-opacity="0.8"/>
-                            <feComposite in2="offsetblur" operator="in"/>
-                            <feMerge>
-                                <feMergeNode/>
-                                <feMergeNode in="SourceGraphic"/>
-                            </feMerge>
-                        </filter>
-                        <mask id="shadow-mask" maskUnits="userSpaceOnUse">
-                            <g id="shadow-mask-group"></g>
-                        </mask>
-                    </defs>
-                    
-                    <rect x="0" y="0" width="200" height="200" fill="#3b82f6" fill-opacity="0.4" mask="url(#shadow-mask)" style="pointer-events: none;" />
-
-                    <g id="grid-overlay"></g>
-                    <text x="100" y="15" text-anchor="middle" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">N</text>
-                    <text x="100" y="190" text-anchor="middle" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">S</text>
-                    <text x="10" y="104" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">W</text>
-                    <text x="182" y="104" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">E</text>
-                    <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                    
-                    <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" font-size="5.5" filter="url(#text-shadow)">
-                          <text x="100" y="20">
-                              <tspan id="shade-dims-text" x="100" dy="1.4em"></tspan>
-                              <tspan id="center-pos-text" x="100" dy="1.4em"></tspan>
-                          </text>
-                    </g>
-                    
-                    <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
-                    <g id="hourly-dots-group"></g>
-                    
-                    <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1" style="pointer-events: auto;"/>
-                    <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5" style="pointer-events: none;"/>
-                </svg>
-            </div>
+            <div id="leaflet-bg"></div>
             
             <!-- Map Zoom & Compass Controls -->
             <div class="absolute pos-zoom flex flex-col gap-sm z-20 pointer-events-auto">
@@ -215,6 +174,59 @@
                     <svg class="zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                 </button>
             </div>
+
+            <!-- SVG Interactive Grid -->
+            <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full z-10 pointer-events-none">
+                <defs>
+                    <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                        <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
+                        <feFlood flood-color="black" flood-opacity="0.8"/>
+                        <feComposite in2="offsetblur" operator="in"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <mask id="shadow-mask" maskUnits="userSpaceOnUse">
+                        <g id="shadow-mask-group"></g>
+                    </mask>
+                </defs>
+                
+                <!-- Static Grid Layer (Does NOT rotate) -->
+                <g id="grid-overlay"></g>
+                
+                <!-- Rotating Layer (Compass spins N/S/E/W markers, shade, and sun to align with real world) -->
+                <g id="svg-rotater" style="transform-origin: 100px 100px; transition: transform 0.2s ease-out;">
+                    <!-- Oversized blue rect so it covers the whole screen when rotated -->
+                    <rect x="-50" y="-50" width="300" height="300" fill="#3b82f6" fill-opacity="0.4" mask="url(#shadow-mask)" style="pointer-events: none;" />
+
+                    <!-- Explicit White N/S/E/W Markers -->
+                    <text x="100" y="12" text-anchor="middle" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">N</text>
+                    <text x="100" y="196" text-anchor="middle" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">S</text>
+                    <text x="6" y="103" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">W</text>
+                    <text x="194" y="103" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">E</text>
+                    <line x1="100" y1="14" x2="100" y2="20" stroke="white" stroke-width="0.5" class="opacity-50"/>
+                    <line x1="100" y1="186" x2="100" y2="180" stroke="white" stroke-width="0.5" class="opacity-50"/>
+                    <line x1="14" y1="100" x2="20" y2="100" stroke="white" stroke-width="0.5" class="opacity-50"/>
+                    <line x1="186" y1="100" x2="180" y2="100" stroke="white" stroke-width="0.5" class="opacity-50"/>
+                    
+                    <!-- Sun and Shadow Path -->
+                    <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
+                    <g id="hourly-dots-group"></g>
+                    <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1" style="pointer-events: auto;"/>
+                </g>
+
+                <!-- Static Center Umbrella & Information Text (Does NOT rotate) -->
+                <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5" style="pointer-events: none;"/>
+                
+                <g id="info-text-group" text-anchor="middle" fill="white" class="font-semibold" font-size="5.5" filter="url(#text-shadow)">
+                      <text x="100" y="24">
+                          <tspan id="shade-dims-text" x="100" dy="1.4em"></tspan>
+                          <tspan id="center-pos-text" x="100" dy="1.4em"></tspan>
+                      </text>
+                </g>
+            </svg>
 
             <!-- Overlays -->
             <div id="night-message" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold hidden text-night z-20" style="pointer-events: none;">
@@ -260,7 +272,7 @@
         <!-- Footer -->
         <div class="scale-footer flex-shrink-0">
             
-            <!-- Legend (1 line perfectly aligned) -->
+            <!-- Legend -->
             <div class="legend-line text-gray-400 text-legend">
                 <div class="flex items-center gap-xs">
                     <span class="legend-icon rounded-full bg-gray-400/50 border border-gray-500"></span>
@@ -280,7 +292,7 @@
                 </div>
             </div>
             
-            <!-- Action Buttons (Unit Toggle & Install) -->
+            <!-- Action Buttons -->
             <div class="flex justify-center items-center gap-md w-full">
                 <div class="flex items-center border border-gray-600 rounded-[calc(var(--u)*1.5)] overflow-hidden">
                     <button id="unit-imperial" class="btn-padding unit-toggle active-unit font-medium text-btn">Imperial</button>
@@ -318,7 +330,8 @@
             let compassActive = false;
             let currentHeading = 0;
             const compassBtn = document.getElementById('compass-btn');
-            const mapRotater = document.getElementById('map-rotater');
+            const leafletBg = document.getElementById('leaflet-bg');
+            const svgRotater = document.getElementById('svg-rotater');
 
             compassBtn.addEventListener('click', async () => {
                 if (compassActive) {
@@ -349,7 +362,6 @@
                 compassBtn.classList.remove('text-white', 'border-gray-600');
                 compassBtn.classList.add('text-blue-400', 'border-blue-500');
                 
-                // Fallback bindings based on device
                 if ('ondeviceorientationabsolute' in window) {
                     window.addEventListener('deviceorientationabsolute', handleOrientation);
                 } else {
@@ -367,7 +379,8 @@
                 
                 // Snap map back to North Up
                 currentHeading = 0;
-                mapRotater.style.transform = `rotate(0deg)`;
+                leafletBg.style.transform = `rotate(0deg)`;
+                svgRotater.style.transform = `rotate(0deg)`;
             }
 
             function handleOrientation(e) {
@@ -384,13 +397,13 @@
                 }
 
                 if (heading !== null) {
-                    // Calculate shortest rotation path so it doesn't spin 360 abruptly
+                    // Smooth rotation logic wrapping 360 degrees perfectly
                     let diff = heading - currentHeading;
                     diff = ((diff + 540) % 360) - 180; 
                     currentHeading += diff;
                     
-                    // Rotate map opposite to phone rotation to keep North "up" in reality
-                    mapRotater.style.transform = `rotate(-${currentHeading}deg)`;
+                    leafletBg.style.transform = `rotate(-${currentHeading}deg)`;
+                    svgRotater.style.transform = `rotate(-${currentHeading}deg)`;
                 }
             }
             // ---------------------------------
@@ -629,8 +642,10 @@
                 const feetPerDegree = 364000;
                 const cosLat = Math.max(0.01, Math.cos(lat * Math.PI / 180));
                 
-                const deltaLon = (viewboxWidthInFeet / (feetPerDegree * cosLat)) / 2;
-                const deltaLat = (viewboxWidthInFeet / feetPerDegree) / 2;
+                // Multiplier handles the fact that leaflet-bg is now 150% larger physically
+                const mapMultiplier = 1.5; 
+                const deltaLon = (viewboxWidthInFeet / (feetPerDegree * cosLat)) / 2 * mapMultiplier;
+                const deltaLat = (viewboxWidthInFeet / feetPerDegree) / 2 * mapMultiplier;
 
                 const bounds = [
                     [lat - deltaLat, lon - deltaLon], 
@@ -715,6 +730,7 @@
                 const radiusScaled = (diameterInFeet / 2) * scale;
                 umbrellaSVG.setAttribute('r', radiusScaled);
 
+                // STATIC GRID LAYER (Does not rotate with compass)
                 gridOverlay.innerHTML = '';
                 const gridSpacingFeet = 2;
                 const gridSpacingSVG = gridSpacingFeet * scale;
@@ -896,9 +912,8 @@
                     pt.x = e.clientX;
                     pt.y = e.clientY;
                 }
-                // Because map-rotater might be transformed, we get screen matrix 
-                // CTM perfectly accounts for CSS rotations so dragging remains flawless!
-                return pt.matrixTransform(svg.getScreenCTM().inverse());
+                // Because svg-rotater is transformed by compass, this accurately unwinds the drag rotation
+                return pt.matrixTransform(svgRotater.getScreenCTM().inverse());
             }
 
             function findClosestTime(pos) {
