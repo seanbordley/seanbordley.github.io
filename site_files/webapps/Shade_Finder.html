@@ -232,11 +232,15 @@
             
             <!-- Inputs -->
             <div class="space-y-3 md:space-y-4">
-                <div class="flex justify-center items-center">
+                <div class="flex justify-center items-center gap-3">
                     <div class="flex items-center border border-gray-600 rounded-md md:rounded-lg overflow-hidden text-sm md:text-base">
                         <button id="unit-imperial" class="px-5 md:px-8 py-1.5 md:py-2 unit-toggle active-unit font-medium">Imperial</button>
                         <button id="unit-metric" class="px-5 md:px-8 py-1.5 md:py-2 unit-toggle font-medium">Metric</button>
                     </div>
+                    <button id="install-btn" class="hidden items-center gap-1.5 bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 px-4 py-1.5 md:py-2 rounded-md md:rounded-lg text-sm md:text-base font-medium transition-colors shadow-lg">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v6m0 0l-3-3m3 3l3-3"></path></svg>
+                        <span>Install</span>
+                    </button>
                 </div>
                 <div class="grid grid-cols-2 gap-4 md:gap-6">
                     <div>
@@ -256,6 +260,41 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Install Button Logic (PWA) ---
+            let deferredPrompt;
+            const installBtn = document.getElementById('install-btn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                // Prevent Chrome from automatically showing the prompt
+                e.preventDefault();
+                // Stash the event so it can be triggered later
+                deferredPrompt = e;
+                // Show the Install button
+                installBtn.classList.remove('hidden');
+                installBtn.classList.add('flex');
+            });
+
+            if(installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        deferredPrompt = null;
+                        installBtn.classList.add('hidden');
+                        installBtn.classList.remove('flex');
+                    }
+                });
+            }
+
+            window.addEventListener('appinstalled', () => {
+                if(installBtn) {
+                    installBtn.classList.add('hidden');
+                    installBtn.classList.remove('flex');
+                }
+                deferredPrompt = null;
+            });
+            // ---------------------------------
+
             // Setup Progressive Web App (PWA) Requirements dynamically
             const manifest = {
                 "name": "Shade Finder",
@@ -273,10 +312,39 @@
             const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
             document.getElementById('manifest-link').setAttribute('href', URL.createObjectURL(manifestBlob));
 
+            // Service worker with aggressive caching for offline support
             const swCode = `
-                self.addEventListener('install', e => self.skipWaiting());
+                const CACHE_NAME = 'shade-finder-v2';
+                const ASSETS = [
+                    'https://cdn.tailwindcss.com',
+                    'https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js',
+                    'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js',
+                    'https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js',
+                    'https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js',
+                    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+                    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+                ];
+                
+                self.addEventListener('install', e => {
+                    self.skipWaiting();
+                    e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
+                });
+                
                 self.addEventListener('activate', e => self.clients.claim());
-                self.addEventListener('fetch', e => { e.respondWith(fetch(e.request).catch(() => caches.match(e.request))); });
+                
+                self.addEventListener('fetch', e => {
+                    if (e.request.url.startsWith('http')) {
+                        e.respondWith(
+                            caches.match(e.request).then(res => {
+                                return res || fetch(e.request).then(fetchRes => {
+                                    const resClone = fetchRes.clone();
+                                    caches.open(CACHE_NAME).then(c => c.put(e.request, resClone));
+                                    return fetchRes;
+                                }).catch(() => res); // Return cached version if offline
+                            })
+                        );
+                    }
+                });
             `;
             if ('serviceWorker' in navigator) {
                 const swBlob = new Blob([swCode], { type: 'application/javascript' });
