@@ -56,7 +56,7 @@
         }
         
         .scale-header { height: calc(var(--u) * 12); display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .scale-map { width: calc(var(--u) * 100); height: calc(var(--u) * 100); position: relative; }
+        .scale-map { width: calc(var(--u) * 100); height: calc(var(--u) * 100); position: relative; overflow: hidden; }
         .scale-footer { height: calc(var(--u) * 36); padding: calc(var(--u) * 3) calc(var(--u) * 4); display: flex; flex-direction: column; justify-content: space-between; }
         
         /* Typography Scaling */
@@ -111,6 +111,12 @@
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Compass Rotation Animation */
+        #map-rotater {
+            transition: transform 0.2s ease-out;
+            transform-origin: center center;
+        }
+
         /* General Utilities */
         input:disabled { background-color: #2d3748; cursor: not-allowed; color: #718096; }
         input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
@@ -147,9 +153,57 @@
 
         <!-- Map Container -->
         <div class="scale-map bg-gray-900 z-10 flex-shrink-0" id="map-container">
-            <div id="leaflet-bg" class="absolute inset-0 z-0"></div>
             
-            <!-- Map Zoom Controls -->
+            <!-- ROTATABLE LAYER (Compass mode rotates this, leaving overlays alone) -->
+            <div id="map-rotater" class="absolute inset-0 w-full h-full">
+                <div id="leaflet-bg" class="absolute inset-0 z-0"></div>
+                
+                <!-- SVG Interactive Grid -->
+                <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full z-10 pointer-events-none">
+                    <defs>
+                        <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
+                            <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
+                            <feFlood flood-color="black" flood-opacity="0.8"/>
+                            <feComposite in2="offsetblur" operator="in"/>
+                            <feMerge>
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                        <mask id="shadow-mask" maskUnits="userSpaceOnUse">
+                            <g id="shadow-mask-group"></g>
+                        </mask>
+                    </defs>
+                    
+                    <rect x="0" y="0" width="200" height="200" fill="#3b82f6" fill-opacity="0.4" mask="url(#shadow-mask)" style="pointer-events: none;" />
+
+                    <g id="grid-overlay"></g>
+                    <text x="100" y="15" text-anchor="middle" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">N</text>
+                    <text x="100" y="190" text-anchor="middle" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">S</text>
+                    <text x="10" y="104" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">W</text>
+                    <text x="182" y="104" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">E</text>
+                    <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                    <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                    <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                    <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
+                    
+                    <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" font-size="5.5" filter="url(#text-shadow)">
+                          <text x="100" y="20">
+                              <tspan id="shade-dims-text" x="100" dy="1.4em"></tspan>
+                              <tspan id="center-pos-text" x="100" dy="1.4em"></tspan>
+                          </text>
+                    </g>
+                    
+                    <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
+                    <g id="hourly-dots-group"></g>
+                    
+                    <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1" style="pointer-events: auto;"/>
+                    <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5" style="pointer-events: none;"/>
+                </svg>
+            </div>
+            
+            <!-- Map Zoom & Compass Controls -->
             <div class="absolute pos-zoom flex flex-col gap-sm z-20 pointer-events-auto">
                 <button id="zoom-in-btn" title="Zoom In" class="zoom-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white">
                     <svg class="zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12M6 12h12"></path></svg>
@@ -157,51 +211,10 @@
                 <button id="zoom-out-btn" title="Zoom Out" class="zoom-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white">
                     <svg class="zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
                 </button>
+                <button id="compass-btn" title="Toggle Compass" class="zoom-btn bg-gray-900/80 backdrop-blur-md hover:bg-gray-700 border border-gray-600 shadow-lg text-white transition-colors">
+                    <svg class="zoom-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                </button>
             </div>
-
-            <!-- SVG Interactive Grid -->
-            <svg id="sky" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full z-10 pointer-events-none">
-                <defs>
-                    <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="0.5"/>
-                        <feOffset dx="0.5" dy="0.5" result="offsetblur"/>
-                        <feFlood flood-color="black" flood-opacity="0.8"/>
-                        <feComposite in2="offsetblur" operator="in"/>
-                        <feMerge>
-                            <feMergeNode/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                    <mask id="shadow-mask" maskUnits="userSpaceOnUse">
-                        <g id="shadow-mask-group"></g>
-                    </mask>
-                </defs>
-                
-                <rect x="0" y="0" width="200" height="200" fill="#3b82f6" fill-opacity="0.4" mask="url(#shadow-mask)" style="pointer-events: none;" />
-
-                <g id="grid-overlay"></g>
-                <text x="100" y="15" text-anchor="middle" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">N</text>
-                <text x="100" y="190" text-anchor="middle" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">S</text>
-                <text x="10" y="104" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">W</text>
-                <text x="182" y="104" fill="currentColor" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)">E</text>
-                <line x1="100" y1="18" x2="100" y2="25" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                <line x1="100" y1="182" x2="100" y2="175" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                <line x1="18" y1="100" x2="25" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                <line x1="182" y1="100" x2="175" y2="100" stroke="currentColor" stroke-width="0.5" class="opacity-50"/>
-                
-                <g id="info-text-group" text-anchor="middle" fill="currentColor" class="font-semibold" font-size="5.5" filter="url(#text-shadow)">
-                      <text x="100" y="20">
-                          <tspan id="shade-dims-text" x="100" dy="1.4em"></tspan>
-                          <tspan id="center-pos-text" x="100" dy="1.4em"></tspan>
-                      </text>
-                </g>
-                
-                <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" />
-                <g id="hourly-dots-group"></g>
-                
-                <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1" style="pointer-events: auto;"/>
-                <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5" style="pointer-events: none;"/>
-            </svg>
 
             <!-- Overlays -->
             <div id="night-message" class="absolute inset-0 bg-black/60 flex items-center justify-center text-white font-semibold hidden text-night z-20" style="pointer-events: none;">
@@ -300,6 +313,88 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Compass / Device Orientation Logic ---
+            let compassActive = false;
+            let currentHeading = 0;
+            const compassBtn = document.getElementById('compass-btn');
+            const mapRotater = document.getElementById('map-rotater');
+
+            compassBtn.addEventListener('click', async () => {
+                if (compassActive) {
+                    stopCompass();
+                    return;
+                }
+
+                // Ask for permission on iOS 13+
+                if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    try {
+                        const permission = await DeviceOrientationEvent.requestPermission();
+                        if (permission === 'granted') {
+                            startCompass();
+                        } else {
+                            alert('Compass permission denied. Please allow device orientation in settings to use this feature.');
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        alert('Unable to access device compass.');
+                    }
+                } else {
+                    startCompass();
+                }
+            });
+
+            function startCompass() {
+                compassActive = true;
+                compassBtn.classList.remove('text-white', 'border-gray-600');
+                compassBtn.classList.add('text-blue-400', 'border-blue-500');
+                
+                // Fallback bindings based on device
+                if ('ondeviceorientationabsolute' in window) {
+                    window.addEventListener('deviceorientationabsolute', handleOrientation);
+                } else {
+                    window.addEventListener('deviceorientation', handleOrientation);
+                }
+            }
+
+            function stopCompass() {
+                compassActive = false;
+                compassBtn.classList.add('text-white', 'border-gray-600');
+                compassBtn.classList.remove('text-blue-400', 'border-blue-500');
+                
+                window.removeEventListener('deviceorientationabsolute', handleOrientation);
+                window.removeEventListener('deviceorientation', handleOrientation);
+                
+                // Snap map back to North Up
+                currentHeading = 0;
+                mapRotater.style.transform = `rotate(0deg)`;
+            }
+
+            function handleOrientation(e) {
+                if (!compassActive) return;
+                
+                let heading = null;
+                // iOS
+                if (e.webkitCompassHeading) {
+                    heading = e.webkitCompassHeading;
+                } 
+                // Android (absolute alpha)
+                else if (e.absolute === true || e.alpha !== null) {
+                    heading = 360 - e.alpha; 
+                }
+
+                if (heading !== null) {
+                    // Calculate shortest rotation path so it doesn't spin 360 abruptly
+                    let diff = heading - currentHeading;
+                    diff = ((diff + 540) % 360) - 180; 
+                    currentHeading += diff;
+                    
+                    // Rotate map opposite to phone rotation to keep North "up" in reality
+                    mapRotater.style.transform = `rotate(-${currentHeading}deg)`;
+                }
+            }
+            // ---------------------------------
+
             // --- Install Button Logic (PWA) ---
             let deferredPrompt;
             const installBtn = document.getElementById('install-btn');
@@ -534,13 +629,12 @@
                 const feetPerDegree = 364000;
                 const cosLat = Math.max(0.01, Math.cos(lat * Math.PI / 180));
                 
-                // Converting SVG bounds width into lat/lon boundaries
                 const deltaLon = (viewboxWidthInFeet / (feetPerDegree * cosLat)) / 2;
                 const deltaLat = (viewboxWidthInFeet / feetPerDegree) / 2;
 
                 const bounds = [
-                    [lat - deltaLat, lon - deltaLon], // SW
-                    [lat + deltaLat, lon + deltaLon]  // NE
+                    [lat - deltaLat, lon - deltaLon], 
+                    [lat + deltaLat, lon + deltaLon]  
                 ];
                 
                 if (!map) {
@@ -563,12 +657,10 @@
                     }).addTo(map);
                 }
                 
-                // Forces map to perfectly match the SVG square
                 map.fitBounds(bounds, { animate: false, padding: [0, 0] });
                 map.invalidateSize();
             }
 
-            // Ensures map adapts to window resizing
             window.addEventListener('resize', () => {
                 if (map) map.invalidateSize();
             });
@@ -608,11 +700,9 @@
                 const maxElongatedRadius = (diameterInFeet / 2) / Math.sin(minAltitudeForScale);
                 const maxExtent = maxShadowOffset + maxElongatedRadius;
 
-                // Base calculation, perfectly framing the path
                 const maxDim = maxExtent * 0.6655; 
                 let baseScale = VIEWBOX_SIZE / (maxDim * 1.1);
                 
-                // Apply the user's manual zoom adjustments
                 const scale = baseScale * userZoomMultiplier;
                 
                 if (userLat !== lastMapLat || userLon !== lastMapLon || scale !== lastMapScale) {
@@ -806,6 +896,8 @@
                     pt.x = e.clientX;
                     pt.y = e.clientY;
                 }
+                // Because map-rotater might be transformed, we get screen matrix 
+                // CTM perfectly accounts for CSS rotations so dragging remains flawless!
                 return pt.matrixTransform(svg.getScreenCTM().inverse());
             }
 
