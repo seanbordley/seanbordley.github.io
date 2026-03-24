@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#000000">
     <title>Shade Finder</title>
     
-    <link rel="manifest" id="manifest-link">
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
@@ -461,71 +461,10 @@
             });
             // ---------------------------------
 
-            // Setup Progressive Web App (PWA) Requirements dynamically
-            const manifest = {
-                "name": "Shade Finder",
-                "short_name": "Shade Finder",
-                "start_url": ".",
-                "display": "standalone",
-                "background_color": "#000000",
-                "theme_color": "#000000",
-                "icons": [{
-                    "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233b82f6'%3E%3Cpath d='M12 2L2 22h20L12 2z'/%3E%3C/svg%3E",
-                    "sizes": "192x192 512x512",
-                    "type": "image/svg+xml",
-                    "purpose": "any maskable"
-                }]
-            };
-            const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
-            document.getElementById('manifest-link').setAttribute('href', URL.createObjectURL(manifestBlob));
-
-            // Service worker with Network-First strategy for auto-updates
-            const swCode = `
-                const CACHE_NAME = 'shade-finder-v4';
-                const ASSETS = [
-                    'https://cdn.tailwindcss.com',
-                    'https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js',
-                    'https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js',
-                    'https://cdn.jsdelivr.net/npm/dayjs@1/plugin/utc.js',
-                    'https://cdn.jsdelivr.net/npm/dayjs@1/plugin/timezone.js',
-                    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
-                    'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-                ];
-                
-                self.addEventListener('install', e => {
-                    self.skipWaiting();
-                    e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)));
-                });
-                
-                self.addEventListener('activate', e => {
-                    e.waitUntil(
-                        caches.keys().then(keys => {
-                            return Promise.all(
-                                keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-                            );
-                        })
-                    );
-                    self.clients.claim();
-                });
-                
-                self.addEventListener('fetch', e => {
-                    if (e.request.url.startsWith('http')) {
-                        e.respondWith(
-                            fetch(e.request).then(fetchRes => {
-                                const resClone = fetchRes.clone();
-                                caches.open(CACHE_NAME).then(c => c.put(e.request, resClone));
-                                return fetchRes;
-                            }).catch(() => {
-                                return caches.match(e.request);
-                            })
-                        );
-                    }
-                });
-            `;
             if ('serviceWorker' in navigator) {
-                const swBlob = new Blob([swCode], { type: 'application/javascript' });
-                navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(console.error);
+            navigator.serviceWorker.register('sw.js').catch(console.error);
             }
+
 
             dayjs.extend(window.dayjs_plugin_utc);
             dayjs.extend(window.dayjs_plugin_timezone);
