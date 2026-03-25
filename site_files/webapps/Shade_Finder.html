@@ -23,7 +23,7 @@
         /* MATHEMATICAL PROPORTIONAL SCALING ENGINE */
         :root {
             /* Ratio = 1.48 (Header 0.12 + Map 1.00 + Footer 0.36) 
-              This perfectly calculates 1 "Unit" (--u) to guarantee it fits entirely inside 96% of the window height.
+               This perfectly calculates 1 "Unit" (--u) to guarantee it fits entirely inside 96% of the window height.
             */
             --u: calc(min(100vw, 96dvh / 1.48) / 100);
         }
@@ -56,10 +56,10 @@
         
         /* Typography Scaling */
         .text-title { font-size: calc(var(--u) * 5.5); line-height: 1; }
-        .text-sub { font-size: calc(var(--u) * 2.8); line-height: 1.2; }
+        .text-sub { font-size: calc(var(--u) * 2.4); line-height: 1.2; }
         .text-legend { font-size: calc(var(--u) * 2.8); }
         .text-btn { font-size: calc(var(--u) * 3); }
-        .text-input { font-size: calc(var(--u) * 3.5); }
+        .text-input { font-size: calc(var(--u) * 2.8); }
         .text-overlay { font-size: calc(var(--u) * 2.6); }
         .text-night { font-size: calc(var(--u) * 8); }
         .text-error { font-size: calc(var(--u) * 2.6); margin-top: calc(var(--u) * 1.5); }
@@ -77,7 +77,11 @@
         .legend-icon { width: calc(var(--u) * 3); height: calc(var(--u) * 3); flex-shrink: 0; }
         
         .btn-padding { padding: calc(var(--u) * 1.5) calc(var(--u) * 4); }
-        .input-padding { padding: calc(var(--u) * 2) calc(var(--u) * 2.5); border-radius: calc(var(--u) * 1.5); }
+        .input-padding { 
+            padding: calc(var(--u) * 1) calc(var(--u) * 1.5); 
+            height: calc(var(--u) * 6.5);
+            border-radius: calc(var(--u) * 1); 
+        }
         
         .overlay-btn { padding: calc(var(--u) * 1.5); border-radius: calc(var(--u) * 1.2); }
         .overlay-icon { width: calc(var(--u) * 4); height: calc(var(--u) * 4); }
@@ -136,8 +140,8 @@
             color: #ffffff; 
         }
 
-        #shadow-ellipse { cursor: grab; touch-action: none; }
-        #shadow-ellipse:active { cursor: grabbing; }
+        #shadow-draggable { cursor: grab; touch-action: none; }
+        #shadow-draggable:active { cursor: grabbing; }
         select { scrollbar-width: none; }
         select::-webkit-scrollbar { display: none; }
         .leaflet-control-container { display: none !important; }
@@ -149,11 +153,18 @@
 
         <!-- Header -->
         <header class="scale-header z-20 bg-black border-b border-gray-800 flex-shrink-0 relative">
+            
+            <!-- Vertical Unit Selector (Top Left) -->
+            <div class="absolute left-[calc(var(--u)*3)] top-1/2 -translate-y-1/2 flex flex-col border border-gray-600 rounded-[calc(var(--u)*1)] overflow-hidden" role="group" aria-label="Unit selection">
+                <button id="unit-imperial" aria-label="Switch to Imperial units (feet)" class="unit-toggle active-unit font-medium text-[calc(var(--u)*2.2)] px-[calc(var(--u)*2)] py-[calc(var(--u)*1)] border-b border-gray-700">Imp</button>
+                <button id="unit-metric" aria-label="Switch to Metric units (meters)" class="unit-toggle font-medium text-[calc(var(--u)*2.2)] px-[calc(var(--u)*2)] py-[calc(var(--u)*1)]">Met</button>
+            </div>
+
             <h1 class="font-bold text-blue-400 text-title tracking-tight">Shade Finder</h1>
             <p class="text-gray-400 text-sub mt-[calc(var(--u)*1.5)]">Plan your perfect spot in the shade.</p>
             
             <!-- Install PWA Button (Top Right Corner) -->
-            <button id="install-btn" aria-label="Install Shade Finder App to device" class="hidden absolute right-[calc(var(--u)*4)] top-1/2 -translate-y-1/2 items-center gap-xs bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 px-[calc(var(--u)*2.5)] py-[calc(var(--u)*1.5)] rounded-[calc(var(--u)*1.5)] text-[calc(var(--u)*2.6)] font-medium transition-colors shadow-lg">
+            <button id="install-btn" aria-label="Install Shade Finder App to device" class="hidden absolute right-[calc(var(--u)*3)] top-1/2 -translate-y-1/2 items-center gap-xs bg-gray-800 hover:bg-gray-700 text-blue-400 border border-gray-600 px-[calc(var(--u)*2.5)] py-[calc(var(--u)*1.5)] rounded-[calc(var(--u)*1.5)] text-[calc(var(--u)*2.6)] font-medium transition-colors shadow-lg">
                 <svg class="w-[calc(var(--u)*3.5)] h-[calc(var(--u)*3.5)]" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11v6m0 0l-3-3m3 3l3-3"></path></svg>
                 <span>Install</span>
             </button>
@@ -181,7 +192,6 @@
             </div>
 
             <!-- SVG Interactive Grid -->
-            <!-- Note: overflow: visible allows the massively oversized rect and paths to correctly render out of bounds so they won't clip when rotated -->
             <svg id="sky" role="img" aria-label="Interactive map grid showing umbrella shadow path" viewBox="0 0 200 200" class="absolute inset-0 w-full h-full z-10 pointer-events-none" style="overflow: visible;">
                 <defs>
                     <filter id="text-shadow" x="-20%" y="-20%" width="140%" height="140%">
@@ -195,21 +205,16 @@
                         </feMerge>
                     </filter>
                     
-                    <!-- Massively expanded mask area to ensure no clipping during rotation -->
                     <mask id="shadow-mask" maskUnits="userSpaceOnUse" x="-100" y="-100" width="400" height="400">
                         <g id="shadow-mask-group"></g>
                     </mask>
                 </defs>
                 
-                <!-- Static Grid Layer (Does NOT rotate) -->
                 <g id="grid-overlay" aria-hidden="true"></g>
                 
-                <!-- Rotating Layer (Compass spins N/S/E/W markers, shade, and sun to align with real world) -->
                 <g id="svg-rotater" style="transform-origin: 100px 100px; transition: transform 0.2s ease-out;">
-                    <!-- Oversized blue rect so it covers the whole screen when rotated -->
                     <rect x="-100" y="-100" width="400" height="400" fill="#3b82f6" fill-opacity="0.4" mask="url(#shadow-mask)" style="pointer-events: none;" aria-hidden="true" />
 
-                    <!-- Explicit White N/S/E/W Markers -->
                     <text x="100" y="12" text-anchor="middle" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)" aria-hidden="true">N</text>
                     <text x="100" y="196" text-anchor="middle" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)" aria-hidden="true">S</text>
                     <text x="6" y="103" fill="white" class="opacity-80 font-semibold" font-size="8" filter="url(#text-shadow)" aria-hidden="true">W</text>
@@ -219,15 +224,20 @@
                     <line x1="14" y1="100" x2="20" y2="100" stroke="white" stroke-width="0.5" class="opacity-50" aria-hidden="true"/>
                     <line x1="186" y1="100" x2="180" y2="100" stroke="white" stroke-width="0.5" class="opacity-50" aria-hidden="true"/>
                     
-                    <!-- Sun and Shadow Path -->
+                    <g id="umbrella-group" style="pointer-events: none;" aria-hidden="true">
+                        <circle id="umbrella-circle" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
+                        <polygon id="umbrella-poly" class="hidden" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5"/>
+                    </g>
+                    
+                    <g id="shadow-draggable" style="pointer-events: auto;" aria-label="Draggable shadow to adjust time" role="button">
+                        <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
+                        <polygon id="shadow-poly" class="hidden" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1"/>
+                    </g>
+
                     <circle id="sun-indicator" r="5" fill="#FBBF24" fill-opacity="0.9" stroke="#F59E0B" stroke-width="0.5" aria-hidden="true"/>
                     <g id="hourly-dots-group" aria-hidden="true"></g>
-                    <ellipse id="shadow-ellipse" cx="100" cy="100" rx="20" ry="20" fill="#3b82f6" fill-opacity="0.5" stroke="#3b82f6" stroke-width="1" style="pointer-events: auto;" aria-label="Draggable shadow to adjust time" role="button"/>
                 </g>
 
-                <!-- Static Center Umbrella & Information Text (Does NOT rotate) -->
-                <circle id="umbrella" cx="100" cy="100" r="20" fill="rgb(156 163 175 / 0.5)" stroke="rgb(107 114 128)" stroke-width="1.5" style="pointer-events: none;" aria-hidden="true"/>
-                
                 <g id="info-text-group" text-anchor="middle" fill="white" class="font-semibold" font-size="5.5" filter="url(#text-shadow)" aria-hidden="true">
                       <text x="100" y="24">
                           <tspan id="shade-dims-text" x="100" dy="1.4em"></tspan>
@@ -280,7 +290,6 @@
         <!-- Footer -->
         <footer class="scale-footer flex-shrink-0">
             
-            <!-- Legend (1 line perfectly aligned) -->
             <div class="legend-line text-gray-400 text-legend" aria-hidden="true">
                 <div class="flex items-center gap-xs">
                     <span class="legend-icon rounded-full bg-gray-400/50 border border-gray-500"></span>
@@ -299,24 +308,31 @@
                     <span id="grid-legend-text">2ft Grid</span>
                 </div>
             </div>
-            
-            <!-- Action Buttons (Unit Toggle) -->
-            <div class="relative flex justify-center items-center w-full">
-                <div class="flex items-center border border-gray-600 rounded-[calc(var(--u)*1.5)] overflow-hidden" role="group" aria-label="Unit selection">
-                    <button id="unit-imperial" aria-label="Switch to Imperial units (feet)" class="btn-padding unit-toggle active-unit font-medium text-btn">Imperial</button>
-                    <button id="unit-metric" aria-label="Switch to Metric units (meters)" class="btn-padding unit-toggle font-medium text-btn">Metric</button>
-                </div>
-            </div>
 
             <!-- Dimensions Grid -->
-            <div class="grid grid-cols-2 gap-lg w-full">
+            <div class="grid grid-cols-2 gap-x-[calc(var(--u)*4)] gap-y-[calc(var(--u)*1.5)] w-full">
                 <div>
-                    <label for="height" id="height-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1.5)] truncate">Height to Edge (ft)</label>
-                    <input id="height" type="number" value="5.5" step="0.1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
+                    <label class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1)] truncate">Shape</label>
+                    <select id="shape" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
+                        <option value="circle">Circle</option>
+                        <option value="polygon">Polygon</option>
+                    </select>
                 </div>
                 <div>
-                   <label for="diameter" id="diameter-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1.5)] truncate">Umbrella Dia. (ft)</label>
+                    <label for="height" id="height-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1)] truncate">Height to Edge (ft)</label>
+                    <input id="height" type="number" value="5.5" step="0.1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div id="wrapper-dia" class="">
+                   <label for="diameter" id="diameter-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1)] truncate">Umbrella Dia. (ft)</label>
                    <input id="diameter" type="number" value="5" step="0.1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div id="wrapper-sides" class="hidden">
+                   <label for="sides" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1)] truncate">Sides</label>
+                   <input id="sides" type="number" value="6" min="3" step="1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div id="wrapper-side-len" class="hidden">
+                   <label for="side-length" id="side-length-label" class="block font-medium text-gray-300 text-sub mb-[calc(var(--u)*1)] truncate">Side Len (ft)</label>
+                   <input id="side-length" type="number" value="3" step="0.1" class="w-full input-padding border bg-gray-800 border-gray-600 text-white text-input focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
             
@@ -328,7 +344,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- Map Toggle Logic ---
             let mapVisible = true;
             const mapToggleBtn = document.getElementById('map-toggle-btn');
             const leafletBgLayer = document.getElementById('leaflet-bg');
@@ -345,9 +360,7 @@
                     mapToggleBtn.classList.add('text-blue-400', 'border-blue-500');
                 }
             });
-            // ---------------------------------
 
-            // --- Compass / Device Orientation Logic ---
             let compassActive = false;
             let currentHeading = 0;
             const compassBtn = document.getElementById('compass-btn');
@@ -359,20 +372,13 @@
                     stopCompass();
                     return;
                 }
-
-                // Ask for permission on iOS 13+
                 if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
                     try {
                         const permission = await DeviceOrientationEvent.requestPermission();
                         if (permission === 'granted') {
                             startCompass();
-                        } else {
-                            alert('Compass permission denied. Please allow device orientation in settings to use this feature.');
                         }
-                    } catch (e) {
-                        console.error(e);
-                        alert('Unable to access device compass.');
-                    }
+                    } catch (e) { console.error(e); }
                 } else {
                     startCompass();
                 }
@@ -382,7 +388,6 @@
                 compassActive = true;
                 compassBtn.classList.remove('text-white', 'border-gray-600');
                 compassBtn.classList.add('text-blue-400', 'border-blue-500');
-                
                 if ('ondeviceorientationabsolute' in window) {
                     window.addEventListener('deviceorientationabsolute', handleOrientation);
                 } else {
@@ -394,11 +399,8 @@
                 compassActive = false;
                 compassBtn.classList.add('text-white', 'border-gray-600');
                 compassBtn.classList.remove('text-blue-400', 'border-blue-500');
-                
                 window.removeEventListener('deviceorientationabsolute', handleOrientation);
                 window.removeEventListener('deviceorientation', handleOrientation);
-                
-                // Snap map back to North Up
                 currentHeading = 0;
                 leafletBg.style.transform = `rotate(0deg)`;
                 svgRotater.style.transform = `rotate(0deg)`;
@@ -406,65 +408,35 @@
 
             function handleOrientation(e) {
                 if (!compassActive) return;
-                
-                let heading = null;
-                // iOS
-                if (e.webkitCompassHeading) {
-                    heading = e.webkitCompassHeading;
-                } 
-                // Android (absolute alpha)
-                else if (e.absolute === true || e.alpha !== null) {
-                    heading = 360 - e.alpha; 
-                }
-
+                let heading = e.webkitCompassHeading || (360 - e.alpha); 
                 if (heading !== null) {
-                    // Smooth rotation logic wrapping 360 degrees perfectly
                     let diff = heading - currentHeading;
                     diff = ((diff + 540) % 360) - 180; 
                     currentHeading += diff;
-                    
                     leafletBg.style.transform = `rotate(-${currentHeading}deg)`;
                     svgRotater.style.transform = `rotate(-${currentHeading}deg)`;
                 }
             }
-            // ---------------------------------
 
-            // --- Install Button Logic (PWA) ---
             let deferredPrompt;
             const installBtn = document.getElementById('install-btn');
-
             window.addEventListener('beforeinstallprompt', (e) => {
                 e.preventDefault();
                 deferredPrompt = e;
                 installBtn.classList.remove('hidden');
                 installBtn.classList.add('flex');
             });
-
             if(installBtn) {
                 installBtn.addEventListener('click', async () => {
                     if (deferredPrompt) {
                         deferredPrompt.prompt();
-                        const { outcome } = await deferredPrompt.userChoice;
+                        await deferredPrompt.userChoice;
                         deferredPrompt = null;
                         installBtn.classList.add('hidden');
                         installBtn.classList.remove('flex');
                     }
                 });
             }
-
-            window.addEventListener('appinstalled', () => {
-                if(installBtn) {
-                    installBtn.classList.add('hidden');
-                    installBtn.classList.remove('flex');
-                }
-                deferredPrompt = null;
-            });
-            // ---------------------------------
-
-            if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(console.error);
-            }
-
 
             dayjs.extend(window.dayjs_plugin_utc);
             dayjs.extend(window.dayjs_plugin_timezone);
@@ -473,36 +445,38 @@
             const diameterInput = document.getElementById('diameter');
             const timeInputBox = document.getElementById('time-input-box');
             const dateInput = document.getElementById('date');
-            
             const svg = document.getElementById('sky');
-            const umbrellaSVG = document.getElementById('umbrella');
+            const umbrellaCircleSVG = document.getElementById('umbrella-circle');
+            const umbrellaPolySVG = document.getElementById('umbrella-poly');
+            const shadowDraggable = document.getElementById('shadow-draggable');
             const shadowEllipseSVG = document.getElementById('shadow-ellipse');
+            const shadowPolySVG = document.getElementById('shadow-poly');
             const shadowMaskGroup = document.getElementById('shadow-mask-group');
             const hourlyDotsGroup = document.getElementById('hourly-dots-group');
             const nightMessage = document.getElementById('night-message');
             const gridOverlay = document.getElementById('grid-overlay');
-            
             const latInput = document.getElementById('lat');
             const lonInput = document.getElementById('lon');
             const getLocationBtn = document.getElementById('getLocationBtn');
-            
             const zoomInBtn = document.getElementById('zoom-in-btn');
             const zoomOutBtn = document.getElementById('zoom-out-btn');
-
             const loader = document.getElementById('loader');
             const errorMessage = document.getElementById('error-message');
-            
             const centerPosText = document.getElementById('center-pos-text');
             const shadeDimsText = document.getElementById('shade-dims-text');
-
+            const shapeSelect = document.getElementById('shape');
+            const wrapperDia = document.getElementById('wrapper-dia');
+            const wrapperSides = document.getElementById('wrapper-sides');
+            const wrapperSideLen = document.getElementById('wrapper-side-len');
+            const sidesInput = document.getElementById('sides');
+            const sideLengthInput = document.getElementById('side-length');
+            const sideLengthLabel = document.getElementById('side-length-label');
             const heightLabel = document.getElementById('height-label');
             const diameterLabel = document.getElementById('diameter-label');
-            
             const dateResetBtn = document.getElementById('date-reset-btn');
             const timeResetBtn = document.getElementById('time-reset-btn');
             const timezonePicker = document.getElementById('timezone-picker');
             const timezoneResetBtn = document.getElementById('timezone-reset-btn');
-            
             const unitImperialBtn = document.getElementById('unit-imperial');
             const unitMetricBtn = document.getElementById('unit-metric');
             const gridLegendText = document.getElementById('grid-legend-text');
@@ -519,38 +493,52 @@
             let map = null;
             let userZoomMultiplier = 1.0;
             
+            shapeSelect.addEventListener('change', () => {
+                if (shapeSelect.value === 'circle') {
+                    wrapperDia.classList.remove('hidden');
+                    wrapperSides.classList.add('hidden');
+                    wrapperSideLen.classList.add('hidden');
+                } else {
+                    wrapperDia.classList.add('hidden');
+                    wrapperSides.classList.remove('hidden');
+                    wrapperSideLen.classList.remove('hidden');
+                }
+                calculateAndDraw();
+            });
+
             function getCombinedDate() {
                 const dateStr = dateInput.value;
                 const timeStr = timeInputBox.value;
                 if (!dateStr || !timeStr) return new Date();
-
                 const isoStr = `${dateStr}T${timeStr}`;
                 const selectedTimezone = timezonePicker.value;
-
                 return dayjs.tz(isoStr, selectedTimezone).toDate();
             }
 
             function setUnitSystem(system) {
                 if (system === currentUnitSystem) return; 
-
                 const heightVal = parseFloat(heightInput.value);
                 const diameterVal = parseFloat(diameterInput.value);
-
+                const sideLengthVal = parseFloat(sideLengthInput.value);
                 if (system === 'metric') {
                     unitMetricBtn.classList.add('active-unit');
                     unitImperialBtn.classList.remove('active-unit');
                     if (!isNaN(heightVal)) heightInput.value = (heightVal * FEET_TO_METERS).toFixed(2);
                     if (!isNaN(diameterVal)) diameterInput.value = (diameterVal * FEET_TO_METERS).toFixed(2);
+                    if (!isNaN(sideLengthVal)) sideLengthInput.value = (sideLengthVal * FEET_TO_METERS).toFixed(2);
                     heightLabel.textContent = 'Height to Edge (m)';
                     diameterLabel.textContent = 'Umbrella Dia. (m)';
+                    sideLengthLabel.textContent = 'Side Len (m)';
                     gridLegendText.textContent = '0.6m Grid';
-                } else { // imperial
+                } else {
                     unitImperialBtn.classList.add('active-unit');
                     unitMetricBtn.classList.remove('active-unit');
                     if (!isNaN(heightVal)) heightInput.value = (heightVal * METERS_TO_FEET).toFixed(1);
                     if (!isNaN(diameterVal)) diameterInput.value = (diameterVal * METERS_TO_FEET).toFixed(1);
+                    if (!isNaN(sideLengthVal)) sideLengthInput.value = (sideLengthVal * METERS_TO_FEET).toFixed(1);
                     heightLabel.textContent = 'Height to Edge (ft)';
                     diameterLabel.textContent = 'Umbrella Dia. (ft)';
+                    sideLengthLabel.textContent = 'Side Len (ft)';
                     gridLegendText.textContent = '2ft Grid';
                 }
                 currentUnitSystem = system;
@@ -562,101 +550,74 @@
                 const allTimezones = Intl.supportedValuesOf('timeZone');
                 const currentSelectedTz = timezonePicker.value;
                 timezonePicker.innerHTML = '';
-
                 const tzMap = new Map();
-
                 allTimezones.forEach(tz => {
                     try {
-                        const formatter = new Intl.DateTimeFormat('en-US', {
-                            timeZone: tz,
-                            timeZoneName: 'short'
-                        });
+                        const formatter = new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' });
                         const parts = formatter.formatToParts(selectedDate);
                         const tzNamePart = parts.find(part => part.type === 'timeZoneName');
-
-                        if (tzNamePart) {
-                            tzMap.set(tz, `${tz.split('/').pop().replace(/_/g, ' ')} (${tzNamePart.value})`);
-                        }
-                    } catch (e) { /* Ignore invalid timezones */ }
+                        if (tzNamePart) tzMap.set(tz, `${tz.split('/').pop().replace(/_/g, ' ')} (${tzNamePart.value})`);
+                    } catch (e) {}
                 });
-                
                 const sortedTzs = [...tzMap.entries()].sort((a, b) => a[1].localeCompare(b[1]));
-
                 sortedTzs.forEach(([value, text]) => {
                     const option = document.createElement('option');
                     option.value = value;
                     option.textContent = text;
                     timezonePicker.appendChild(option);
                 });
-                
-                try {
-                    timezonePicker.value = currentSelectedTz || dayjs.tz.guess();
-                } catch (e) {
-                    if(timezonePicker.options.length > 0) {
-                         timezonePicker.selectedIndex = 0;
-                       }
-                }
+                timezonePicker.value = currentSelectedTz || dayjs.tz.guess();
             }
             
             function updateMapBounds(lat, lon, scale) {
                 const viewboxWidthInFeet = VIEWBOX_SIZE / scale;
                 const feetPerDegree = 364000;
                 const cosLat = Math.max(0.01, Math.cos(lat * Math.PI / 180));
-                
-                // Multiplier handles the fact that leaflet-bg is now 150% larger physically
                 const mapMultiplier = 1.5; 
                 const deltaLon = (viewboxWidthInFeet / (feetPerDegree * cosLat)) / 2 * mapMultiplier;
                 const deltaLat = (viewboxWidthInFeet / feetPerDegree) / 2 * mapMultiplier;
-
-                const bounds = [
-                    [lat - deltaLat, lon - deltaLon], 
-                    [lat + deltaLat, lon + deltaLon]  
-                ];
-                
+                const bounds = [[lat - deltaLat, lon - deltaLon], [lat + deltaLat, lon + deltaLon]];
                 if (!map) {
-                    map = L.map('leaflet-bg', {
-                        zoomControl: false,
-                        dragging: false,
-                        scrollWheelZoom: false,
-                        doubleClickZoom: false,
-                        touchZoom: false,
-                        keyboard: false,
-                        zoomSnap: 0, 
-                        zoomAnimation: false,
-                        attributionControl: false
-                    });
-                    
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxNativeZoom: 19, 
-                        maxZoom: 25,       
-                        attribution: '© OpenStreetMap'
-                    }).addTo(map);
+                    map = L.map('leaflet-bg', { zoomControl: false, dragging: false, scrollWheelZoom: false, doubleClickZoom: false, touchZoom: false, keyboard: false, zoomSnap: 0, zoomAnimation: false, attributionControl: false });
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxNativeZoom: 19, maxZoom: 25 }).addTo(map);
                 }
-                
                 map.fitBounds(bounds, { animate: false, padding: [0, 0] });
-                map.invalidateSize();
             }
-
-            window.addEventListener('resize', () => {
-                if (map) map.invalidateSize();
-            });
 
             function calculateAndDraw() {
                 errorMessage.classList.add('hidden');
                 
+                const shape = shapeSelect.value;
                 const heightVal = parseFloat(heightInput.value);
-                const diameterVal = parseFloat(diameterInput.value);
                 const userLat = parseFloat(latInput.value);
                 const userLon = parseFloat(lonInput.value);
                 
-                if (isNaN(heightVal) || isNaN(diameterVal) || isNaN(userLat) || isNaN(userLon)) {
-                    errorMessage.textContent = 'Please enter valid numbers for dimensions and location.';
+                let radiusInFeet = 0;
+                let sides = 0;
+
+                function showError(msg) {
+                    errorMessage.textContent = msg;
                     errorMessage.classList.remove('hidden');
-                    return;
+                }
+
+                if (shape === 'circle') {
+                    const diameterVal = parseFloat(diameterInput.value);
+                    if (isNaN(heightVal) || isNaN(diameterVal) || isNaN(userLat) || isNaN(userLon)) {
+                        return showError('Please enter valid numbers for dimensions and location.');
+                    }
+                    const diameterInFeet = currentUnitSystem === 'imperial' ? diameterVal : diameterVal * METERS_TO_FEET;
+                    radiusInFeet = diameterInFeet / 2;
+                } else {
+                    sides = parseInt(sidesInput.value, 10);
+                    const sideLengthVal = parseFloat(sideLengthInput.value);
+                    if (isNaN(heightVal) || isNaN(sides) || sides < 3 || isNaN(sideLengthVal) || isNaN(userLat) || isNaN(userLon)) {
+                        return showError('Please enter valid numbers for dimensions and location.');
+                    }
+                    const sideLengthInFeet = currentUnitSystem === 'imperial' ? sideLengthVal : sideLengthVal * METERS_TO_FEET;
+                    radiusInFeet = sideLengthInFeet / (2 * Math.sin(Math.PI / sides));
                 }
                 
                 const heightInFeet = currentUnitSystem === 'imperial' ? heightVal : heightVal * METERS_TO_FEET;
-                const diameterInFeet = currentUnitSystem === 'imperial' ? diameterVal : diameterVal * METERS_TO_FEET;
                 
                 const sunTimesForScale = SunCalc.getTimes(getCombinedDate(), userLat, userLon);
                 let minAltitudeForScale = MIN_ALTITUDE_RAD; 
@@ -672,13 +633,10 @@
 
                 const safeAltitude = Math.max(minAltitudeForScale, MIN_ALTITUDE_RAD);
                 const maxShadowOffset = heightInFeet / Math.tan(safeAltitude);
-
-                const maxElongatedRadius = (diameterInFeet / 2) / Math.sin(minAltitudeForScale);
+                const maxElongatedRadius = radiusInFeet / Math.sin(minAltitudeForScale);
                 const maxExtent = maxShadowOffset + maxElongatedRadius;
-
                 const maxDim = maxExtent * 0.6655; 
                 let baseScale = VIEWBOX_SIZE / (maxDim * 1.1);
-                
                 const scale = baseScale * userZoomMultiplier;
                 
                 if (userLat !== lastMapLat || userLon !== lastMapLon || scale !== lastMapScale) {
@@ -688,8 +646,22 @@
                     lastMapScale = scale;
                 }
 
-                const radiusScaled = (diameterInFeet / 2) * scale;
-                umbrellaSVG.setAttribute('r', radiusScaled);
+                const radiusScaled = radiusInFeet * scale;
+                if (shape === 'circle') {
+                    umbrellaCircleSVG.setAttribute('r', radiusScaled);
+                    umbrellaCircleSVG.classList.remove('hidden');
+                    umbrellaPolySVG.classList.add('hidden');
+                } else {
+                    const pts = [];
+                    const angleOffset = -Math.PI / 2 - Math.PI / sides;
+                    for(let i=0; i<sides; i++) {
+                        const angle = angleOffset + (i * 2 * Math.PI / sides);
+                        pts.push(`${(100 + radiusScaled * Math.cos(angle)).toFixed(2)},${(100 + radiusScaled * Math.sin(angle)).toFixed(2)}`);
+                    }
+                    umbrellaPolySVG.setAttribute('points', pts.join(' '));
+                    umbrellaCircleSVG.classList.add('hidden');
+                    umbrellaPolySVG.classList.remove('hidden');
+                }
 
                 // STATIC GRID LAYER (Does not rotate with compass)
                 gridOverlay.innerHTML = '';
@@ -754,11 +726,12 @@
                             text.setAttribute('x', shadowX.toFixed(2));
                             text.setAttribute('y', shadowY.toFixed(2));
                             text.setAttribute('fill', 'white');
-                            text.setAttribute('fill-opacity', '0.8');
-                            text.setAttribute('font-size', '4');
-                            text.setAttribute('font-weight', '500');
+                            text.setAttribute('fill-opacity', '1');
+                            text.setAttribute('font-size', '4.5');
+                            text.setAttribute('font-weight', '600');
                             text.setAttribute('text-anchor', 'middle');
                             text.setAttribute('dominant-baseline', 'middle');
+                            text.setAttribute('filter', 'url(#text-shadow)');
                             text.textContent = hourText;
                             hourlyDotsGroup.appendChild(text);
                         }
@@ -768,37 +741,61 @@
                 
                 dailySunPath = []; 
                 shadowMaskGroup.innerHTML = ''; 
-
                 const stepMinutes = 1; 
                 
                 if (sunTimes.sunrise instanceof Date && !isNaN(sunTimes.sunrise)) {
                     let currentTime = new Date(sunTimes.sunrise);
                     while (currentTime <= sunTimes.sunset) {
                         let pos = SunCalc.getPosition(currentTime, userLat, userLon);
-                        
                         if (pos.altitude > (Math.PI / 2) - 0.01) {
                             const pastPos = SunCalc.getPosition(new Date(currentTime.getTime() - 60000), userLat, userLon);
                             pos.azimuth = pastPos.azimuth;
                         }
-
                         if (pos.altitude > MIN_ALTITUDE_RAD) {
                             const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
                             const shadowX = 100 + offset * Math.sin(pos.azimuth);
                             const shadowY = 100 - offset * Math.cos(pos.azimuth);
-                            
-                            const rotationRad = pos.azimuth;
                             const elongatedRadius = radiusScaled / Math.sin(pos.altitude);
-                            const rotationDegrees = rotationRad * (180 / Math.PI);
-
-                            const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
-                            el.setAttribute('cx', shadowX.toFixed(2));
-                            el.setAttribute('cy', shadowY.toFixed(2));
-                            el.setAttribute('rx', radiusScaled.toFixed(2));
-                            el.setAttribute('ry', elongatedRadius.toFixed(2));
-                            el.setAttribute('transform', `rotate(${rotationDegrees.toFixed(2)} ${shadowX.toFixed(2)} ${shadowY.toFixed(2)})`);
-                            el.setAttribute('fill', 'white'); 
-                            shadowMaskGroup.appendChild(el);
-
+                            
+                            if (shape === 'circle') {
+                                const rotationRad = pos.azimuth;
+                                const rotationDegrees = rotationRad * (180 / Math.PI);
+                                const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
+                                el.setAttribute('cx', shadowX.toFixed(2));
+                                el.setAttribute('cy', shadowY.toFixed(2));
+                                el.setAttribute('rx', radiusScaled.toFixed(2));
+                                el.setAttribute('ry', elongatedRadius.toFixed(2));
+                                el.setAttribute('transform', `rotate(${rotationDegrees.toFixed(2)} ${shadowX.toFixed(2)} ${shadowY.toFixed(2)})`);
+                                el.setAttribute('fill', 'white'); 
+                                shadowMaskGroup.appendChild(el);
+                            } else {
+                                const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                                const pts = [];
+                                const angleOffset = -Math.PI / 2 - Math.PI / sides;
+                                const alpha = pos.azimuth;
+                                const scaleY = elongatedRadius / radiusScaled;
+                                
+                                for(let i=0; i<sides; i++) {
+                                    const angle = angleOffset + (i * 2 * Math.PI / sides);
+                                    const vx = radiusScaled * Math.cos(angle);
+                                    const vy = radiusScaled * Math.sin(angle);
+                                    
+                                    const rx = vx * Math.cos(-alpha) - vy * Math.sin(-alpha);
+                                    const ry = vx * Math.sin(-alpha) + vy * Math.cos(-alpha);
+                                    
+                                    const sx = rx;
+                                    const sy = ry * scaleY;
+                                    
+                                    const fx = sx * Math.cos(alpha) - sy * Math.sin(alpha);
+                                    const fy = sx * Math.sin(alpha) + sy * Math.cos(alpha);
+                                    
+                                    pts.push(`${(shadowX + fx).toFixed(2)},${(shadowY + fy).toFixed(2)}`);
+                                }
+                                poly.setAttribute('points', pts.join(' '));
+                                poly.setAttribute('fill', 'white');
+                                shadowMaskGroup.appendChild(poly);
+                            }
+                            
                             const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
                             dailySunPath.push({ minutes: currentMinutes, center: { x: shadowX, y: shadowY } });
                         }
@@ -809,7 +806,7 @@
                 if (sunPosition.altitude < MIN_ALTITUDE_RAD) {
                     sunIndicator.classList.add('hidden');
                     nightMessage.classList.remove('hidden');
-                    shadowEllipseSVG.classList.add('hidden');
+                    shadowDraggable.classList.add('hidden');
                     centerPosText.textContent = '';
                     shadeDimsText.textContent = '';
                     return;
@@ -817,213 +814,117 @@
                 
                 sunIndicator.classList.remove('hidden');
                 const sunDist = ( (Math.PI / 2) - sunPosition.altitude) / (Math.PI / 2) * 100;
-                const sunX = 100 - sunDist * Math.sin(sunPosition.azimuth);
-                const sunY = 100 + sunDist * Math.cos(sunPosition.azimuth);
-
-                sunIndicator.setAttribute('cx', sunX);
-                sunIndicator.setAttribute('cy', sunY);
+                sunIndicator.setAttribute('cx', 100 - sunDist * Math.sin(sunPosition.azimuth));
+                sunIndicator.setAttribute('cy', 100 + sunDist * Math.cos(sunPosition.azimuth));
 
                 nightMessage.classList.add('hidden');
-                shadowEllipseSVG.classList.remove('hidden');
+                shadowDraggable.classList.remove('hidden');
             
                 const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
                 let shadowX = 100 + shadowOffset * Math.sin(sunPosition.azimuth);
                 let shadowY = 100 - shadowOffset * Math.cos(sunPosition.azimuth);
-
                 const elongatedRadius = radiusScaled / Math.sin(sunPosition.altitude);
-                const rotationRad = sunPosition.azimuth;
-                const rotationDegrees = rotationRad * (180 / Math.PI);
+                const rotDeg = sunPosition.azimuth * 180 / Math.PI;
 
-                shadowEllipseSVG.setAttribute('cx', shadowX);
-                shadowEllipseSVG.setAttribute('cy', shadowY);
-                shadowEllipseSVG.setAttribute('rx', radiusScaled);
-                shadowEllipseSVG.setAttribute('ry', elongatedRadius);
-                shadowEllipseSVG.setAttribute('transform', `rotate(${rotationDegrees} ${shadowX} ${shadowY})`);
+                if (shape === 'circle') {
+                    shadowEllipseSVG.setAttribute('cx', shadowX);
+                    shadowEllipseSVG.setAttribute('cy', shadowY);
+                    shadowEllipseSVG.setAttribute('rx', radiusScaled);
+                    shadowEllipseSVG.setAttribute('ry', elongatedRadius);
+                    shadowEllipseSVG.setAttribute('transform', `rotate(${rotDeg} ${shadowX} ${shadowY})`);
+                    
+                    shadowEllipseSVG.classList.remove('hidden');
+                    shadowPolySVG.classList.add('hidden');
+                } else {
+                    const pts = [];
+                    const angleOffset = -Math.PI / 2 - Math.PI / sides;
+                    const alpha = sunPosition.azimuth;
+                    const scaleY = elongatedRadius / radiusScaled;
+
+                    for(let i=0; i<sides; i++) {
+                        const angle = angleOffset + (i * 2 * Math.PI / sides);
+                        const vx = radiusScaled * Math.cos(angle);
+                        const vy = radiusScaled * Math.sin(angle);
+                        
+                        const rx = vx * Math.cos(-alpha) - vy * Math.sin(-alpha);
+                        const ry = vx * Math.sin(-alpha) + vy * Math.cos(-alpha);
+                        
+                        const sx = rx;
+                        const sy = ry * scaleY;
+                        
+                        const fx = sx * Math.cos(alpha) - sy * Math.sin(alpha);
+                        const fy = sx * Math.sin(alpha) + sy * Math.cos(alpha);
+                        
+                        pts.push(`${(shadowX + fx).toFixed(2)},${(shadowY + fy).toFixed(2)}`);
+                    }
+                    shadowPolySVG.setAttribute('points', pts.join(' '));
+                    shadowPolySVG.removeAttribute('transform');
+                    
+                    shadowEllipseSVG.classList.add('hidden');
+                    shadowPolySVG.classList.remove('hidden');
+                }
                 
-                const shortAxisFeet = diameterInFeet;
-                const longAxisFeet = diameterInFeet / Math.sin(sunPosition.altitude);
-                
+                const shortAxisFeet = radiusInFeet * 2;
+                const longAxisFeet = shortAxisFeet / Math.sin(sunPosition.altitude);
                 const offsetEastWest_feet = (shadowX - 100) / scale;
                 const offsetNorthSouth_feet = -(shadowY - 100) / scale;
                 
-                if (currentUnitSystem === 'imperial') {
-                    shadeDimsText.textContent = `Shade Area: ${longAxisFeet.toFixed(1)}' x ${shortAxisFeet.toFixed(1)}'`;
-                    const ewText = `${Math.abs(offsetEastWest_feet).toFixed(1)}' ${offsetEastWest_feet >= 0 ? 'E' : 'W'}`;
-                    const nsText = `${Math.abs(offsetNorthSouth_feet).toFixed(1)}' ${offsetNorthSouth_feet >= 0 ? 'N' : 'S'}`;
-                    centerPosText.textContent = `Center of Shade: ${nsText} & ${ewText}`;
-                } else { // metric
-                    const shortAxisMeters = shortAxisFeet * FEET_TO_METERS;
-                    const longAxisMeters = longAxisFeet * FEET_TO_METERS;
-                    const offsetEastWest_meters = offsetEastWest_feet * FEET_TO_METERS;
-                    const offsetNorthSouth_meters = offsetNorthSouth_feet * FEET_TO_METERS;
+                const u = currentUnitSystem === 'imperial' ? "'" : "m";
+                const factor = currentUnitSystem === 'imperial' ? 1 : FEET_TO_METERS;
 
-                    shadeDimsText.textContent = `Shade Area: ${longAxisMeters.toFixed(1)}m x ${shortAxisMeters.toFixed(1)}m`;
-                    const ewText = `${Math.abs(offsetEastWest_meters).toFixed(1)}m ${offsetEastWest_meters >= 0 ? 'E' : 'W'}`;
-                    const nsText = `${Math.abs(offsetNorthSouth_meters).toFixed(1)}m ${offsetNorthSouth_meters >= 0 ? 'N' : 'S'}`;
-                    centerPosText.textContent = `Center of Shade: ${nsText} & ${ewText}`;
-                }
+                shadeDimsText.textContent = `Shade: ${(longAxisFeet * factor).toFixed(1)}${u} x ${(shortAxisFeet * factor).toFixed(1)}${u}`;
+                centerPosText.textContent = `Offset: ${Math.abs(offsetNorthSouth_feet * factor).toFixed(1)}${u} ${offsetNorthSouth_feet >= 0 ? 'N' : 'S'} & ${Math.abs(offsetEastWest_feet * factor).toFixed(1)}${u} ${offsetEastWest_feet >= 0 ? 'E' : 'W'}`;
             }
 
             function getSVGCoords(e) {
                 const pt = svg.createSVGPoint();
-                if (e.touches) {
-                    pt.x = e.touches[0].clientX;
-                    pt.y = e.touches[0].clientY;
-                } else {
-                    pt.x = e.clientX;
-                    pt.y = e.clientY;
-                }
-                // Because svg-rotater is transformed by compass, this accurately unwinds the drag rotation
+                const client = e.touches ? e.touches[0] : e;
+                pt.x = client.clientX; pt.y = client.clientY;
                 return pt.matrixTransform(svgRotater.getScreenCTM().inverse());
             }
 
-            function findClosestTime(pos) {
-                if (dailySunPath.length === 0) return 720; 
-
-                let closest = null;
-                let minDistance = Infinity;
-
-                dailySunPath.forEach(point => {
-                    const dx = point.center.x - pos.x;
-                    const dy = point.center.y - pos.y;
-                    const distance = dx * dx + dy * dy;
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        closest = point;
-                    }
-                });
-                return closest ? closest.minutes : 720;
-            }
-
-            function startDrag(e) {
-                if (e.target.id === 'shadow-ellipse') {
-                    e.preventDefault();
-                    isDragging = true;
-                }
-            }
-
             function drag(e) {
-                if (!isDragging) return;
-                e.preventDefault();
+                if (!isDragging || dailySunPath.length === 0) return;
                 const coords = getSVGCoords(e);
-
-                coords.x = Math.max(0, Math.min(VIEWBOX_SIZE, coords.x));
-                coords.y = Math.max(0, Math.min(VIEWBOX_SIZE, coords.y));
-
-                const newTimeInMinutes = findClosestTime(coords);
-                
-                const hours = Math.floor(newTimeInMinutes / 60);
-                const minutes = Math.round(newTimeInMinutes % 60);
-                timeInputBox.value = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-                
+                let closest = dailySunPath[0], minDist = Infinity;
+                dailySunPath.forEach(p => {
+                    const d = Math.pow(p.center.x - coords.x, 2) + Math.pow(p.center.y - coords.y, 2);
+                    if (d < minDist) { minDist = d; closest = p; }
+                });
+                timeInputBox.value = `${String(Math.floor(closest.minutes/60)).padStart(2, '0')}:${String(closest.minutes%60).padStart(2, '0')}`;
                 calculateAndDraw();
-            }
-            
-            function endDrag() {
-                isDragging = false;
             }
 
             function getLocation() {
                 loader.style.display = 'flex';
-                errorMessage.classList.add('hidden');
-                latInput.disabled = true;
-                lonInput.disabled = true;
-                if (navigator.geolocation) {
-                      navigator.geolocation.getCurrentPosition(
-                          (position) => {
-                              latInput.value = position.coords.latitude.toFixed(4);
-                              lonInput.value = position.coords.longitude.toFixed(4);
-                              loader.style.display = 'none';
-                              latInput.disabled = false;
-                              lonInput.disabled = false;
-                              calculateAndDraw();
-                          },
-                          () => handleLocationError("Could not get location. Using default.")
-                      );
-                } else {
-                    handleLocationError("Geolocation not supported. Using default.");
-                }
+                navigator.geolocation.getCurrentPosition(pos => {
+                    latInput.value = pos.coords.latitude.toFixed(4); lonInput.value = pos.coords.longitude.toFixed(4);
+                    loader.style.display = 'none'; calculateAndDraw();
+                }, () => {
+                    latInput.value = "37.7749"; lonInput.value = "-122.4194";
+                    loader.style.display = 'none'; calculateAndDraw();
+                });
             }
 
-            function handleLocationError(message) {
-                  latInput.value = (37.7749).toFixed(4);
-                  lonInput.value = (-122.4194).toFixed(4);
-                  errorMessage.textContent = message;
-                  errorMessage.classList.remove('hidden');
-                  loader.style.display = 'none';
-                  latInput.disabled = false;
-                  lonInput.disabled = false;
-                  calculateAndDraw();
-            }
-            
-            // Map Zoom Events
-            zoomInBtn.addEventListener('click', () => {
-                userZoomMultiplier *= 1.25; // Increase scale
-                calculateAndDraw();
-            });
-
-            zoomOutBtn.addEventListener('click', () => {
-                userZoomMultiplier /= 1.25; // Decrease scale
-                calculateAndDraw();
-            });
-
-            dateInput.addEventListener('input', () => {
-                populateTimezonePicker();
-                calculateAndDraw();
-            });
-
-            [heightInput, diameterInput, latInput, lonInput, timezonePicker, timeInputBox].forEach(el => {
-                if (el) { 
-                    el.addEventListener('input', calculateAndDraw);
-                }
-            });
-            
-            shadowEllipseSVG.addEventListener('mousedown', startDrag);
+            zoomInBtn.addEventListener('click', () => { userZoomMultiplier *= 1.25; calculateAndDraw(); });
+            zoomOutBtn.addEventListener('click', () => { userZoomMultiplier /= 1.25; calculateAndDraw(); });
+            dateInput.addEventListener('input', () => { populateTimezonePicker(); calculateAndDraw(); });
+            [heightInput, diameterInput, sidesInput, sideLengthInput, latInput, lonInput, timezonePicker, timeInputBox].forEach(el => el.addEventListener('input', calculateAndDraw));
+            shadowDraggable.addEventListener('mousedown', () => isDragging = true);
             document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', endDrag);
-            shadowEllipseSVG.addEventListener('touchstart', startDrag, { passive: false });
-            document.addEventListener('touchmove', drag, { passive: false });
-            document.addEventListener('touchend', endDrag);
-
+            document.addEventListener('mouseup', () => isDragging = false);
+            shadowDraggable.addEventListener('touchstart', (e) => { e.preventDefault(); isDragging = true; }, { passive: false });
+            document.addEventListener('touchmove', (e) => { if(isDragging) e.preventDefault(); drag(e); }, { passive: false });
+            document.addEventListener('touchend', () => isDragging = false);
             unitImperialBtn.addEventListener('click', () => setUnitSystem('imperial'));
             unitMetricBtn.addEventListener('click', () => setUnitSystem('metric'));
-
-            dateResetBtn.addEventListener('click', () => {
-                dateInput.value = dayjs().format('YYYY-MM-DD');
-                dateInput.dispatchEvent(new Event('input')); 
-            });
-
-            timeResetBtn.addEventListener('click', () => {
-                const now = dayjs();
-                timeInputBox.value = now.format('HH:mm');
-                timezonePicker.value = dayjs.tz.guess();
-                calculateAndDraw();
-            });
-            
-            timezoneResetBtn.addEventListener('click', () => {
-                timezonePicker.value = dayjs.tz.guess();
-                calculateAndDraw();
-            });
-
+            dateResetBtn.addEventListener('click', () => { dateInput.value = dayjs().format('YYYY-MM-DD'); populateTimezonePicker(); calculateAndDraw(); });
+            timeResetBtn.addEventListener('click', () => { timeInputBox.value = dayjs().format('HH:mm'); calculateAndDraw(); });
+            timezoneResetBtn.addEventListener('click', () => { timezonePicker.value = dayjs.tz.guess(); calculateAndDraw(); });
             getLocationBtn.addEventListener('click', getLocation);
-
-            function initialize() {
-                const now = dayjs();
-                timeInputBox.value = now.format('HH:mm');
-                dateInput.value = now.format('YYYY-MM-DD');
-
-                populateTimezonePicker();
-
-                if (screen.orientation && typeof screen.orientation.lock === 'function') {
-                    screen.orientation.lock('portrait-primary').catch(e => {
-                        console.warn("Could not lock screen orientation:", e);
-                    });
-                }
-                
-                getLocation();
-            }
-
-            initialize();
+            const initNow = dayjs();
+            timeInputBox.value = initNow.format('HH:mm'); dateInput.value = initNow.format('YYYY-MM-DD');
+            populateTimezonePicker(); getLocation();
         });
     </script>
 </body>
