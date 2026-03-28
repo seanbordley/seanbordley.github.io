@@ -632,9 +632,10 @@
                 }
 
                 const safeAltitude = Math.max(minAltitudeForScale, MIN_ALTITUDE_RAD);
-                const maxShadowOffset = heightInFeet / Math.tan(safeAltitude);
-                const maxElongatedRadius = radiusInFeet / Math.sin(minAltitudeForScale);
-                const maxExtent = maxShadowOffset + maxElongatedRadius;
+                const safeBaseOffset = heightInFeet / Math.tan(safeAltitude);
+                const safeDepthInFeet = radiusInFeet * 0.5;
+                const safeApexOffset = (heightInFeet + safeDepthInFeet) / Math.tan(safeAltitude);
+                const maxExtent = Math.max(safeBaseOffset + radiusInFeet, safeApexOffset) + radiusInFeet;
                 const maxDim = maxExtent * 0.6655; 
                 let baseScale = VIEWBOX_SIZE / (maxDim * 1.1);
                 const scale = baseScale * userZoomMultiplier;
@@ -692,6 +693,25 @@
                     gridOverlay.appendChild(line);
                 }
                 
+                function getShadowGeometry(altitude, azimuth) {
+                    const baseOffset = (heightInFeet / Math.tan(altitude)) * scale;
+                    const depthInFeet = radiusInFeet * 0.5; // Assume umbrella depth is half its radius
+                    const apexOffset = ((heightInFeet + depthInFeet) / Math.tan(altitude)) * scale;
+                    
+                    const baseTrailing = baseOffset - radiusScaled;
+                    const leadingEdge = Math.max(baseOffset + radiusScaled, apexOffset);
+                    const shadowLength = leadingEdge - baseTrailing;
+                    const elongatedRadius = shadowLength / 2;
+                    const shiftDistance = ((leadingEdge + baseTrailing) / 2) - baseOffset;
+                    
+                    const shadowOffset = baseOffset + shiftDistance;
+                    const shadowX = 100 + shadowOffset * Math.sin(azimuth);
+                    const shadowY = 100 - shadowOffset * Math.cos(azimuth);
+                    const scaleY = elongatedRadius / radiusScaled;
+                    
+                    return { shadowX, shadowY, elongatedRadius, scaleY, shadowLength };
+                }
+                
                 const now = getCombinedDate();
                 let sunPosition = SunCalc.getPosition(now, userLat, userLon);
                 if (sunPosition.altitude > (Math.PI / 2) - 0.01) { 
@@ -717,9 +737,7 @@
                         }
 
                         if (pos.altitude > 0) {
-                            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const shadowX = 100 + offset * Math.sin(pos.azimuth);
-                            const shadowY = 100 - offset * Math.cos(pos.azimuth);
+                            const { shadowX, shadowY } = getShadowGeometry(pos.altitude, pos.azimuth);
 
                             const hourText = String(hourMarker.getHours()).padStart(2, '0');
                             const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
@@ -752,14 +770,10 @@
                             pos.azimuth = pastPos.azimuth;
                         }
                         if (pos.altitude > MIN_ALTITUDE_RAD) {
-                            const offset = (heightInFeet / Math.tan(pos.altitude)) * scale;
-                            const shadowX = 100 + offset * Math.sin(pos.azimuth);
-                            const shadowY = 100 - offset * Math.cos(pos.azimuth);
-                            const elongatedRadius = radiusScaled / Math.sin(pos.altitude);
+                            const { shadowX, shadowY, elongatedRadius, scaleY } = getShadowGeometry(pos.altitude, pos.azimuth);
                             
                             if (shape === 'circle') {
-                                const rotationRad = pos.azimuth;
-                                const rotationDegrees = rotationRad * (180 / Math.PI);
+                                const rotationDegrees = pos.azimuth * (180 / Math.PI);
                                 const el = document.createElementNS('http://www.w3.org/2000/svg', 'ellipse');
                                 el.setAttribute('cx', shadowX.toFixed(2));
                                 el.setAttribute('cy', shadowY.toFixed(2));
@@ -820,10 +834,7 @@
                 nightMessage.classList.add('hidden');
                 shadowDraggable.classList.remove('hidden');
             
-                const shadowOffset = (heightInFeet / Math.tan(sunPosition.altitude)) * scale;
-                let shadowX = 100 + shadowOffset * Math.sin(sunPosition.azimuth);
-                let shadowY = 100 - shadowOffset * Math.cos(sunPosition.azimuth);
-                const elongatedRadius = radiusScaled / Math.sin(sunPosition.altitude);
+                const { shadowX, shadowY, elongatedRadius, scaleY, shadowLength } = getShadowGeometry(sunPosition.altitude, sunPosition.azimuth);
                 const rotDeg = sunPosition.azimuth * 180 / Math.PI;
 
                 if (shape === 'circle') {
@@ -865,7 +876,7 @@
                 }
                 
                 const shortAxisFeet = radiusInFeet * 2;
-                const longAxisFeet = shortAxisFeet / Math.sin(sunPosition.altitude);
+                const longAxisFeet = shadowLength / scale;
                 const offsetEastWest_feet = (shadowX - 100) / scale;
                 const offsetNorthSouth_feet = -(shadowY - 100) / scale;
                 
