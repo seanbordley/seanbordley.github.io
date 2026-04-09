@@ -3,6 +3,7 @@
   "short_name": "Shade",
   "description": "Plan your perfect spot in the shade using physical sun path tracking.",
   "start_url": "https://www.seanbordley.com/site_files/webapps/Shade_Finder/",
+"scope": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
