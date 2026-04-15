@@ -1,7 +1,6 @@
-const CACHE_NAME = 'pwa-assignment-v1';
+const CACHE_NAME = 'pwa-assignment-v3';
 
 const urlsToCache = [
-    './',
     './index.html',
     './manifest.json',
     './lightblue.jpg', 
@@ -16,6 +15,7 @@ self.addEventListener('install', event => {
                 console.log('Opened cache and caching files');
                 return cache.addAll(urlsToCache);
             })
+            .catch(err => console.error('Cache failed! A file is missing:', err))
     );
 });
 
