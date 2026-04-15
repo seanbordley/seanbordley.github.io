@@ -3,12 +3,10 @@ const CACHE_NAME = 'pwa-assignment-v1';
 const urlsToCache = [
     './',
     './index.html',
-    './style.css',
-    './app.js',
     './manifest.json',
-    './light-blue.jpg',
-    './light-gold.jpg', 
-    './icon.svg',
+    './lightblue.jpg', 
+    './lightgold.jpg',
+    './icon.svg'
 ];
 
 self.addEventListener('install', event => {
@@ -21,7 +19,6 @@ self.addEventListener('install', event => {
     );
 });
 
-// Fetch Event: Serve cached files if offline
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request)
