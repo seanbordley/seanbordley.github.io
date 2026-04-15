@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Characteristics & Features</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            transition: background-image 0.3s ease, background-color 0.3s ease;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #222;
+        }
+
+        p {
+            line-height: 1.6;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        select, input {
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 5px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        hr {
+            margin: 30px 0;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+
+        @media screen and (min-width: 600px) {
+            body {
+                padding: 40px 15%;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            select, input {
+                width: 50%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Understanding Progressive Web Apps (PWAs)</h1>
+
+    <p>A Progressive Web Application (PWA) is a type of application software delivered through the web, built using common web technologies including HTML, CSS, and JavaScript. They are intended to work on any platform that uses a standards-compliant browser. PWAs provide a user experience akin to native mobile applications, offering powerful features like push notifications, home screen installation, and access to device hardware.</p>
+
+    <p>One of the most defining characteristics of a PWA is its ability to function reliably offline or on low-quality networks. This is achieved through the use of Service Workers—scripts that run in the background and intercept network requests. By caching essential files (like the HTML, styling, and background images), a PWA ensures the core application remains accessible even when the user completely loses internet connectivity.</p>
+
+    <hr>
+
+    <label for="bg-select">Choose a Background Theme:</label>
+    <select id="bg-select">
+        <option value="none">Default (White)</option>
+        <option value="blue">Light Blue</option>
+        <option value="gold">Light Gold</option>
+    </select>
+
+    <hr>
+
+    <label for="name-input">Enter your name:</label>
+    <input type="text" id="name-input" placeholder="Type your name...">
+    <p id="greeting-display">Welcome, <span id="name-span">Guest</span>!</p>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                    .then(reg => console.log('Service Worker registered successfully.', reg))
+                    .catch(err => console.error('Service Worker registration failed.', err));
+            });
+        }
+
+        const bgSelect = document.getElementById('bg-select');
+        bgSelect.addEventListener('change', (e) => {
+            const choice = e.target.value;
+            
+            if (choice === 'blue') {
+                document.body.style.backgroundImage = "url('lightblue.jpg')"; 
+            } else if (choice === 'gold') {
+                document.body.style.backgroundImage = "url('lightgold.jpg')";
+            } else {
+                document.body.style.backgroundImage = "none";
+                document.body.style.backgroundColor = "#ffffff";
+            }
+        });
+
+        const nameInput = document.getElementById('name-input');
+        const nameSpan = document.getElementById('name-span');
+
+        const storedName = localStorage.getItem('name');
+        if (storedName) {
+            nameSpan.textContent = storedName;
+            nameInput.value = storedName;
+        }
+
+        nameInput.addEventListener('input', (e) => {
+            const typedName = e.target.value;
+            
+            if (typedName.trim() !== '') {
+                localStorage.setItem('name', typedName);
+                nameSpan.textContent = typedName;
+            } else {
+                localStorage.removeItem('name');
+                nameSpan.textContent = 'Guest';
+            }
+        });
+    </script>
+</body>
+</html>
