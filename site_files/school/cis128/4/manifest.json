@@ -1,5 +1,5 @@
 {
-  "name": "Progressive Web App CIS 128",
+  "name": "Progressive Web App",
   "short_name": "PWA Demo",
   "start_url": "./index.html",
   "display": "standalone",
@@ -7,14 +7,20 @@
   "theme_color": "#ffffff",
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "icon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "icon.svg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml"
     }
   ]
-} 
+}

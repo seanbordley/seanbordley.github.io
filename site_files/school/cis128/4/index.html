@@ -53,6 +53,23 @@
             border-top: 1px solid #eee;
         }
 
+        #install-button {
+            display: none;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        #install-button:hover {
+            background-color: #0056b3;
+        }
+
         @media screen and (min-width: 600px) {
             body {
                 padding: 40px 15%;
@@ -69,6 +86,8 @@
     </style>
 </head>
 <body>
+    <button id="install-button">Install App</button>
+
     <h1>Understanding Progressive Web Apps (PWAs)</h1>
 
     <p>A Progressive Web Application (PWA) is a type of application software delivered through the web, built using common web technologies including HTML, CSS, and JavaScript. They are intended to work on any platform that uses a standards-compliant browser. PWAs provide a user experience akin to native mobile applications, offering powerful features like push notifications, home screen installation, and access to device hardware.</p>
@@ -132,6 +151,29 @@
                 localStorage.removeItem('name');
                 nameSpan.textContent = 'Guest';
             }
+        });
+
+        let deferredPrompt;
+        const installButton = document.getElementById('install-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installButton.style.display = 'none';
+            }
+        });
+        
+        window.addEventListener('appinstalled', () => {
+            installButton.style.display = 'none';
+            console.log('PWA was installed');
         });
     </script>
 </body>
