@@ -11,9 +11,9 @@ bgSelect.addEventListener('change', (e) => {
     const choice = e.target.value;
     
     if (choice === 'blue') {
-        document.body.style.backgroundImage = "url('light-blue.jpg')"; 
+        document.body.style.backgroundImage = "url('lightblue.jpg')"; 
     } else if (choice === 'gold') {
-        document.body.style.backgroundImage = "url('light-gold.jpg')";
+        document.body.style.backgroundImage = "url('lightgold.jpg')";
     } else {
         document.body.style.backgroundImage = "none";
         document.body.style.backgroundColor = "#ffffff";
@@ -39,4 +39,27 @@ nameInput.addEventListener('input', (e) => {
         localStorage.removeItem('name');
         nameSpan.textContent = 'Guest';
     }
+});
+
+let deferredPrompt;
+const installButton = document.getElementById('install-button');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installButton.style.display = 'block';
+});
+
+installButton.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installButton.style.display = 'none';
+    }
+});
+
+window.addEventListener('appinstalled', () => {
+    installButton.style.display = 'none';
+    console.log('PWA was installed');
 });
