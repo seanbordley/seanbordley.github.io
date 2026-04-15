@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" width="200" height="200">
+  <path d="M 10,55 L 25,80 L 45,20 L 110,20" fill="none" stroke="blue" stroke-width="6" stroke-linejoin="round" stroke-linecap="round"/>
+  
+  <text x="50" y="75" font-family="Times New Roman, serif" font-size="60" fill="blue">-1</text>
+</svg>
