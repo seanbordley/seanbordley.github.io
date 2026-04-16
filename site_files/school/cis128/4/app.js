@@ -29,7 +29,7 @@ if (storedName) {
     nameInput.value = storedName;
 }
 
-nameInput.addEventListener('input', (e) => {
+nameInput.addEventListener('change', (e) => {
     const typedName = e.target.value;
     
     if (typedName.trim() !== '') {
