@@ -45,7 +45,7 @@ nameInput.addEventListener('blur', saveName);
 nameInput.addEventListener('change', saveName);
 nameInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
-        nameInput.blur(); // Forces the mobile keyboard to close
+        nameInput.blur();
     }
 });
 
