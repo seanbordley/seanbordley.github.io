@@ -29,7 +29,7 @@ if (storedName) {
     nameInput.value = storedName;
 }
 
-nameInput.addEventListener('change', (e) => {
+nameInput.addEventListener('blur', (e) => {
     const typedName = e.target.value;
     
     if (typedName.trim() !== '') {
@@ -38,6 +38,12 @@ nameInput.addEventListener('change', (e) => {
     } else {
         localStorage.removeItem('name');
         nameSpan.textContent = 'Guest';
+    }
+});
+
+nameInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        nameInput.blur();
     }
 });
 
