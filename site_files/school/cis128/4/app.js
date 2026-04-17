@@ -29,7 +29,7 @@ if (storedName) {
     nameInput.value = storedName;
 }
 
-nameInput.addEventListener('blur', (e) => {
+const saveName = (e) => {
     const typedName = e.target.value;
     
     if (typedName.trim() !== '') {
@@ -39,11 +39,14 @@ nameInput.addEventListener('blur', (e) => {
         localStorage.removeItem('name');
         nameSpan.textContent = 'Guest';
     }
-});
+};
 
-nameInput.addEventListener('keypress', (e) => {
+nameInput.addEventListener('blur', saveName);
+nameInput.addEventListener('change', saveName);
+
+nameInput.addEventListener('keyup', (e) => {
     if (e.key === 'Enter') {
-        nameInput.blur();
+        nameInput.blur(); // Forces the mobile keyboard to close
     }
 });
 
