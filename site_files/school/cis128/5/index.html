@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="An executive comparison of hybrid mobile app development frameworks: Flutter, React Native, and Ionic.">
     <title>Executive Report: Hybrid App Frameworks Comparison</title>
-    <!-- This line is what links your CSS file to style the page -->
     <link rel="stylesheet" href="style.css">
-    <!-- This line is what links your app.js to trigger the Service Worker -->
     <script src="app.js" defer></script>
 </head>
 <body>
@@ -19,7 +17,7 @@
 
     <main class="container">
         <section class="executive-summary">
-            <p>To reduce development time and maintain code consistency across iOS and Android, shifting to a cross-platform (hybrid) architecture is highly recommended. The decision of which framework to use will dictate our hiring needs, application performance, and time-to-market. This report evaluates the three industry leaders—<strong>Flutter</strong>, <strong>React Native</strong>, and <strong>Ionic</strong>—based on current data, architectural approaches, and best-fit scenarios for our engineering team.</p>
+            <p>Shifting to a cross-platform architecture reduces development time and maintains consistency across iOS and Android. This report evaluates Flutter, React Native, and Ionic to guide our engineering team's framework selection.</p>
         </section>
 
         <section aria-labelledby="frameworks-title">
@@ -28,7 +26,7 @@
             <div class="cards-grid">
                 <article class="card flutter">
                     <h3>Flutter</h3>
-                    <p>Backed by Google, Flutter utilizes the Dart programming language and its own high-performance rendering engine (Impeller/Skia) to draw UI components directly to the canvas.</p>
+                    <p>Backed by Google, this framework draws UI components directly to the canvas for high-fidelity rendering.</p>
                     
                     <div class="card-section">
                         <strong>Pros:</strong>
@@ -42,22 +40,20 @@
                     <div class="card-section">
                         <strong>Cons:</strong>
                         <ul>
-                            <li>Requires the team to learn Dart (steeper initial learning curve).</li>
+                            <li>Steeper initial learning curve.</li>
                             <li>Slightly larger compiled app sizes compared to React Native.</li>
                         </ul>
                     </div>
-
-                    <span class="card-tag">Best for: Highly customized, branded UIs</span>
                 </article>
 
                 <article class="card react">
                     <h3>React Native</h3>
-                    <p>Maintained by Meta, React Native allows developers to write in JavaScript/TypeScript. It bridges logic to render actual native OEM UI components on both iOS and Android.</p>
+                    <p>Maintained by Meta, this framework bridges logic to render actual native OEM UI components on both platforms.</p>
                     
                     <div class="card-section">
                         <strong>Pros:</strong>
                         <ul>
-                            <li>Leverages existing JavaScript and React web development skills.</li>
+                            <li>Leverages existing web development skills.</li>
                             <li>Massive ecosystem and third-party library support.</li>
                             <li>Apps feel truly native because they use native OS components.</li>
                         </ul>
@@ -70,18 +66,16 @@
                             <li>Heavy reliance on third-party libraries for some core features.</li>
                         </ul>
                     </div>
-
-                    <span class="card-tag">Best for: Teams with strong JavaScript/React skills</span>
                 </article>
 
                 <article class="card ionic">
                     <h3>Ionic</h3>
-                    <p>A web-first framework that uses standard HTML, CSS, and JS (via Angular, React, or Vue). It wraps the web app in a native WebView using Capacitor to access device features.</p>
+                    <p>A web-first framework that wraps standard web applications in a native container to access device features.</p>
                     
                     <div class="card-section">
                         <strong>Pros:</strong>
                         <ul>
-                            <li>Fastest time-to-market if the team already knows web development.</li>
+                            <li>Fastest time-to-market.</li>
                             <li>Single codebase can easily deploy as a Progressive Web App (PWA).</li>
                             <li>Easiest to learn and adopt.</li>
                         </ul>
@@ -90,12 +84,10 @@
                     <div class="card-section">
                         <strong>Cons:</strong>
                         <ul>
-                            <li>Performance is constrained by the mobile browser (WebView) limits.</li>
-                            <li>Does not always feel "truly native" regarding scroll physics and transitions.</li>
+                            <li>Performance is constrained by mobile browser limits.</li>
+                            <li>Does not always feel truly native regarding scroll physics and transitions.</li>
                         </ul>
                     </div>
-
-                    <span class="card-tag">Best for: Internal enterprise tools &amp; MVPs</span>
                 </article>
             </div>
         </section>
@@ -104,7 +96,6 @@
             <h2 id="comparison-title">Comparison</h2>
             <div class="table-container">
                 <table>
-                    <caption>Direct Comparison of Key Metrics</caption>
                     <thead>
                         <tr>
                             <th scope="col">Criteria</th>
