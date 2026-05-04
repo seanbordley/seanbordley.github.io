@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Frameworks: Flutter, React Native, and Ionic.">
+    <meta name="description" content="Frameworks Comparasion : Flutter, React Native, and Ionic.">
     <title>Hybrid App Frameworks Comparison</title>
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
@@ -11,7 +11,7 @@
 <body>
     <header>
         <div class="container">
-            <h1>Frameworks Comparison</h1>
+            <h1>Hybrid App Frameworks Comparison</h1>
         </div>
     </header>
 
@@ -20,13 +20,23 @@
             <p>Shifting to a cross-platform architecture reduces development time and maintains consistency across iOS and Android. This report evaluates Flutter, React Native, and Ionic to guide our engineering team's framework selection.</p>
         </div>
 
-        <section aria-labelledby="frameworks-title">
-            <h2 id="frameworks-title">Framework</h2>
+        <section aria-labelledby="framework-comparison-title">
+            <h2 id="framework-comparison-title">Framework Comparison</h2>
             
             <div class="cards-grid">
                 <article class="card flutter">
                     <h3>Flutter</h3>
                     <p>Backed by Google, this framework draws UI components directly to the canvas for high-fidelity rendering.</p>
+                    
+                    <div class="card-section">
+                        <strong>Key Metrics:</strong>
+                        <ul>
+                            <li><strong>Language:</strong> Dart</li>
+                            <li><strong>UI Rendering:</strong> Custom Engine (Canvas drawn)</li>
+                            <li><strong>Performance:</strong> Excellent (Handles heavy graphics)</li>
+                            <li><strong>Talent Pool:</strong> Growing, but specialized</li>
+                        </ul>
+                    </div>
                     
                     <div class="card-section">
                         <strong>Pros:</strong>
@@ -44,11 +54,23 @@
                             <li>Slightly larger compiled app sizes compared to React Native.</li>
                         </ul>
                     </div>
+                    
+                    <p><strong>Ideal Use Case:</strong> Consumer apps requiring strict brand identity and smooth animations.</p>
                 </article>
 
                 <article class="card react">
                     <h3>React Native</h3>
                     <p>Maintained by Meta, this framework bridges logic to render actual native OEM UI components on both platforms.</p>
+                    
+                    <div class="card-section">
+                        <strong>Key Metrics:</strong>
+                        <ul>
+                            <li><strong>Language:</strong> JavaScript / TypeScript</li>
+                            <li><strong>UI Rendering:</strong> Native OEM Components</li>
+                            <li><strong>Performance:</strong> Very Good (Near-native)</li>
+                            <li><strong>Talent Pool:</strong> Massive (leveraging React devs)</li>
+                        </ul>
+                    </div>
                     
                     <div class="card-section">
                         <strong>Pros:</strong>
@@ -66,11 +88,23 @@
                             <li>Heavy reliance on third-party libraries for some core features.</li>
                         </ul>
                     </div>
+                    
+                    <p><strong>Ideal Use Case:</strong> Content-heavy apps where team already relies on a React tech stack.</p>
                 </article>
 
                 <article class="card ionic">
                     <h3>Ionic</h3>
                     <p>A web-first framework that wraps standard web applications in a native container to access device features.</p>
+                    
+                    <div class="card-section">
+                        <strong>Key Metrics:</strong>
+                        <ul>
+                            <li><strong>Language:</strong> HTML, CSS, JS (Any Web Framework)</li>
+                            <li><strong>UI Rendering:</strong> Web View (Browser Engine)</li>
+                            <li><strong>Performance:</strong> Moderate (Adequate for data forms)</li>
+                            <li><strong>Talent Pool:</strong> Massive (any web developer)</li>
+                        </ul>
+                    </div>
                     
                     <div class="card-section">
                         <strong>Pros:</strong>
@@ -88,55 +122,9 @@
                             <li>Does not always feel truly native regarding scroll physics and transitions.</li>
                         </ul>
                     </div>
+                    
+                    <p><strong>Ideal Use Case:</strong> B2B applications, administrative dashboards, tight budget constraints.</p>
                 </article>
-            </div>
-        </section>
-
-        <section aria-labelledby="comparison-title">
-            <h2 id="comparison-title">Comparison</h2>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th scope="col">Criteria</th>
-                            <th scope="col">Flutter</th>
-                            <th scope="col">React Native</th>
-                            <th scope="col">Ionic</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">Language Requirement</th>
-                            <td>Dart</td>
-                            <td>JavaScript / TypeScript</td>
-                            <td>HTML, CSS, JS (Any Web Framework)</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">UI Rendering</th>
-                            <td>Custom Engine (Canvas drawn)</td>
-                            <td>Native OEM Components</td>
-                            <td>Web View (Browser Engine)</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Performance Profile</th>
-                            <td>Excellent (Handles heavy graphics)</td>
-                            <td>Very Good (Near-native)</td>
-                            <td>Moderate (Adequate for data forms)</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Developer Talent Pool</th>
-                            <td>Growing, but specialized</td>
-                            <td>Massive (leveraging React devs)</td>
-                            <td>Massive (any web developer)</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Ideal Use Case</th>
-                            <td>Consumer apps requiring strict brand identity and smooth animations.</td>
-                            <td>Content-heavy apps where team already relies on a React tech stack.</td>
-                            <td>B2B applications, administrative dashboards, tight budget constraints.</td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </section>
 
