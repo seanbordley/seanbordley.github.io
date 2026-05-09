@@ -20,6 +20,12 @@
     padding: 0;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     color: var(--text-main);
@@ -37,6 +43,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
+    margin: 0;
 }
 
 h1, h2, h3, h4 {
@@ -46,7 +53,7 @@ h1, h2, h3, h4 {
 
 h2 {
     font-size: 1.875rem;
-    margin-top: 2.5rem;
+    margin-top: 0; /* Changed from 2.5rem to 0 to remove top gap */
     margin-bottom: 1rem;
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
@@ -59,7 +66,7 @@ p {
 .container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 1.5rem 1.5rem; /* Ensure consistent padding top and bottom */
 }
 
 header {
@@ -67,13 +74,14 @@ header {
     color: var(--surface-color);
     padding: 1.5rem;
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem; /* Reduced from 2rem to tighten space further */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     color: var(--surface-color);
     font-size: 2rem;
+    margin-top: 0;
     margin-bottom: 0;
 }
 
