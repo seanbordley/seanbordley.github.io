@@ -1,6 +1,8 @@
-const CACHE_NAME = 'sean-portfolio-v1';
 
-const urlsToCache = [
+const CACHE_NAME = 'sean-portfolio-v5';
+>>>>>>> parent of 69eb541 (change)
+
+/*const urlsToCache = [
   '/',
   '/index.html',
   '/site_files/media/logo.png',
@@ -21,7 +23,7 @@ const urlsToCache = [
   '/site_files/about/page.html',
   '/site_files/about/main.jpg'
 ];
-
+*/
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
