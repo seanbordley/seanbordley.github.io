@@ -1,11 +1,15 @@
 const CACHE_NAME = 'sean-portfolio-v4';
 
-/*const urlsToCache = [
+// Add the exact paths of the files you want to cache for offline use
+const urlsToCache = [
   '/',
   '/index.html',
+  '/styles.css',
+  '/script.js',
   '/site_files/media/logo.png',
   '/site_files/media/profile.jpg',
-  '/site_files/Sean_Bordley_Resume.pdf',
+  
+  /* ADD YOUR PROJECT PAGES BELOW SO THEY WORK OFFLINE TOO */
   '/site_files/systems/page.html',
   '/site_files/systems/main.jpg',
   '/site_files/fixtures/page.html',
@@ -20,28 +24,35 @@ const CACHE_NAME = 'sean-portfolio-v4';
   '/site_files/personal/main.jpg',
   '/site_files/about/page.html',
   '/site_files/about/main.jpg'
-]; 
-*/
+];
 
+// Install Service Worker and Cache Files
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
+      .then(cache => {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
   );
 });
 
+// Serve Cached Files when Offline
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
+        // Cache hit - return the cached response
         if (response) {
           return response;
         }
+        // Not in cache - fetch from network
         return fetch(event.request);
       })
   );
 });
 
+// Clean up old caches when you update your files
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(

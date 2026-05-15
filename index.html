@@ -6,28 +6,16 @@
     <script>
         // 0 = Live Site (Overlay hidden)
         // 1 = Under Construction (Overlay visible)
-        let SITE_MODE = 0; 
-
-        // --- SECRET ADMIN BYPASS ---
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('admin') === 'true') {
-            localStorage.setItem('adminBypass', 'true');
-        } else if (urlParams.get('admin') === 'false') {
-            localStorage.removeItem('adminBypass');
-        }
-        if (localStorage.getItem('adminBypass') === 'true') {
-            SITE_MODE = 0;
-        }
+        const SITE_MODE = 0; 
 
         // Version Number (Change this to track updates)
-        // 1.0.65: Final ADA Compliance (Added Escape key close, prefers-reduced-motion CSS).
-        const SITE_VERSION = "1.0.65";
+        // 1.0.61: Clean Rollback
+        const SITE_VERSION = "1.0.61";
     </script>
     <!-- =================================================================== -->
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portfolio of Sean Bordley - Showcasing Systems, Fixtures, Parts, Tools, Film, and Personal Projects.">
     <title>Sean Bordley</title>
     <link rel="icon" href="/site_files/media/logo.png">
     
@@ -38,394 +26,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <style>
-        /* --- THEME VARIABLES --- */
-        :root {
-            --bg-base: #020617; 
-            --bg-gradient-center: #1e293b; 
-            --text-main: #f1f5f9; 
-            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); 
-            --accent-color: #3b82f6; 
-            --card-fill: #0f172a;    
-            --social-bg: rgba(0,0,0,0.5);
-            --modal-overlay: rgba(2, 6, 23, 0.85); 
-
-            /* Modal Aesthetics (Dark) */
-            --modal-bg: #1e293b; 
-            --modal-border: 1px solid #3b82f6;
-            --modal-text: #e2e8f0;
-            --input-bg: #0f172a;
-            --input-text: #ffffff;
-            --input-border: 1px solid #334155;
-        }
-
-        /* Light Mode Overrides */
-        [data-theme="light"] {
-            --bg-base: #f1f5f9;      
-            --bg-gradient-center: #ffffff; 
-            --text-main: #334155;     
-            --accent-gradient: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
-            --accent-color: #2563eb; 
-            --card-fill: #e2e8f0;     
-            --social-bg: rgba(255,255,255,0.6);
-            --modal-overlay: rgba(255, 255, 255, 0.85);
-
-            /* Modal Aesthetics (Light) */
-            --modal-bg: #ffffff;
-            --modal-border: 1px solid #2563eb;
-            --modal-text: #1e293b;
-            --input-bg: #f8fafc;
-            --input-text: #1e293b;
-            --input-border: 1px solid #cbd5e1;
-        }
-
-        /* --- WCAG ACCESSIBILITY STYLES --- */
-        /* Provide clear focus rings for users navigating with the Tab key */
-        *:focus-visible {
-            outline: 2px solid var(--accent-color);
-            outline-offset: 4px;
-            border-radius: 4px;
-        }
-        .project-card:focus-visible {
-            outline: 3px solid #ffffff;
-            outline-offset: 8px;
-            border-radius: 0;
-            z-index: 50; /* Bring above others when tabbed */
-        }
-        /* Remove default button styling for semantics */
-        button {
-            background: none;
-            border: none;
-            padding: 0;
-            font: inherit;
-            cursor: pointer;
-            outline: inherit;
-        }
-
-        /* ADA: Respect user OS settings for motion sensitivity */
-        @media (prefers-reduced-motion: reduce) {
-            *, ::before, ::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-            .project-card:hover, .project-card:focus-visible {
-                transform: none !important;
-            }
-        }
-
-        html, body { height: 100%; margin: 0; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at center, var(--bg-gradient-center) 0%, var(--bg-base) 100%);
-            background-attachment: fixed; 
-            color: var(--text-main);           
-            overflow: hidden;
-            transition: color 0.4s ease; 
-        }
-
-        main { position: relative; width: 100%; height: 100%; }
-
-        .hexagon-showcase-container {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 79.2vmin; height: 79.2vmin; transition: opacity 0.3s ease;
-        }
-
-        .hexagon-showcase-container.is-hidden { opacity: 0; pointer-events: none; }
-
-        .center-photo {
-            position: absolute; width: 25.61vmin; height: 29.44vmin; top: 50%; left: 50%;
-            transform: translate(-50%, -50%); z-index: 1; transition: opacity 0.5s ease;
-            background: var(--accent-gradient);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            display: flex; justify-content: center; align-items: center;
-            opacity: 0; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4)); 
-        }
-
-        .center-photo img {
-            width: 98%; height: 98%; background-color: var(--card-fill); 
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-
-        .project-card {
-            position: absolute; width: 24.56vmin; height: 28.19vmin; top: 50%; left: 50%;
-            margin-top: -14.1vmin; margin-left: -12.28vmin; z-index: 5; opacity: .85; 
-            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.3s ease;
-            backface-visibility: hidden; display: flex; justify-content: center; align-items: center;
-            background: var(--accent-gradient);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-        }
-
-        @media (hover: hover) {
-            .project-card:hover, .project-card:focus-visible {
-                transform: translateY(-5px) scale(1.02); 
-                filter: drop-shadow(0 0 25px rgba(59, 130, 246, 0.6));
-                opacity: 1; z-index: 20; 
-            }
-        }
-
-        .project-card::before {
-            content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 98%; height: 98%; background-color: var(--card-fill); 
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            z-index: -1; transition: opacity 0.3s ease;
-        }
-
-        .project-card.is-enlarged::before { opacity: 0; }
-        .project-card img {
-            width: 98%; height: 98%; object-fit: cover; opacity: 0; transition: opacity 0.3s ease;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-
-        .hex-text {
-            position: absolute; z-index: 10; color: white; font-weight: 700; font-size: 3vmin; 
-            text-align: center; pointer-events: none; text-shadow: 0 4px 12px rgba(0,0,0,0.9);
-            letter-spacing: 0.15em; text-transform: uppercase;
-        }
-
-        .project-card.is-enlarged .hex-text { display: none !important; }
-
-        .project-card:nth-of-type(1) { transform: rotate(30deg) translateY(-26.02vmin) rotate(-30deg); }
-        .project-card:nth-of-type(2) { transform: rotate(90deg) translateY(-26.02vmin) rotate(-90deg); }
-        .project-card:nth-of-type(3) { transform: rotate(150deg) translateY(-26.02vmin) rotate(-150deg); }
-        .project-card:nth-of-type(4) { transform: rotate(210deg) translateY(-26.02vmin) rotate(-210deg); }
-        .project-card:nth-of-type(5) { transform: rotate(270deg) translateY(-26.02vmin) rotate(-270deg); }
-        .project-card:nth-of-type(6) { transform: rotate(330deg) translateY(-26.02vmin) rotate(-330deg); }
-
-        .project-card.is-faded {
-            opacity: 0.2; z-index: 4; transition: opacity 0.4s ease;
-            filter: grayscale(0.8) blur(2px); 
-        }
-
-        .hexagon-showcase-container.is-active .center-photo { opacity: 0; transition: none; }
-        .hexagon-showcase-container.is-focused .project-card:not(.is-enlarged),
-        .hexagon-showcase-container.is-focused .center-photo { opacity: 0; }
-
-        .project-card.is-central { transform: translate(0, 0) scale(1.05); z-index: 10; }
-        .project-card.is-enlarged {
-            transform: translate(0, 0) scale(2.8); z-index: 15; background: transparent; 
-            clip-path: inset(0% round 1vmin); overflow: visible; filter: drop-shadow(0 0 50px rgba(0,0,0,0.8)); 
-        }
-        .project-card.is-enlarged img {
-            clip-path: inset(0% round 1vmin); width: 100%; height: 100%; object-fit: cover;
-            background-color: transparent; opacity: 1; 
-        }
-        .project-card.is-enlarged .project-overlay { display: none !important; }
-        
-        .project-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0), rgba(0,0,0,0.6)); 
-            opacity: 0; transition: opacity 0.4s ease;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
-
-        #project-title-display {
-            position: fixed; top: 2%; left: 50%; transform: translate(-50%, 0);
-            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; color: var(--accent-color); font-size: 5vmin; font-weight: 300; 
-            letter-spacing: 0.3em; text-transform: uppercase; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-            opacity: 0; white-space: nowrap; transition: opacity 0.4s ease-out; z-index: 100;
-            pointer-events: none; text-align: center;
-        }
-
-        #project-subtitle-display {
-            display: block; font-size: 1.2vmin; font-weight: 600; letter-spacing: 0.1em;
-            -webkit-text-fill-color: var(--text-main); color: var(--text-main); opacity: 0.6; margin-top: 0.5vmin;
-        }
-
-        #project-title-display.is-visible { opacity: 1; }
-
-        .social-icons {
-            position: fixed; bottom: 0; left: 0; right: 0; width: 100%; z-index: 4000; 
-            display: flex; flex-direction: row; justify-content: center; padding: 1vmin 2vmin;
-            background-color: var(--social-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            border-top: 1px solid rgba(255,255,255,0.05); gap: 5vmin; transition: background-color 0.4s ease;
-        }
-
-        .social-icon {
-            font-size: 12vmin; transition: color 0.3s ease, opacity 0.3s ease; z-index: 1000;
-            display: flex; flex-direction: column; align-items: center; gap: 6vmin; opacity: 1; 
-        }
-
-        .resume-icon { color: #ff0000; }      
-        .email-icon { color: #ffa500; }       
-        .imdb-icon { color: #ffff00; }        
-        .github-icon { color: #00ff00; }      
-        .linkedin-icon { color: #0000ff; }    
-        .file-icon { color: #8b00ff; }        
-
-        @media (hover: hover) {
-            .social-icon:hover, .social-icon:focus-visible {
-                transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 10px currentColor); 
-            }
-            .project-card:hover .project-overlay, .project-card:focus-visible .project-overlay { opacity: 1; }
-        }
-
-        #orientation-lock-message {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--bg-base); color: var(--accent-color); z-index: 9999;
-            flex-direction: column; justify-content: center; align-items: center; text-align: center;
-        }
-
-        #orientation-lock-message i { font-size: 6vmin; margin-bottom: 2vmin; animation: rotate-animation 1.5s ease-in-out infinite; }
-        @keyframes rotate-animation { 0% { transform: rotate(0deg); } 50% { transform: rotate(-90deg); } 100% { transform: rotate(-90deg); } }
-
-        @media (max-width: 700px) {
-            .hexagon-showcase-container { width: 80vmin; height: 80vmin; }
-            .center-photo { width: 27.1vmin; height: 31.1vmin; }
-            .project-card { width: 27.1vmin; height: 31.1vmin; margin-top: -15.55vmin; margin-left: -13.55vmin; }
-            .project-card:nth-of-type(1) { transform: rotate(30deg) translateY(-28.5vmin) rotate(-30deg); }
-            .project-card:nth-of-type(2) { transform: rotate(90deg) translateY(-28.5vmin) rotate(-90deg); }
-            .project-card:nth-of-type(3) { transform: rotate(150deg) translateY(-28.5vmin) rotate(-150deg); }
-            .project-card:nth-of-type(4) { transform: rotate(210deg) translateY(-28.5vmin) rotate(-210deg); }
-            .project-card:nth-of-type(5) { transform: rotate(270deg) translateY(-28.5vmin) rotate(-270deg); }
-            .project-card:nth-of-type(6) { transform: rotate(330deg) translateY(-28.5vmin) rotate(-330deg); }
-            .project-card.is-enlarged { transform: translate(0, 0) scale(3.1); }
-            .hex-text { font-size: 3.5vmin; padding: 1vmin 2vmin; }
-            #project-title-display { font-size: 8vmin; top: 8%; left: 50%; transform: translate(-50%, 0); text-align: center; }
-            #project-subtitle-display { font-size: 3vmin; margin-top: 1vmin; -webkit-text-fill-color: var(--text-main); color: var(--text-main); }
-        }
-
-        @media (min-width: 701px) {
-            .social-icons {
-                position: fixed; top: 50%; left: 2.5vmin; right: auto; bottom: auto; width: auto;
-                transform: translateY(-50%); flex-direction: column; background-color: transparent;
-                padding: 0; gap: 2.5vmin; backdrop-filter: none; -webkit-backdrop-filter: none; border-top: none;
-            }
-            .social-icon { font-size: 6vmin; }
-        }
-
-        @media (max-width: 705px) and (orientation: landscape) {
-            #main-content, .social-icons { display: none; }
-            #orientation-lock-message { display: flex; }
-        }
-
-        /* Modals */
-        .contact-modal-overlay, .project-content-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: var(--modal-overlay); backdrop-filter: blur(8px);
-            z-index: 6000; display: flex; justify-content: center; align-items: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-
-        .project-content-overlay { z-index: 3000; background-color: rgba(0, 0, 0, 0.95); }
-        .contact-modal-overlay.is-visible, .project-content-overlay.is-visible { opacity: 1; pointer-events: auto; display: flex; }
-        .project-content-overlay.background-faded { display: none !important; opacity: 0 !important; pointer-events: none; }
-
-        .contact-modal {
-            background: linear-gradient(var(--card-fill), var(--card-fill)) padding-box, var(--accent-gradient) border-box;
-            border: 2px solid transparent; color: var(--modal-text); padding: 2.5rem; 
-            border-radius: 16px; width: 90%; max-width: 500px; position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6); height: auto; max-height: 85vh; 
-            overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; 
-            display: flex; flex-direction: column;
-        }
-
-        .contact-modal .close-button {
-            position: absolute; top: 0.75rem; right: 1.5rem; 
-            font-family: 'Inter', sans-serif; font-size: 2rem; font-weight: 200; line-height: 1; cursor: pointer;
-            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            color: var(--accent-color); transition: transform 0.2s, filter 0.2s;
-        }
-
-        .contact-modal .close-button:hover, .contact-modal .close-button:focus-visible { 
-            transform: scale(1.1); filter: drop-shadow(0 0 8px var(--accent-color)); 
-        }
-
-        .contact-modal h2 {
-            margin-top: 0; text-align: center; flex-shrink: 0; font-size: 2rem; font-weight: 300; letter-spacing: 0.2em; 
-            margin-bottom: 2rem; color: var(--accent-color);
-            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        #contact-form { display: flex; flex-direction: column; min-height: 0; }
-        #form-content { display: flex; flex-direction: column; min-height: 0; gap: 1.5rem; padding-bottom: 0.5rem; }
-        .contact-modal label { display: block; margin-bottom: 0; }
-        #form-content label:nth-of-type(2) { display: flex; flex-direction: column; margin-bottom: 0; }
-
-        .contact-modal input, .contact-modal textarea {
-            width: 100%; padding: 0.85rem; margin-bottom: 0; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);
-            font-family: 'Inter', sans-serif; color: var(--input-text); background-color: rgba(15, 23, 42, 0.6); 
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-        }
-        .contact-modal input:focus, .contact-modal textarea:focus {
-            outline: none; border-color: var(--accent-color); background-color: rgba(15, 23, 42, 1); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-        }
-        .contact-modal textarea { min-height: 120px; resize: vertical; }
-
-        .contact-modal input[type="file"] { padding: 0.5rem; line-height: 1.5; cursor: pointer; font-size: 0.9rem; border: none; background: transparent; }
-        .contact-modal input[type="file"]::file-selector-button {
-            background: var(--accent-gradient); color: white; border: none; padding: 0.35rem 1rem; margin-right: 1rem;
-            border-radius: 4px; cursor: pointer; font-family: 'Inter', sans-serif; font-weight: 500; transition: opacity 0.2s;
-        }
-        .contact-modal input[type="file"]::file-selector-button:hover, .contact-modal input[type="file"]::file-selector-button:focus-visible { opacity: 0.9; }
-
-        #form-content > label:last-of-type { margin-bottom: 0; }
-        #form-content > label:last-of-type input { margin-bottom: 0; }
-
-        .contact-modal button[type="submit"] {
-            width: 100px; height: 86px; display: flex; justify-content: center; align-items: center;
-            margin: 0 auto 0.5rem auto; padding: 0; position: relative; flex-shrink: 0; 
-            background: var(--accent-gradient); clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            border: none; cursor: pointer; transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
-        }
-        .contact-modal button[type="submit"]::before {
-            content: ''; position: absolute; top: 2px; left: 2px; width: calc(100% - 4px); height: calc(100% - 4px);
-            background-color: var(--modal-bg); clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-            z-index: 1; transition: background-color 0.3s;
-        }
-        .contact-modal button[type="submit"]:hover::before, .contact-modal button[type="submit"]:focus-visible::before { background: var(--accent-gradient); }
-        .contact-modal button[type="submit"]:hover .btn-text, .contact-modal button[type="submit"]:focus-visible .btn-text { color: white; }
-        .contact-modal button[type="submit"] .btn-text {
-            position: relative; z-index: 2; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; 
-            text-transform: uppercase; letter-spacing: 0.1em; color: white; transition: color 0.3s;
-        }
-        .contact-modal button[type="submit"]:hover, .contact-modal button[type="submit"]:focus-visible { transform: scale(1.05); filter: drop-shadow(0 6px 12px rgba(59, 130, 246, 0.4)); }
-
-        .project-content-modal {
-            width: 100%; height: 100%; background-color: transparent; position: relative; border-radius: 0; overflow: hidden; box-shadow: none; 
-        }
-        .project-content-modal iframe { width: 100%; height: 100%; border: none; }
-        
-        .project-content-modal .close-button {
-            position: absolute; top: 0; right: 20px; z-index: 10; padding: 10px; cursor: pointer;
-            font-family: 'Inter', sans-serif; font-size: 3rem; font-weight: 200; line-height: 1;
-            background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; color: var(--accent-color); 
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5)); transition: transform 0.2s, filter 0.2s;
-        }
-        .project-content-modal .close-button:hover, .project-content-modal .close-button:focus-visible { 
-            transform: scale(1.1); filter: drop-shadow(0 0 10px var(--accent-color)); 
-        }
-    </style>
+    <!-- Local CSS and JS Links -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
 </head>
 <body class="text-slate-300">
     
-    <!-- WCAG: Added aria-labels to social icons and aria-hidden to decorative i tags -->
-    <div class="social-icons" role="navigation" aria-label="Social Links">
-        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" aria-label="View Resume" target="_blank">
-            <i class="fas fa-file-alt" aria-hidden="true"></i>
+    <div class="social-icons">
+        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume" target="_blank">
+            <i class="fas fa-file-alt"></i>
         </a>
-        <a href="#" id="email-icon-button" class="social-icon email-icon" aria-label="Open Contact Form">
-            <i class="fas fa-envelope" aria-hidden="true"></i>
+        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
+            <i class="fas fa-envelope"></i>
         </a>
-        <a href="https://www.imdb.com/name/nm4282305/" rel="noopener noreferrer" class="social-icon imdb-icon" aria-label="View IMDb Profile" target="_blank">
-            <i class="fab fa-imdb" aria-hidden="true"></i>
+        <a href="https://www.imdb.com/name/nm4282305/" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb" target="_blank">
+            <i class="fab fa-imdb"></i>
         </a>
-        <a href="https://github.com/seanbordley" rel="noopener noreferrer" class="social-icon github-icon" aria-label="View GitHub Profile" target="_blank">
-            <i class="fab fa-github" aria-hidden="true"></i>
+        <a href="https://github.com/seanbordley" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub" target="_blank">
+            <i class="fab fa-github"></i>
         </a>
-        <a href="https://www.linkedin.com/in/seanbordley" rel="noopener noreferrer" class="social-icon linkedin-icon" aria-label="View LinkedIn Profile" target="_blank">
-            <i class="fab fa-linkedin" aria-hidden="true"></i>
+        <a href="https://www.linkedin.com/in/seanbordley" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn" target="_blank">
+            <i class="fab fa-linkedin"></i>
         </a>
-        <a href="https://drive.google.com/drive/folders/0B2LEStpL-tf3c1kzcXpVSTBFOXM?resourcekey=0-QHuPXzwjMDHcsdhFRS-AkQ&usp=drive_link" rel="noopener noreferrer" class="social-icon file-icon" aria-label="Access Public Drive Files" target="_blank">
-            <i class="fas fa-folder" aria-hidden="true"></i>
+        <a href="https://drive.google.com/drive/folders/0B2LEStpL-tf3c1kzcXpVSTBFOXM?resourcekey=0-QHuPXzwjMDHcsdhFRS-AkQ&usp=drive_link" rel="noopener noreferrer" class="social-icon file-icon" title="Files" target="_blank">
+            <i class="fas fa-folder"></i>
         </a>
     </div>
 
-    <div id="orientation-lock-message" aria-hidden="true">
+    <!-- Orientation Lock Message -->
+    <div id="orientation-lock-message">
         <div>
             <i class="fas fa-mobile-alt"></i>
             <p>Please rotate your device to portrait mode for the best experience.</p>
@@ -433,349 +62,97 @@
     </div>
 
     <main id="main-content">
-        <div class="hexagon-showcase-container show-labels" id="showcase" aria-label="Project Showcase">
-            <div class="center-photo" aria-hidden="true">
+        <div class="hexagon-showcase-container show-labels" id="showcase">
+            <div class="center-photo">
                 <img src="/site_files/media/profile.jpg" alt="Profile" class="w-full h-full object-cover">
             </div>
             
-            <a href="/site_files/systems/page.html" class="project-card" data-title="SYSTEMS" aria-label="View Systems Project">
-                <img src="/site_files/systems/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">SYSTEMS</span>
+            <a href="/site_files/systems/page.html" class="project-card" data-title="SYSTEMS">
+                <img src="/site_files/systems/main.jpg" alt="Systems Project">
+                <span class="hex-text">SYSTEMS</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/fixtures/page.html" class="project-card" data-title="FIXTURES" aria-label="View Fixtures Project">
-                <img src="/site_files/fixtures/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">FIXTURES</span>
+            <a href="/site_files/fixtures/page.html" class="project-card" data-title="FIXTURES">
+                <img src="/site_files/fixtures/main.jpg" alt="Fixtures Project">
+                <span class="hex-text">FIXTURES</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/parts/page.html" class="project-card" data-title="PARTS" aria-label="View Parts Project">
-                <img src="/site_files/parts/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">PARTS</span>
+            <a href="/site_files/parts/page.html" class="project-card" data-title="PARTS">
+                <img src="/site_files/parts/main.jpg" alt="Parts Project">
+                <span class="hex-text">PARTS</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/tools/page.html" class="project-card" data-title="TOOLS" aria-label="View Tools Project">
-                <img src="/site_files/tools/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">TOOLS</span>
+            <a href="/site_files/tools/page.html" class="project-card" data-title="TOOLS">
+                <img src="/site_files/tools/main.jpg" alt="Tools Project">
+                <span class="hex-text">TOOLS</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/film/page.html" class="project-card" data-title="FILM" aria-label="View Film Project">
-                <img src="/site_files/film/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">FILM</span>
+            <a href="/site_files/film/page.html" class="project-card" data-title="FILM">
+                <img src="/site_files/film/main.jpg" alt="Film Project">
+                <span class="hex-text">FILM</span>
                 <div class="project-overlay"></div>
             </a>
-            <a href="/site_files/personal/page.html" class="project-card" data-title="PERSONAL" aria-label="View Personal Project">
-                <img src="/site_files/personal/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">PERSONAL</span>
+            <a href="/site_files/personal/page.html" class="project-card" data-title="PERSONAL">
+                <img src="/site_files/personal/main.jpg" alt="Personal Project">
+                <span class="hex-text">PERSONAL</span>
                 <div class="project-overlay"></div>
             </a>
-             <a href="/site_files/about/page.html" class="project-card" data-title="ABOUT" aria-label="View About Project">
-                <img src="/site_files/about/main.jpg" alt="">
-                <span class="hex-text" aria-hidden="true">ABOUT</span>
+             <a href="/site_files/about/page.html" class="project-card" data-title="ABOUT">
+                <img src="/site_files/about/main.jpg" alt="About Project">
+                <span class="hex-text">ABOUT</span>
                 <div class="project-overlay"></div>
             </a>
         </div>
         
-        <div id="project-title-display" aria-hidden="true">
+        <!-- Dedicated container for the title -->
+        <div id="project-title-display">
             <span id="project-main-title"></span>
             <span id="project-subtitle-display">(CLICK FOR MORE)</span>
         </div>
     </main>
 
-    <!-- WCAG: Added role="dialog" and aria-modal="true" for screen readers -->
-    <div id="project-content-overlay" class="project-content-overlay" role="dialog" aria-modal="true" aria-label="Project Content Preview">
+    <!-- Project Content Overlay -->
+    <div id="project-content-overlay" class="project-content-overlay">
         <div class="project-content-modal">
-            <!-- WCAG: Changed close icon from a span to an actual semantic button -->
-            <button type="button" id="close-project-button" class="close-button" aria-label="Close Project Preview">&times;</button>
-            <iframe id="project-iframe" src="about:blank" title="Project Content Document"></iframe>
+            <span id="close-project-button" class="close-button">&times;</span>
+            <iframe id="project-iframe" src="about:blank" title="Project Content"></iframe>
         </div>
     </div>
 
-    <!-- WCAG: Added dialog roles and aria labels mapped to inputs -->
-    <div id="contact-modal-overlay" class="contact-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contact-heading">
+    <!-- Contact Form Modal -->
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
-            <button type="button" id="close-modal-button" class="close-button" aria-label="Close Contact Form">&times;</button>
-            <h2 id="contact-heading">CONTACT</h2>
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <h2>CONTACT</h2>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST" enctype="multipart/form-data">
                 <div id="form-content">
                     <label>
-                        <input type="email" name="email" placeholder="Your email" aria-label="Your Email Address" required>
+                        <input type="email" name="email" placeholder="Your email" required>
                     </label>
                     <label>
-                        <textarea name="message" placeholder="Your message" aria-label="Your Message" required></textarea>
+                        <textarea name="message" placeholder="Your message" required></textarea>
                     </label>
                     <label>
-                        <input type="file" name="attachment" aria-label="Optional File Attachment">
+                        <input type="file" name="attachment">
                     </label>
-                    <button type="submit" aria-label="Send Message"><span class="btn-text">Send</span></button>
+                    <button type="submit"><span class="btn-text">Send</span></button>
                 </div>
-                <div id="form-success-message" style="display: none;" aria-live="polite">
+                <div id="form-success-message" style="display: none;">
                     <p style="text-align: center; font-size: 5vmin; color: var(--accent-color); font-weight: bold;">Thank you!</p>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="construction-overlay" class="fixed inset-0 z-50 flex items-center justify-center text-center text-white p-4" style="background-color: rgba(26, 32, 44, 0.9); display: none;" aria-hidden="true">
+    <!-- Under Construction Overlay -->
+    <div id="construction-overlay" class="fixed inset-0 z-50 flex items-center justify-center text-center text-white p-4" style="background-color: rgba(26, 32, 44, 0.9); display: none;">
         <div class="max-w-lg">
-            <img src="/site_files/media/logo.png" alt="" aria-hidden="true" class="mx-auto h-20 w-20 mb-6">
+            <img src="/site_files/media/logo.png" alt="Site Icon" class="mx-auto h-20 w-20 mb-6">
             <h1 class="text-4xl md:text-5xl font-bold mb-4">Under Construction</h1>
             <p class="text-lg md:text-xl text-gray-300">Website is currently undergoing scheduled updates.</p>
             <p class="mt-2 text-gray-400">Thank you for your patience!</p>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            const overlay = document.getElementById('construction-overlay');
-            if (overlay) {
-                if (typeof SITE_MODE !== 'undefined' && SITE_MODE === 1) {
-                    overlay.style.display = 'flex';
-                } else {
-                    overlay.style.display = 'none';
-                }
-            }
-
-            const showcase = document.getElementById('showcase');
-            const projects = Array.from(showcase.querySelectorAll('.project-card'));
-            const mainContent = document.getElementById('main-content');
-            const titleDisplay = document.getElementById('project-title-display');
-            const mainTitleDisplay = document.getElementById('project-main-title');
-            const emailIconButton = document.getElementById('email-icon-button');
-            const contactModalOverlay = document.getElementById('contact-modal-overlay');
-            const closeModalButton = document.getElementById('close-modal-button');
-            const hexagonContainer = document.getElementById('showcase');
-            const contactForm = document.getElementById('contact-form');
-            const formContent = document.getElementById('form-content');
-            const successMessage = document.getElementById('form-success-message');
-            
-            const projectContentOverlay = document.getElementById('project-content-overlay');
-        const closeProjectButton = document.getElementById('close-project-button');
-        const projectIframe = document.getElementById('project-iframe');
-        const socialIconsNav = document.querySelector('.social-icons');
-
-        let enlargeTimeout;
-        let lastHoveredProject = null;
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let touchEndX = 0;
-        let touchEndY = 0;
-        
-        // Store the last clicked element to return focus when modals close (Strict WCAG compliance)
-        let previousFocusElement = null;
-
-        // --- Project Content Overlay Logic ---
-        const openProjectOverlay = (url) => {
-            previousFocusElement = document.activeElement; // Save cursor position
-            mainContent.setAttribute('inert', ''); // Freeze background
-            socialIconsNav.setAttribute('inert', '');
-            
-            projectIframe.src = url;
-            hexagonContainer.classList.add('is-hidden'); 
-            projectContentOverlay.classList.add('is-visible');
-            
-            // WCAG: Move focus to the close button when opened
-            setTimeout(() => closeProjectButton.focus(), 100); 
-        };
-
-        const closeProjectOverlay = () => {
-            projectContentOverlay.classList.remove('is-visible');
-            hexagonContainer.classList.remove('is-hidden');
-            
-            mainContent.removeAttribute('inert'); // Unfreeze background
-            socialIconsNav.removeAttribute('inert');
-            
-            setTimeout(() => {
-                projectIframe.src = "about:blank"; 
-                if (previousFocusElement) previousFocusElement.focus(); // Return cursor
-            }, 300);
-        };
-
-        closeProjectButton.addEventListener('click', closeProjectOverlay);
-            
-            projectContentOverlay.addEventListener('click', (e) => {
-                if (e.target === projectContentOverlay) closeProjectOverlay();
-            });
-        // --- Contact Form Logic ---
-        emailIconButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            previousFocusElement = document.activeElement; // Save cursor position
-            mainContent.setAttribute('inert', ''); // Freeze background
-            
-            contactModalOverlay.classList.add('is-visible');
-            hexagonContainer.classList.add('is-hidden');
-
-            if (projectContentOverlay.classList.contains('is-visible')) {
-                projectContentOverlay.classList.add('background-faded');
-            }
-            
-            // WCAG: Send focus inside modal
-            setTimeout(() => contactForm.querySelector('input').focus(), 100);
-        });
-
-        const closeModal = () => {
-            contactModalOverlay.classList.remove('is-visible');
-            
-            const returningToProject = projectContentOverlay.classList.contains('is-visible');
-            projectContentOverlay.classList.remove('background-faded');
-
-            if (returningToProject) {
-                hexagonContainer.classList.add('is-hidden');
-            } else {
-                hexagonContainer.classList.remove('is-hidden');
-                mainContent.removeAttribute('inert'); // Unfreeze background if fully closing
-            }
-            
-            setTimeout(() => {
-                contactForm.reset();
-                formContent.style.removeProperty('display'); 
-                successMessage.style.display = 'none';
-                if (!returningToProject && previousFocusElement) previousFocusElement.focus(); // Return cursor
-            }, 300);
-        };
-
-        closeModalButton.addEventListener('click', closeModal);
-            contactModalOverlay.addEventListener('click', (e) => {
-                if (e.target === contactModalOverlay) closeModal();
-            });
-
-            // ADA: Allow users to press "Escape" to close any open modal
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (projectContentOverlay.classList.contains('is-visible')) {
-                        closeProjectOverlay();
-                    } else if (contactModalOverlay.classList.contains('is-visible')) {
-                        closeModal();
-                    }
-                }
-            });
-
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                fetch(this.action, {
-                    method: 'POST', body: formData, headers: { 'Accept': 'application/json' }
-                }).then(response => {
-                    if (response.ok) {
-                        formContent.style.display = 'none';
-                        successMessage.style.display = 'block';
-                        setTimeout(closeModal, 2000); 
-                    } else { alert('Oops! There was a problem submitting your form.'); }
-                }).catch(error => { alert('Oops! There was a problem submitting your form.'); });
-            });
-
-            const resetAllProjects = () => {
-                clearTimeout(enlargeTimeout);
-                showcase.classList.remove('is-active', 'is-focused');
-                projects.forEach(p => p.classList.remove('is-faded', 'is-central', 'is-enlarged'));
-                titleDisplay.classList.remove('is-visible');
-            };
-
-            // WCAG: Universal Keyboard Support function
-            const handleFocusActivation = function() {
-                projects.forEach(p => p.classList.remove('is-central'));
-                showcase.classList.add('is-active');
-                projects.forEach(p => {
-                    if (p !== this) p.classList.add('is-faded');
-                });
-                this.classList.remove('is-faded');
-                
-                const title = this.dataset.title;
-                if (title) {
-                    mainTitleDisplay.textContent = title;
-                    titleDisplay.classList.add('is-visible');
-                }
-            };
-
-            // WCAG: Deactivate on Tab blur
-            const handleFocusDeactivation = () => {
-                setTimeout(() => {
-                    if (!showcase.contains(document.activeElement) && !showcase.matches(':hover')) {
-                        resetAllProjects();
-                    }
-                }, 10);
-            };
-
-            const isDesktop = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-            if (!isDesktop) {
-                projects.forEach(project => {
-                    project.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const swipeDistance = Math.abs(touchEndX - touchStartX);
-                        if (swipeDistance > 20) return;
-                        const url = this.getAttribute('href');
-                        if (url) openProjectOverlay(url);
-                    });
-                    // Bind keyboard logic even on mobile in case users attach bluetooth keyboards
-                    project.addEventListener('focus', handleFocusActivation);
-                    project.addEventListener('blur', handleFocusDeactivation);
-                });
-
-                mainContent.addEventListener('touchmove', (e) => {
-                    const touch = e.touches[0];
-                    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-                    const currentProject = element ? element.closest('.project-card') : null;
-
-                    if (currentProject && currentProject !== lastHoveredProject) {
-                        lastHoveredProject = currentProject;
-                        const title = currentProject.dataset.title;
-                        if (title) {
-                            mainTitleDisplay.textContent = title;
-                            titleDisplay.classList.add('is-visible');
-                        }
-                    } else if (!currentProject && lastHoveredProject) {
-                        lastHoveredProject = null;
-                        titleDisplay.classList.remove('is-visible');
-                    }
-                });
-
-                mainContent.addEventListener('touchend', () => {
-                    lastHoveredProject = null;
-                    if (!showcase.classList.contains('is-focused') && !showcase.contains(document.activeElement)) {
-                        titleDisplay.classList.remove('is-visible');
-                    }
-                });
-
-                mainContent.addEventListener('touchstart', (e) => {
-                    touchStartX = e.changedTouches[0].screenX;
-                    touchStartY = e.changedTouches[0].screenY;
-                }, false);
-
-                mainContent.addEventListener('touchend', (e) => {
-                    touchEndX = e.changedTouches[0].screenX;
-                }, false);
-
-            } else {
-                projects.forEach(project => {
-                    // WCAG: Listen for both Mouse and Keyboard Focus 
-                    project.addEventListener('mouseenter', handleFocusActivation);
-                    project.addEventListener('focus', handleFocusActivation);
-
-                    project.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const url = this.getAttribute('href');
-                        if (url) openProjectOverlay(url);
-                    });
-                });
-
-                showcase.addEventListener('mouseleave', resetAllProjects);
-                showcase.addEventListener('focusout', handleFocusDeactivation);
-            }
-
-            const setTheme = (isDark) => { document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light'); };
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            setTheme(mediaQuery.matches);
-            mediaQuery.addEventListener('change', (e) => setTheme(e.matches));
-            
-            console.log(`Portfolio Version: ${SITE_VERSION}`);
-
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Error: ', err));
-                });
-            }
-        });
-    </script>
 </body>
 </html>
