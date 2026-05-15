@@ -1,9 +1,9 @@
-const CACHE_NAME = 'hybrid-report-cache-v2';
+const CACHE_NAME = 'hybrid-report-cache-v1';
 const ASSETS_TO_CACHE = [
-    './',
-    './index.html',
-    './style.css',
-    './app.js'
+    '/',
+    '/index.html',
+    '/style.css',
+    '/app.js'
 ];
 
 self.addEventListener('install', event => {
