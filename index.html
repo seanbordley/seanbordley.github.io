@@ -20,8 +20,8 @@
         }
 
         // Version Number (Change this to track updates)
-        // 1.0.64: Major WCAG Accessibility Overhaul (Focus states, ARIA labels, semantic buttons).
-        const SITE_VERSION = "1.0.64";
+        // 1.0.65: Final ADA Compliance (Added Escape key close, prefers-reduced-motion CSS).
+        const SITE_VERSION = "1.0.65";
     </script>
     <!-- =================================================================== -->
 
@@ -100,6 +100,19 @@
             font: inherit;
             cursor: pointer;
             outline: inherit;
+        }
+
+        /* ADA: Respect user OS settings for motion sensitivity */
+        @media (prefers-reduced-motion: reduce) {
+            *, ::before, ::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            .project-card:hover, .project-card:focus-visible {
+                transform: none !important;
+            }
         }
 
         html, body { height: 100%; margin: 0; }
@@ -395,9 +408,12 @@
         <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" aria-label="View Resume" target="_blank">
             <i class="fas fa-file-alt" aria-hidden="true"></i>
         </a>
-        <a href="#" id="email-icon-button" class="social-icon email-icon" aria-label="Open Contact Form">
+        
+        <!-- WCAG: Changed Email from an <a> tag to a <button> because it triggers an action, not a navigation -->
+        <button type="button" id="email-icon-button" class="social-icon email-icon" aria-label="Open Contact Form">
             <i class="fas fa-envelope" aria-hidden="true"></i>
-        </a>
+        </button>
+        
         <a href="https://www.imdb.com/name/nm4282305/" rel="noopener noreferrer" class="social-icon imdb-icon" aria-label="View IMDb Profile" target="_blank">
             <i class="fab fa-imdb" aria-hidden="true"></i>
         </a>
@@ -484,14 +500,15 @@
             <h2 id="contact-heading">CONTACT</h2>
             <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST" enctype="multipart/form-data">
                 <div id="form-content">
-                    <label>
-                        <input type="email" name="email" placeholder="Your email" aria-label="Your Email Address" required>
+                    <!-- WCAG: Added explicit 'for' and 'id' attributes to tie labels directly to inputs -->
+                    <label for="contact-email">
+                        <input type="email" id="contact-email" name="email" placeholder="Your email" aria-label="Your Email Address" required>
                     </label>
-                    <label>
-                        <textarea name="message" placeholder="Your message" aria-label="Your Message" required></textarea>
+                    <label for="contact-message">
+                        <textarea id="contact-message" name="message" placeholder="Your message" aria-label="Your Message" required></textarea>
                     </label>
-                    <label>
-                        <input type="file" name="attachment" aria-label="Optional File Attachment">
+                    <label for="contact-attachment">
+                        <input type="file" id="contact-attachment" name="attachment" aria-label="Optional File Attachment">
                     </label>
                     <button type="submit" aria-label="Send Message"><span class="btn-text">Send</span></button>
                 </div>
@@ -624,6 +641,17 @@
         closeModalButton.addEventListener('click', closeModal);
             contactModalOverlay.addEventListener('click', (e) => {
                 if (e.target === contactModalOverlay) closeModal();
+            });
+
+            // ADA: Allow users to press "Escape" to close any open modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (projectContentOverlay.classList.contains('is-visible')) {
+                        closeProjectOverlay();
+                    } else if (contactModalOverlay.classList.contains('is-visible')) {
+                        closeModal();
+                    }
+                }
             });
 
             contactForm.addEventListener('submit', function(e) {
