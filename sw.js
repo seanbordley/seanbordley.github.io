@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sean-portfolio-v3';
+const CACHE_NAME = 'sean-portfolio-v2';
 
 const urlsToCache = [
   '/',
