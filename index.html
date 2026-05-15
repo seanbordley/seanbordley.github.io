@@ -27,6 +27,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfolio of Sean Bordley - Showcasing Systems, Fixtures, Parts, Tools, Film, and Personal Projects.">
     <title>Sean Bordley</title>
     <link rel="icon" href="/site_files/media/logo.png">
     
@@ -536,75 +537,91 @@
             const successMessage = document.getElementById('form-success-message');
             
             const projectContentOverlay = document.getElementById('project-content-overlay');
-            const closeProjectButton = document.getElementById('close-project-button');
-            const projectIframe = document.getElementById('project-iframe');
+        const closeProjectButton = document.getElementById('close-project-button');
+        const projectIframe = document.getElementById('project-iframe');
+        const socialIconsNav = document.querySelector('.social-icons');
 
-            let enlargeTimeout;
-            let lastHoveredProject = null;
-            let touchStartX = 0;
-            let touchStartY = 0;
-            let touchEndX = 0;
-            let touchEndY = 0;
+        let enlargeTimeout;
+        let lastHoveredProject = null;
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        
+        // Store the last clicked element to return focus when modals close (Strict WCAG compliance)
+        let previousFocusElement = null;
 
-            const openProjectOverlay = (url) => {
-                projectIframe.src = url;
-                hexagonContainer.classList.add('is-hidden'); 
-                projectContentOverlay.classList.add('is-visible');
-                // WCAG: Move focus to the close button when opened
-                setTimeout(() => closeProjectButton.focus(), 100); 
-            };
+        // --- Project Content Overlay Logic ---
+        const openProjectOverlay = (url) => {
+            previousFocusElement = document.activeElement; // Save cursor position
+            mainContent.setAttribute('inert', ''); // Freeze background
+            socialIconsNav.setAttribute('inert', '');
+            
+            projectIframe.src = url;
+            hexagonContainer.classList.add('is-hidden'); 
+            projectContentOverlay.classList.add('is-visible');
+            
+            // WCAG: Move focus to the close button when opened
+            setTimeout(() => closeProjectButton.focus(), 100); 
+        };
 
-            const closeProjectOverlay = () => {
-                projectContentOverlay.classList.remove('is-visible');
-                hexagonContainer.classList.remove('is-hidden');
-                setTimeout(() => {
-                    projectIframe.src = "about:blank"; 
-                }, 300);
-            };
+        const closeProjectOverlay = () => {
+            projectContentOverlay.classList.remove('is-visible');
+            hexagonContainer.classList.remove('is-hidden');
+            
+            mainContent.removeAttribute('inert'); // Unfreeze background
+            socialIconsNav.removeAttribute('inert');
+            
+            setTimeout(() => {
+                projectIframe.src = "about:blank"; 
+                if (previousFocusElement) previousFocusElement.focus(); // Return cursor
+            }, 300);
+        };
 
-            closeProjectButton.addEventListener('click', closeProjectOverlay);
+        closeProjectButton.addEventListener('click', closeProjectOverlay);
             
             projectContentOverlay.addEventListener('click', (e) => {
                 if (e.target === projectContentOverlay) closeProjectOverlay();
             });
+        // --- Contact Form Logic ---
+        emailIconButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            previousFocusElement = document.activeElement; // Save cursor position
+            mainContent.setAttribute('inert', ''); // Freeze background
+            
+            contactModalOverlay.classList.add('is-visible');
+            hexagonContainer.classList.add('is-hidden');
 
-            // WCAG: Ensure Esc key closes modals
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    if (projectContentOverlay.classList.contains('is-visible')) closeProjectOverlay();
-                    if (contactModalOverlay.classList.contains('is-visible')) closeModal();
-                }
-            });
+            if (projectContentOverlay.classList.contains('is-visible')) {
+                projectContentOverlay.classList.add('background-faded');
+            }
+            
+            // WCAG: Send focus inside modal
+            setTimeout(() => contactForm.querySelector('input').focus(), 100);
+        });
 
-            emailIconButton.addEventListener('click', (e) => {
-                e.preventDefault();
-                contactModalOverlay.classList.add('is-visible');
+        const closeModal = () => {
+            contactModalOverlay.classList.remove('is-visible');
+            
+            const returningToProject = projectContentOverlay.classList.contains('is-visible');
+            projectContentOverlay.classList.remove('background-faded');
+
+            if (returningToProject) {
                 hexagonContainer.classList.add('is-hidden');
-                if (projectContentOverlay.classList.contains('is-visible')) {
-                    projectContentOverlay.classList.add('background-faded');
-                }
-                // WCAG: Send focus inside modal
-                setTimeout(() => contactForm.querySelector('input').focus(), 100);
-            });
+            } else {
+                hexagonContainer.classList.remove('is-hidden');
+                mainContent.removeAttribute('inert'); // Unfreeze background if fully closing
+            }
+            
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.removeProperty('display'); 
+                successMessage.style.display = 'none';
+                if (!returningToProject && previousFocusElement) previousFocusElement.focus(); // Return cursor
+            }, 300);
+        };
 
-            const closeModal = () => {
-                contactModalOverlay.classList.remove('is-visible');
-                const returningToProject = projectContentOverlay.classList.contains('is-visible');
-                projectContentOverlay.classList.remove('background-faded');
-
-                if (returningToProject) {
-                    hexagonContainer.classList.add('is-hidden');
-                } else {
-                    hexagonContainer.classList.remove('is-hidden');
-                }
-                setTimeout(() => {
-                    contactForm.reset();
-                    formContent.style.removeProperty('display'); 
-                    successMessage.style.display = 'none';
-                }, 300);
-            };
-
-            closeModalButton.addEventListener('click', closeModal);
+        closeModalButton.addEventListener('click', closeModal);
             contactModalOverlay.addEventListener('click', (e) => {
                 if (e.target === contactModalOverlay) closeModal();
             });
