@@ -1,6 +1,6 @@
-const CACHE_NAME = 'sean-portfolio-v4';
+const CACHE_NAME = 'sean-portfolio-v3';
 
-/*const urlsToCache = [
+const urlsToCache = [
   '/',
   '/index.html',
   '/site_files/media/logo.png',
@@ -20,8 +20,7 @@ const CACHE_NAME = 'sean-portfolio-v4';
   '/site_files/personal/main.jpg',
   '/site_files/about/page.html',
   '/site_files/about/main.jpg'
-]; 
-*/
+];
 
 self.addEventListener('install', event => {
   event.waitUntil(
