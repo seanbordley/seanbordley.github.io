@@ -33,11 +33,49 @@
                 
                 <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
                 
+                <!-- Web Apps Section -->
+                <div id="web-apps-container" class="my-8">
+                    <h2 class="text-xl font-bold text-white mb-4">Featured Web Apps</h2>
+                    <div id="apps-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Apps injected here -->
+                    </div>
+                </div>
+                
                 <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
             </div>
         </div>
     </main>
 
+    <script>
+        // Data embedded directly to avoid fetch/CORS errors in the preview environment
+        const apps = [
+            {
+                "url": "../webapps/Shade_finder/Shade_Finder.html",
+                "title": "Shade_Finder"
+            },
+            {
+                "url": "../webapps/Lumina/luminia.html",
+                "title": "Luminia"
+            }
+        ];
+
+        function loadApps() {
+            const container = document.getElementById('apps-grid');
+            
+            apps.forEach(app => {
+                const card = document.createElement('a');
+                card.href = app.url;
+                card.className = "block p-6 bg-slate-800 rounded-lg border border-blue-900 hover:border-blue-500 transition";
+                card.innerHTML = `
+                    <h3 class="font-bold text-white">${app.title}</h3>
+                    <p class="text-sm text-slate-400 mt-1">Click to view application</p>
+                `;
+                container.appendChild(card);
+            });
+        }
+        
+        loadApps();
+    </script>
 </body>
 </html>
