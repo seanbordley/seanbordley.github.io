@@ -41,90 +41,9 @@
         </div>
     </main>
 
-    <div id="contact-modal-overlay" class="contact-modal-overlay">
-        <div class="contact-modal">
-            <span id="close-modal-button" class="close-button">&times;</span>
-            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
-                <div id="form-content">
-                    <label class="contact-label">
-                        Your email:
-                        <input type="email" name="email">
-                    </label>
-                    <label class="contact-label">
-                        Your message:
-                        <textarea name="message"></textarea>
-                    </label>
-                    <button type="submit">Send</button>
-                </div>
-                <div id="form-success-message">
-                    <p>Thank you!</p>
-                </div>
-                <div id="form-error-message">
-                    <p>Oops! There was a problem submitting your form.</p>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
         const mainContent = document.getElementById('main-content');
-        const contactModalOverlay = document.getElementById('contact-modal-overlay');
-        const closeModalButton = document.getElementById('close-modal-button');
-        const contactForm = document.getElementById('contact-form');
-        const formContent = document.getElementById('form-content');
-        const successMessage = document.getElementById('form-success-message');
-        const errorMessage = document.getElementById('form-error-message');
-
-        const closeModal = () => {
-            contactModalOverlay.classList.remove('is-visible');
-            mainContent.classList.remove('is-hidden');
-            setTimeout(() => {
-                contactForm.reset();
-                formContent.style.display = 'block';
-                successMessage.style.display = 'none';
-                errorMessage.style.display = 'none';
-            }, 300);
-        };
-
-        const displayFormError = () => {
-            formContent.style.display = 'none';
-            errorMessage.style.display = 'block';
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-                formContent.style.display = 'block';
-            }, 3500);
-        };
-
-        closeModalButton.addEventListener('click', closeModal);
-        contactModalOverlay.addEventListener('click', (e) => {
-            if (e.target === contactModalOverlay) {
-                closeModal();
-            }
-        });
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    this.reset();
-                    formContent.style.display = 'none';
-                    successMessage.style.display = 'block';
-                    setTimeout(closeModal, 2000);
-                } else {
-                    displayFormError();
-                }
-            }).catch(error => {
-                displayFormError();
-            });
-        });
-
+        
         let touchStartX = 0;
         let touchEndX = 0;
 
