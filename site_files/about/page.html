@@ -8,63 +8,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Externalizing these styles into style.css is recommended -->
-    <link rel="stylesheet" href="style.css">
-    <style id="site-styles">
-        /* Base Styles */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #000000; 
-            color: #d1d5db; 
-            min-height: 100vh; 
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 12px; }
-        ::-webkit-scrollbar-track { background: #000000; }
-        ::-webkit-scrollbar-thumb { background-color: #333333; border-radius: 6px; border: 3px solid #000000; }
-        ::-webkit-scrollbar-thumb:hover { background-color: #555555; }
-
-        /* Layout */
-        main { display: flex; align-items: center; justify-content: center; padding: 2rem; }
-        .content-container { max-width: 800px; width: 100%; text-align: center; }
-
-        /* Typography */
-        .content-title { font-size: 3rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem; }
-        .content-subtitle { font-size: 1.25rem; margin-bottom: 2.5rem; color: #9ca3af; }
-        .content-body { font-size: 1.125rem; line-height: 1.75; text-align: left; }
-        .content-body p { margin-bottom: 1.5rem; }
-
-        /* Media */
-        .media-element { 
-            max-width: 100%; 
-            height: auto; 
-            border-radius: 0.75rem; 
-            margin: 2rem auto; 
-            display: block; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); 
-        }
-    </style>
+    <!-- Pulling styles from your external stylesheet -->
+    <link rel="stylesheet" href="../../style.css">
 </head>
 <body>
 
     <main id="main-content">
         <div class="content-container">
-            <h1 class="content-title">ABOUT</h1>
-            <p class="content-subtitle">Research and Devolopment | Engineering Consultant | Cybersecurity Student</p>
+            <h1 class="content-title">Sean Bordley</h1>
+            <p class="content-subtitle">Hardware Technician | Engineering Consultant | Cybersecurity Student</p>
             
             <div class="content-body">
-                <p>Technical professional specializing in hardware R&D, Product Development (NPD), and complex system integration. Background in robotics and medical devices. I bridge the gap between initial design concepts and functional, scalable reality.</p>
+                <p>I am a San Mateo-based technical professional specializing in hardware R&D, Product Development (NPD), and complex system integration. With a background spanning robotics and medical device manufacturing, I bridge the gap between initial design concepts and functional, scalable reality.</p>
 
                 <img src="main.jpg" alt="Sean Bordley" class="media-element" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Professional+Profile';">
 
                 <p>My career is defined by a deep engagement with rapid prototyping—utilizing CNC machining, 3D printing, and laser cutting—paired with a rigorous approach to embedded systems development.</p>
 
-                <p>Currently, I am expanding my technical foundation as a student at San Mateo City College, pursuing an additional degree in cybersecurity and IOT. This academic work complements my ongoing consulting practice, where I help organizations optimize their workflows through automation and data-driven management.</p>
+                <p>Currently, I am expanding my technical foundation as a student at San Mateo City College, pursuing a degree in cybersecurity. This academic work complements my ongoing consulting practice, where I help organizations optimize their workflows through automation and data-driven management.</p>
                 
-                <hr class="border-blue-700 my-8">
-                <p>If you would like to know more, explore my project drive, and send me an email.</p>
+                <h2 class="text-2xl font-bold mt-8 mb-4">Work in Action</h2>
+                <div class="video-wrapper">
+                    <iframe src="https://www.youtube.com/embed/placeholder" frameborder="0" allowfullscreen></iframe>
+                </div>
+                
+                <h2 class="text-2xl font-bold mt-8 mb-4">Contact Me</h2>
+                <p>Feel free to reach out via email.</p>
             </div>
         </div>
     </main>
