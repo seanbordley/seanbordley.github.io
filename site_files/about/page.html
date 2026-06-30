@@ -11,8 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Custom Scrollbar Styling */
-        /* Webkit (Chrome, Safari, Edge) */
         ::-webkit-scrollbar {
             width: 12px;
         }
@@ -22,12 +20,11 @@
         ::-webkit-scrollbar-thumb {
             background-color: #333333; 
             border-radius: 6px;
-            border: 3px solid #000000; /* Creates padding around thumb */
+            border: 3px solid #000000;
         }
         ::-webkit-scrollbar-thumb:hover {
             background-color: #555555; 
         }
-        /* Firefox */
         html {
             scrollbar-width: thin;
             scrollbar-color: #333333 #000000;
@@ -39,9 +36,9 @@
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000; /* Pure black background */
+            background-color: #000000;
             overflow-x: hidden;
-            color: #d1d5db; /* Default text color (gray-300) */
+            color: #d1d5db;
         }
         main {
             position: relative;
@@ -60,7 +57,6 @@
             pointer-events: none;
         }
 
-        /* Container for the new content */
         .content-container {
             max-width: 800px;
             width: 100%;
@@ -69,48 +65,45 @@
         }
 
         .content-title {
-            font-size: 3rem; /* 48px */
+            font-size: 3rem;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 0.5rem; /* Adjusted spacing for subtitle */
+            margin-bottom: 0.5rem;
         }
 
-        /* New Subtitle Style */
         .content-subtitle {
-            font-size: 1.25rem; /* 20px */
+            font-size: 1.25rem;
             font-weight: 400;
-            color: #9ca3af; /* gray-400 */
-            margin-bottom: 2.5rem; /* Spacing below subtitle */
+            color: #9ca3af;
+            margin-bottom: 2.5rem;
         }
 
         .content-body {
-            font-size: 1.125rem; /* 18px */
-            line-height: 1.75; /* 28px */
-            color: #d1d5db; /* gray-300 */
-            text-align: left; /* Align body text to the left for readability */
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: #d1d5db;
+            text-align: left;
         }
         .content-body p {
             margin-bottom: 1.5rem;
         }
 
-        /* Styling for embedded media */
         .content-body img,
         .content-body .video-wrapper {
             max-width: 100%;
             height: auto;
-            border-radius: 0.75rem; /* 12px */
+            border-radius: 0.75rem;
             margin-top: 2rem;
             margin-bottom: 2rem;
-            display: block; /* Changed to block for better centering control */
+            display: block;
             margin-left: auto;
             margin-right: auto;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
-        /* YouTube-like video container for aspect ratio */
         .video-wrapper {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
         }
@@ -122,8 +115,6 @@
             height: 100%;
         }
 
-
-        /* === SOCIAL ICONS CSS === */
         .social-icons {
             position: fixed;
             bottom: 0;
@@ -134,19 +125,19 @@
             display: flex;
             flex-direction: row;
             justify-content: center;
-            padding: 0.8vmin 1.6vmin; /* Converted from rem */
+            padding: 0.8vmin 1.6vmin;
             background-color: rgba(0,0,0,0.7);
-            gap:5vmin;
+            gap: 5vmin;
         }
         .social-icon {
-            font-size:12vmin;
+            font-size: 12vmin;
             transition: color 0.3s ease, opacity 0.3s ease;
             z-index: 1000;
             display: flex;
             flex-direction: column; 
             align-items: center;
-            gap:6vmin; 
-            opacity: .8
+            gap: 6vmin; 
+            opacity: .8;
         }
 
         .resume-icon { color: #FF0000; }
@@ -175,7 +166,7 @@
             .social-icons {
                 position: fixed;
                 top: 50%;
-                left: 2.4vmin; /* Converted from rem */
+                left: 2.4vmin;
                 right: auto;
                 bottom: auto;
                 width: auto;
@@ -187,11 +178,7 @@
             }
             .social-icon { font-size: 6vmin; }
         }
-        
-        /* === END OF SOCIAL ICONS CSS === */
 
-
-        /* Orientation Lock Message */
         #orientation-lock-message {
             display: none;
             position: fixed;
@@ -216,8 +203,6 @@
             100% { transform: rotate(-90deg); }
         }
 
-        /* --- Responsive Design --- */
-        
         @media (max-width: 700px) {
             body {
                 overflow-y: auto;
@@ -234,7 +219,7 @@
             .content-body {
                 font-size: 1.6vmin;
             }
-             .contact-label {
+            .contact-label {
                 display: none;
             }
         }
@@ -248,7 +233,6 @@
             }
         }
 
-        /* === CONTACT FORM STYLES === */
         .contact-modal-overlay {
             position: fixed;
             top: 0;
@@ -311,7 +295,7 @@
             margin-bottom: 0.8vmin;
             text-align: left;
         }
-        #form-success-message {
+        #form-success-message, #form-error-message {
             display: none;
         }
         #form-success-message p {
@@ -320,34 +304,16 @@
             color: blue;
             font-weight: bold;
         }
+        #form-error-message p {
+            text-align: center;
+            font-size: 4vmin;
+            color: #990000;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="text-slate-300">
-    
-    <!-- 
-    <div class="social-icons">
-        <a href="/site_files/Sean_Bordley_Resume.pdf" rel="noopener noreferrer" class="social-icon resume-icon" title="Resume">
-            <i class="fas fa-file-alt"></i>
-        </a>
-        <a href="#" id="email-icon-button" class="social-icon email-icon" title="Email">
-            <i class="fas fa-envelope"></i>
-        </a>
-        <a href="https://www.imdb.com/name/nm4282305/" target="_blank" rel="noopener noreferrer" class="social-icon imdb-icon" title="IMDb">
-            <i class="fab fa-imdb"></i>
-        </a>
-        <a href="https://github.com/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon github-icon" title="GitHub">
-            <i class="fab fa-github"></i>
-        </a>
-        <a href="https://www.linkedin.com/in/seanbordley" target="_blank" rel="noopener noreferrer" class="social-icon linkedin-icon" title="LinkedIn">
-            <i class="fab fa-linkedin"></i>
-        </a>
-        <a href="https://drive.google.com/drive/folders/1uPVYu5Z6YRHO5S0I_kBKDmbUf843F578?usp=drive_link" target="_blank" rel="noopener noreferrer" class="social-icon file-icon" title="Files">
-            <i class="fas fa-folder"></i>
-        </a>
-    </div> 
-    -->
 
-    <!-- Orientation Lock Message -->
     <div id="orientation-lock-message">
         <div>
             <i class="fas fa-mobile-alt"></i>
@@ -362,17 +328,15 @@
             <div class="content-body">
                 <p>This is the new body section. You can write about your projects, experiences, or anything else you'd like to share. The layout is clean, centered, and fully responsive.</p>
 
-                <!-- How to embed an image -->
                 <p>Embedding media is straightforward. Here is an example of an embedded photograph that will automatically be styled to fit the page.</p>
-                <img src="https://placehold.co/600x400/1a1a1a/ffffff?text=Sample+Image" alt="A sample image placeholder." onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+                <img src="main.jpg" alt="Sean Bordley Portrait" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
 
-                <!-- How to embed a video -->
                 <p>You can also embed videos from sources like YouTube or Vimeo. Just paste the iframe embed code inside the 'video-wrapper' for a responsive, cinematic look.</p>
                 <div class="video-wrapper">
                     <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
                 
-                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.ac</p>
+                <p>Feel free to add more text, images, or videos as needed. The page will adjust accordingly.</p>
                 
                 <hr class="border-blue-700 my-8">
                 <p>If you would like to know more, explore my project drive, and send me an email.</p>
@@ -380,7 +344,6 @@
         </div>
     </main>
 
-    <!-- Contact Form Modal -->
     <div id="contact-modal-overlay" class="contact-modal-overlay">
         <div class="contact-modal">
             <span id="close-modal-button" class="close-button">&times;</span>
@@ -399,36 +362,40 @@
                 <div id="form-success-message">
                     <p>Thank you!</p>
                 </div>
+                <div id="form-error-message">
+                    <p>Oops! There was a problem submitting your form.</p>
+                </div>
             </form>
         </div>
     </div>
 
     <script>
         const mainContent = document.getElementById('main-content');
-        // const emailIconButton = document.getElementById('email-icon-button');
         const contactModalOverlay = document.getElementById('contact-modal-overlay');
         const closeModalButton = document.getElementById('close-modal-button');
         const contactForm = document.getElementById('contact-form');
         const formContent = document.getElementById('form-content');
         const successMessage = document.getElementById('form-success-message');
-
-        /*
-        emailIconButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            contactModalOverlay.classList.add('is-visible');
-            mainContent.classList.add('is-hidden');
-        });
-        */
+        const errorMessage = document.getElementById('form-error-message');
 
         const closeModal = () => {
             contactModalOverlay.classList.remove('is-visible');
             mainContent.classList.remove('is-hidden');
-            // Reset the form after a short delay
             setTimeout(() => {
                 contactForm.reset();
                 formContent.style.display = 'block';
                 successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
             }, 300);
+        };
+
+        const displayFormError = () => {
+            formContent.style.display = 'none';
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+                formContent.style.display = 'block';
+            }, 3500);
         };
 
         closeModalButton.addEventListener('click', closeModal);
@@ -449,46 +416,31 @@
                 }
             }).then(response => {
                 if (response.ok) {
-                    this.reset(); // Clear the form fields
+                    this.reset();
                     formContent.style.display = 'none';
                     successMessage.style.display = 'block';
-                    setTimeout(closeModal, 2000); // Close modal after 2 seconds
+                    setTimeout(closeModal, 2000);
                 } else {
-                    alert('Oops! There was a problem submitting your form.');
+                    displayFormError();
                 }
             }).catch(error => {
-                alert('Oops! There was a problem submitting your form.');
+                displayFormError();
             });
         });
 
-        // --- SWIPE TO GO HOME ON MOBILE PORTRAIT ---
         let touchStartX = 0;
         let touchEndX = 0;
 
-        // This function will handle the swipe logic
         function handleHomePageSwipe() {
-            // We only want this to trigger on mobile portrait views.
             const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
-            
-            // Check if orientation lock message is VISIBLE.
-            // If it is display: flex (or not none), we are technically in a state where we shouldn't navigate home via swipe on content,
-            // BUT the user asked: "if the orientation screen is up do nothing".
-            // The orientation screen only shows up in LANDSCAPE on mobile (due to media query).
-            // The isMobilePortrait check already ensures we are NOT in landscape.
-            // So, if we are in portrait, the lock screen is hidden.
-            // Therefore, simply checking isMobilePortrait is sufficient to ensure we don't trigger this while the lock screen is up.
-            
-            // Check for a significant horizontal swipe (e.g., more than 100px)
             if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
-                // Navigate to the site's root URL, which acts as the "home page".
                 window.location.href = window.location.origin; 
             }
         }
 
-        // Add listeners to the main content area to detect touch start and end points.
         mainContent.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
-        }, { passive: true }); // Using passive listener for better scroll performance
+        }, { passive: true });
 
         mainContent.addEventListener('touchend', e => {
             touchEndX = e.changedTouches[0].screenX;
