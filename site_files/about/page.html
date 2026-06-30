@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sean Bordley | About</title>
+    <title>Sean Bordley</title>
+    <link rel="icon" href="/site_files/media/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Pulling styles from your external stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="../../style.css">
 </head>
-<body>
+<body class="text-slate-300">
+
+    <div id="orientation-lock-message">
+        <div>
+            <i class="fas fa-mobile-alt"></i>
+            <p>Please rotate your device to portrait mode for the best experience.</p>
+        </div>
+    </div>
 
     <main id="main-content">
         <div class="content-container">
@@ -21,9 +29,9 @@
             <div class="content-body">
                 <p>Technical professional specializing in hardware R&D, Product Development (NPD), and complex system integration. Transforming initial concepts into functional, production-ready solutions, moving designs efficiently from early-stage prototyping to scalable reality.</p>
 
-                <img src="main.jpg" alt="Sean Bordley" class="media-element" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Professional+Profile';">
-
-                <p>My career is defined by a deep engagement with rapid prototyping—utilizing CNC machining, 3D printing, and laser cutting—paired with a rigorous approach to embedded systems development.</p>
+                <img src="main.jpg" alt="Sean Bordley Portrait" onerror="this.onerror=null;this.src='https://placehold.co/600x400/1a1a1a/ffffff?text=Image+Not+Found';">
+                
+                <p>My career is defined by a deep engagement with rapid prototyping, utilizing CNC machining, 3D printing, and laser cutting combined with electrical work, light coding and networking.</p>
 
                 <p>Currently, I am expanding my technical foundation as a student at San Mateo City College, pursuing a degree in cybersecurity. This academic work complements my ongoing consulting practice, where I help organizations optimize their workflows through automation and data-driven management.</p>
                 
@@ -33,5 +41,108 @@
         </div>
     </main>
 
+    <div id="contact-modal-overlay" class="contact-modal-overlay">
+        <div class="contact-modal">
+            <span id="close-modal-button" class="close-button">&times;</span>
+            <form id="contact-form" action="https://formspree.io/f/xqalgbnj" method="POST">
+                <div id="form-content">
+                    <label class="contact-label">
+                        Your email:
+                        <input type="email" name="email">
+                    </label>
+                    <label class="contact-label">
+                        Your message:
+                        <textarea name="message"></textarea>
+                    </label>
+                    <button type="submit">Send</button>
+                </div>
+                <div id="form-success-message">
+                    <p>Thank you!</p>
+                </div>
+                <div id="form-error-message">
+                    <p>Oops! There was a problem submitting your form.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const mainContent = document.getElementById('main-content');
+        const contactModalOverlay = document.getElementById('contact-modal-overlay');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const contactForm = document.getElementById('contact-form');
+        const formContent = document.getElementById('form-content');
+        const successMessage = document.getElementById('form-success-message');
+        const errorMessage = document.getElementById('form-error-message');
+
+        const closeModal = () => {
+            contactModalOverlay.classList.remove('is-visible');
+            mainContent.classList.remove('is-hidden');
+            setTimeout(() => {
+                contactForm.reset();
+                formContent.style.display = 'block';
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+            }, 300);
+        };
+
+        const displayFormError = () => {
+            formContent.style.display = 'none';
+            errorMessage.style.display = 'block';
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+                formContent.style.display = 'block';
+            }, 3500);
+        };
+
+        closeModalButton.addEventListener('click', closeModal);
+        contactModalOverlay.addEventListener('click', (e) => {
+            if (e.target === contactModalOverlay) {
+                closeModal();
+            }
+        });
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    this.reset();
+                    formContent.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    setTimeout(closeModal, 2000);
+                } else {
+                    displayFormError();
+                }
+            }).catch(error => {
+                displayFormError();
+            });
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleHomePageSwipe() {
+            const isMobilePortrait = window.matchMedia("(max-width: 850px) and (orientation: portrait)").matches;
+            if (isMobilePortrait && Math.abs(touchEndX - touchStartX) > 100) { 
+                window.location.href = window.location.origin; 
+            }
+        }
+
+        mainContent.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        mainContent.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleHomePageSwipe();
+        });
+    </script>
 </body>
 </html>
