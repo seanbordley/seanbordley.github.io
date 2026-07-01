@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lumina - Moonlight Tracker & Gem Vault</title>
+  <title>ECCO - Ethereal Reliquary</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -11,9 +11,6 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <!-- ==========================================
-      CUSTOM STYLES (Easily move to style.css)
-     ========================================== -->
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -47,8 +44,8 @@
   <!-- Dynamic PWA Manifest Injection -->
   <script>
     const manifest = {
-      "short_name": "Lumina",
-      "name": "Lumina Moonlight Tracker & Gem Vault",
+      "short_name": "ECCO",
+      "name": "ECCO - Enhanced Crystal Charging Operations",
       "icons": [
         {
           "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='192' height='192' viewBox='0 0 24 24' fill='none' stroke='%23818cf8' stroke-width='2'><path d='M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z'/></svg>",
@@ -95,18 +92,14 @@
       </div>
       <div>
         <h1 class="font-serif text-lg tracking-wider font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-indigo-400">
-          LUMINA
+          ECCO
         </h1>
-        <p class="text-[10px] text-slate-500 font-mono tracking-widest">EASY CELESTIAL CRYSTAL CHARGER</p>
+        <p class="text-[10px] text-slate-500 font-mono tracking-widest">ENHANCED CRYSTAL CHARGING OPERATIONS</p>
       </div>
     </div>
 
     <div class="flex items-center space-x-4">
-      <!-- PWA Install Button -->
-      <button 
-        id="pwa-install-btn" 
-        class="hidden px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-slate-900 border border-slate-800 text-indigo-300 hover:text-indigo-200 transition-all flex items-center space-x-1"
-      >
+      <button id="pwa-install-btn" class="hidden px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-slate-900 border border-slate-800 text-indigo-300 hover:text-indigo-200 transition-all flex items-center space-x-1">
         <span>📲</span> <span>Install App</span>
       </button>
 
@@ -115,22 +108,33 @@
         <span>Active Charger Power: <span id="header-power">0</span>%</span>
       </div>
       
-      <button 
-        onclick="openAddGemModal()"
-        class="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all text-white shadow-lg shadow-indigo-500/10"
-      >
+      <button onclick="openAddGemModal()" class="flex items-center space-x-1.5 px-4 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all text-white shadow-lg shadow-indigo-500/10">
         <span>+ Add Crystal</span>
       </button>
     </div>
   </header>
 
-  <!-- Main Grid Workspace -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col space-y-6">
 
-    <!-- ========================================================
-        1. AUTOMATIC SKY MONITOR (ALWAYS AT THE VERY TOP)
-       ======================================================== -->
-    <section class="w-full bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl relative overflow-hidden">
+    <!-- 1. ETHEREAL RELIQUARY (MOVED TO TOP) -->
+    <section class="space-y-4">
+      <div class="flex justify-between items-center bg-slate-900/40 border border-slate-800 p-4 md:p-5 rounded-2xl">
+        <div>
+          <h3 class="text-base md:text-lg font-semibold text-indigo-200 font-serif">The Ethereal Reliquary</h3>
+          <p class="text-xs text-slate-400 mt-1">Continuous monitoring of your stored physical essences.</p>
+        </div>
+        <span id="gem-count-badge" class="text-xs text-slate-400 font-mono bg-slate-950 border border-slate-800 px-4 py-1.5 rounded-full font-bold shadow-inner">
+          Gems: 0
+        </span>
+      </div>
+
+      <div id="vault-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Dynamically populated via javascript render -->
+      </div>
+    </section>
+
+    <!-- 2. AUTOMATIC SKY MONITOR -->
+    <section class="w-full bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl relative overflow-hidden mt-4">
       <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-950/20 via-transparent to-transparent pointer-events-none"></div>
       
       <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-850 pb-3 mb-4 gap-2">
@@ -141,7 +145,7 @@
           <h2 class="text-base font-serif font-semibold text-slate-200 mt-1">Live Cosmic Alignments & Toggles</h2>
         </div>
         
-        <div class="flex items-center space-x-2 text-xs font-mono">
+        <div class="flex items-center space-x-2 text-xs font-mono bg-slate-950/50 px-3 py-1.5 rounded-lg border border-slate-800/80">
           <span class="text-slate-400">Tonight's Moon Phase:</span>
           <span id="top-moon-phase" class="text-indigo-300 font-bold">Calculated Automatically...</span>
         </div>
@@ -149,7 +153,6 @@
 
       <!-- Planetary Sensor Toggles Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-        
         <!-- Moon -->
         <button id="toggle-moon" onclick="handleToggleSky('moon')" class="p-4 rounded-2xl border text-left flex flex-col justify-between transition-all bg-indigo-950/30 border-indigo-500/50 shadow-lg shadow-indigo-500/5">
           <div class="flex justify-between items-center w-full">
@@ -209,7 +212,6 @@
             <p id="power-mars" class="text-[11px] text-rose-400 font-mono mt-0.5">TOGGLED OFF</p>
           </div>
         </button>
-
       </div>
 
       <!-- Live coordinate details strip -->
@@ -229,9 +231,7 @@
       </div>
     </section>
 
-    <!-- ========================================================
-        2. MIDDLE CORE LAYOUT: MANUAL SETTINGS (LEFT) vs DISPLAY (RIGHT)
-       ======================================================== -->
+    <!-- 3. MIDDLE CORE LAYOUT: MANUAL SETTINGS vs FORECAST DISPLAY -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       
       <!-- Left Column: Manual Override Simulation Sliders -->
@@ -251,33 +251,15 @@
           <div class="grid grid-cols-2 gap-2 text-xs font-mono">
             <div>
               <label class="block text-[10px] text-slate-500 mb-1">LATITUDE</label>
-              <input 
-                id="input-lat"
-                type="number" 
-                step="0.0001"
-                disabled
-                oninput="handleLatLonInput()"
-                class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-300 disabled:opacity-50"
-              />
+              <input id="input-lat" type="number" step="0.0001" disabled oninput="handleLatLonInput()" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-300 disabled:opacity-50" />
             </div>
             <div>
               <label class="block text-[10px] text-slate-500 mb-1">LONGITUDE</label>
-              <input 
-                id="input-lon"
-                type="number" 
-                step="0.0001"
-                disabled
-                oninput="handleLatLonInput()"
-                class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-300 disabled:opacity-50"
-              />
+              <input id="input-lon" type="number" step="0.0001" disabled oninput="handleLatLonInput()" class="w-full bg-slate-900 border border-slate-800 rounded px-2.5 py-1 text-slate-300 disabled:opacity-50" />
             </div>
           </div>
 
-          <button 
-            id="btn-toggle-gps"
-            onclick="toggleGpsTracking()"
-            class="w-full text-[10px] py-1.5 rounded-lg font-mono border transition-all bg-slate-900 hover:bg-slate-850 text-slate-400 border-slate-800"
-          >
+          <button id="btn-toggle-gps" onclick="toggleGpsTracking()" class="w-full text-[10px] py-1.5 rounded-lg font-mono border transition-all bg-slate-900 hover:bg-slate-850 text-slate-400 border-slate-800">
             Lock Manual Override
           </button>
         </div>
@@ -288,14 +270,7 @@
             <span>Hour of Day</span>
             <span id="display-hour" class="text-indigo-400 font-bold">12:00 PM</span>
           </div>
-          <input 
-            id="slider-hour"
-            type="range" 
-            min="0" 
-            max="23" 
-            oninput="handleSliderHour(this.value)"
-            class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" 
-          />
+          <input id="slider-hour" type="range" min="0" max="23" oninput="handleSliderHour(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
           <div class="flex justify-between text-[9px] font-mono text-slate-600">
             <span>Midnight (00)</span>
             <span>Noon (12)</span>
@@ -309,14 +284,7 @@
             <span>Cloud Cover Overlay</span>
             <span id="display-clouds" class="text-emerald-400 font-bold">20%</span>
           </div>
-          <input 
-            id="slider-clouds"
-            type="range" 
-            min="0" 
-            max="100" 
-            oninput="handleSliderClouds(this.value)"
-            class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" 
-          />
+          <input id="slider-clouds" type="range" min="0" max="100" oninput="handleSliderClouds(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
           <div class="flex justify-between text-[9px] font-mono text-slate-600">
             <span>Clear Sky</span>
             <span>Overcast 🌧️</span>
@@ -329,14 +297,7 @@
             <span>City Lights Blockage</span>
             <span id="display-bortle" class="text-amber-400 font-bold">Class 4</span>
           </div>
-          <input 
-            id="slider-bortle"
-            type="range" 
-            min="1" 
-            max="9" 
-            oninput="handleSliderBortle(this.value)"
-            class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" 
-          />
+          <input id="slider-bortle" type="range" min="1" max="9" oninput="handleSliderBortle(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500" />
           <div class="flex justify-between text-[9px] font-mono text-slate-600">
             <span>Pristine Void (Class 1)</span>
             <span>Urban Core (Class 9)</span>
@@ -349,158 +310,55 @@
         <!-- Calendar picker -->
         <div class="space-y-2">
           <label class="block text-xs font-mono text-slate-400">Astral Calendar Date</label>
-          <input 
-            id="input-date"
-            type="date"
-            onchange="handleDateChange(this.value)"
-            class="w-full bg-slate-900 border border-slate-800 text-slate-300 rounded-xl px-3.5 py-2 text-xs font-mono focus:outline-none focus:border-indigo-500"
-          />
+          <input id="input-date" type="date" onchange="handleDateChange(this.value)" class="w-full bg-slate-900 border border-slate-800 text-slate-300 rounded-xl px-3.5 py-2 text-xs font-mono focus:outline-none focus:border-indigo-500" />
         </div>
       </aside>
 
-      <!-- Right Column: Crystal Vault / Forecast / Oracle Tabs -->
-      <div class="lg:col-span-8 space-y-6">
-        
-        <!-- View navigation Tabs -->
-        <div class="flex bg-slate-900/50 border border-slate-800 rounded-xl p-1 font-mono">
-          <button 
-            id="tab-btn-vault"
-            onclick="switchTab('dashboard')"
-            class="flex-1 py-2 text-xs rounded-lg transition-all bg-slate-800 text-indigo-300 font-semibold shadow-inner"
-          >
-            💎 My Crystal Vault
-          </button>
-          <button 
-            id="tab-btn-forecast"
-            onclick="switchTab('forecast')"
-            class="flex-1 py-2 text-xs rounded-lg transition-all text-slate-400 hover:text-slate-200"
-          >
-            📈 Simulated Charge Forecast
-          </button>
-          <button 
-            id="tab-btn-oracle"
-            onclick="switchTab('oracle')"
-            class="flex-1 py-2 text-xs rounded-lg transition-all text-slate-400 hover:text-slate-200"
-          >
-            🔮 Consult the Oracle
-          </button>
-        </div>
-
-        <!-- TAB: MY CRYSTAL VAULT -->
-        <div id="tab-content-vault" class="space-y-6">
-          <div class="flex justify-between items-center bg-slate-900/30 border border-slate-800 p-4 rounded-xl">
-            <div>
-              <h3 class="text-sm font-semibold text-indigo-200 font-serif">Charge Register</h3>
-              <p class="text-xs text-slate-400">Monitor continuous absorption of your stored physical pieces.</p>
-            </div>
-            <span id="gem-count-badge" class="text-xs text-slate-400 font-mono bg-slate-950 border border-slate-800 px-3 py-1 rounded-full font-bold">
-              Gems: 0
-            </span>
-          </div>
-
-          <div id="vault-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <!-- Dynamically populated via javascript render -->
-          </div>
-        </div>
-
-        <!-- TAB: SIMULATED FORECAST TIMELINE -->
-        <div id="tab-content-forecast" class="hidden bg-slate-900/40 border border-slate-800 rounded-3xl p-5 md:p-6 space-y-4">
+      <!-- Right Column: Simulated Forecast Timeline (Now permanently visible) -->
+      <div class="lg:col-span-8">
+        <div id="forecast-panel" class="bg-slate-900/40 border border-slate-800 rounded-3xl p-5 md:p-6 space-y-4 h-full">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-855 pb-3 gap-2">
             <div>
               <h3 class="text-sm font-bold tracking-wider text-indigo-300 font-mono uppercase">Overnight Simulated Charge Progression</h3>
-              <p class="text-[11px] text-slate-400">Simulates accumulation efficiency from 7:00 PM to 5:00 AM</p>
+              <p class="text-[11px] text-slate-400 mt-1">Simulates accumulation efficiency from 7:00 PM to 5:00 AM</p>
             </div>
             <div class="flex items-center space-x-2 text-xs">
               <span class="text-slate-400 font-mono">Test Crystal Profile:</span>
-              <select 
-                id="select-sim-crystal"
-                onchange="handleSimCrystalChange(this.value)"
-                class="bg-slate-950 border border-slate-800 rounded-lg text-indigo-300 px-2 py-1 font-mono focus:outline-none focus:border-indigo-500 text-[11px]"
-              >
+              <select id="select-sim-crystal" onchange="handleSimCrystalChange(this.value)" class="bg-slate-950 border border-slate-800 rounded-lg text-indigo-300 px-2 py-1.5 font-mono focus:outline-none focus:border-indigo-500 text-[11px]">
                 <!-- Filled dynamically -->
               </select>
             </div>
           </div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 font-mono text-xs">
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-900">
+            <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-900 shadow-inner">
               <span class="text-slate-500 text-[10px]">Overnight Yield Capacity</span>
               <div id="forecast-overnight-yield" class="text-lg font-bold text-emerald-400 mt-1">+0%</div>
             </div>
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-900">
+            <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-900 shadow-inner">
               <span class="text-slate-500 text-[10px]">Exposure Target Rate</span>
               <div id="forecast-target-rate" class="text-lg font-bold text-indigo-300 mt-1">1 Night</div>
             </div>
-            <div class="bg-slate-950/70 p-3 rounded-xl border border-slate-900 sm:col-span-2 lg:col-span-1">
+            <div class="bg-slate-950/70 p-4 rounded-xl border border-slate-900 sm:col-span-2 lg:col-span-1 shadow-inner">
               <span class="text-slate-500 text-[10px]">Hourly Progression Rate</span>
               <div id="forecast-hourly-progression" class="text-lg font-bold text-purple-400 mt-1">Calculating...</div>
             </div>
           </div>
 
           <!-- Hourly simulation data timeline -->
-          <div class="space-y-2">
+          <div class="space-y-2 pt-2">
             <div class="text-[10px] font-mono uppercase tracking-wider text-slate-500">Hourly Atmospheric Progression Timeline</div>
-            <div id="forecast-timeline-container" class="space-y-1.5 max-h-56 overflow-y-auto pr-1 bg-slate-950/30 p-2 rounded-xl border border-slate-855">
+            <div id="forecast-timeline-container" class="space-y-2 max-h-72 overflow-y-auto pr-1 bg-slate-950/30 p-2.5 rounded-xl border border-slate-855">
               <!-- Chronological hours will be populated dynamically -->
             </div>
           </div>
         </div>
-
-        <!-- TAB: LUNAR ORACLE -->
-        <div id="tab-content-oracle" class="hidden bg-slate-900/40 border border-slate-800 rounded-3xl p-5 md:p-6 flex flex-col space-y-4">
-          <div class="border-b border-slate-800 pb-4">
-            <h3 class="text-sm font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 to-indigo-400 font-serif">The Efficiency Oracle</h3>
-            <p class="text-xs text-slate-400 mt-1 leading-relaxed">
-              Lumina's Gemini intelligence helps you maximize exposure coefficients, analyze cloud blockers, and choose optimal nights to set your crystals out.
-            </p>
-          </div>
-
-          <!-- Chat Thread -->
-          <div id="chat-thread" class="bg-slate-950/80 border border-slate-850 rounded-2xl p-4 h-72 overflow-y-auto space-y-4 font-sans text-sm scrollbar-thin scrollbar-thumb-slate-800">
-            <!-- Messages rendered sequentially -->
-          </div>
-
-          <!-- Chat Input -->
-          <div class="flex space-x-2">
-            <input 
-              id="oracle-input"
-              type="text" 
-              onkeydown="handleOracleKeydown(event)"
-              placeholder="Ask how clouds, Bortle, or altitude affect quantum light coefficients..."
-              class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-xs md:text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-indigo-500 transition-colors"
-            />
-            <button 
-              id="oracle-send-btn"
-              onclick="askOracle()"
-              class="px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 transition-all rounded-xl text-xs md:text-sm text-white font-semibold shadow-lg"
-            >
-              Ask
-            </button>
-          </div>
-
-          <!-- Suggestions -->
-          <div class="flex flex-wrap gap-2 pt-1">
-            <span class="text-[10px] text-slate-500 font-mono py-1">TOPICS:</span>
-            <button onclick="fillOracleQuery('How does a Class 8 Bortle scale change moonlight transmission?')" class="text-[10px] bg-slate-950 border border-slate-800/80 text-slate-400 hover:text-indigo-300 px-3 py-1 rounded-full transition-all">
-              "Bortle 8 Blockage"
-            </button>
-            <button onclick="fillOracleQuery('Explain how altitude and atmosphere depth affect moonlight efficiency.')" class="text-[10px] bg-slate-950 border border-slate-800/80 text-slate-400 hover:text-indigo-300 px-3 py-1 rounded-full transition-all">
-              "Altitude Scattering"
-            </button>
-            <button onclick="fillOracleQuery('What is the efficiency difference between crescent and gibbous phases?')" class="text-[10px] bg-slate-950 border border-slate-800/80 text-slate-400 hover:text-indigo-300 px-3 py-1 rounded-full transition-all">
-              "Phase Coefficients"
-            </button>
-          </div>
-        </div>
-
       </div>
 
     </div>
 
-    <!-- ========================================================
-        3. SIMPLIFIED PHYSICS LEDGER (ALWAYS AT THE VERY BOTTOM)
-       ======================================================== -->
-    <section class="bg-slate-900/60 border border-slate-855 rounded-2xl p-5 space-y-4">
+    <!-- 4. SIMPLIFIED PHYSICS LEDGER -->
+    <section class="bg-slate-900/60 border border-slate-855 rounded-2xl p-5 space-y-4 mt-6">
       <div class="border-b border-slate-800 pb-2">
         <h4 class="text-xs font-bold font-mono uppercase text-indigo-300 tracking-wider">📐 Simple Crystal Charging Formula</h4>
         <p class="text-[10px] text-slate-500">Universal rules governing atmospheric moonlight penetration & crystal capacity charge rates</p>
@@ -512,7 +370,7 @@
           <div class="text-[10px] text-indigo-300 font-bold bg-slate-950 p-2.5 rounded border border-slate-900 leading-normal">
             Moonlight Strength = Moon Light × Sky Height × Sky Clearness × City Lights Blockage
           </div>
-          <ul class="text-[10px] text-slate-400 list-disc list-inside space-y-1 font-sans">
+          <ul class="text-[10px] text-slate-400 list-disc list-inside space-y-1 font-sans mt-2">
             <li><strong>Moon Light:</strong> How full is the Moon (0% to 100%)</li>
             <li><strong>Sky Height:</strong> How high is it in the night sky (0.0 to 1.0)</li>
             <li><strong>Sky Clearness:</strong> Cloud block multiplier (100% - clouds)</li>
@@ -525,7 +383,7 @@
           <div class="text-[10px] text-indigo-300 font-bold bg-slate-950 p-2.5 rounded border border-slate-900 leading-normal">
             Combined Charging Speed = (Total Sky Power / 100) × Crystal Receptiveness × 2.5 %/hour
           </div>
-          <ul class="text-[10px] text-slate-400 list-disc list-inside space-y-1 font-sans">
+          <ul class="text-[10px] text-slate-400 list-disc list-inside space-y-1 font-sans mt-2">
             <li><strong>Total Sky Power:</strong> Combined selected chargers (Sun, Moon, Venus, Jupiter, Mars)</li>
             <li><strong>Crystal Receptiveness:</strong> Unique mineral multiplier (e.g. Moonstone = 2.0x)</li>
             <li>If Total Sky Power is 0, the crystal drains at a steady speed.</li>
@@ -547,7 +405,7 @@
       </div>
 
       <div class="space-y-3.5 text-xs text-slate-300 font-sans leading-relaxed">
-        <p>Lumina's physics multiplier has resolved to <strong class="text-rose-400">0% Moonlight Efficiency</strong>. Here are the active blocking coefficients in your atmospheric stack:</p>
+        <p>ECCO's physics multiplier has resolved to <strong class="text-rose-400">0% Moonlight Efficiency</strong>. Here are the active blocking coefficients in your atmospheric stack:</p>
         
         <div class="space-y-2">
           <div class="p-3 bg-slate-950 rounded-xl border border-slate-850 flex justify-between items-center">
@@ -593,7 +451,7 @@
     <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md space-y-4 shadow-2xl relative">
       
       <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-        <h3 class="text-base font-semibold text-slate-200 font-serif">Add Crystal</h3>
+        <h3 class="text-base font-semibold text-slate-200 font-serif">Add Crystal to Reliquary</h3>
         <button onclick="closeAddGemModal()" class="text-slate-500 hover:text-slate-300 font-semibold">✕</button>
       </div>
 
@@ -601,21 +459,12 @@
         
         <div class="space-y-1">
           <label class="block text-slate-400 font-medium">Custom Name</label>
-          <input 
-            id="new-gem-name"
-            type="text" 
-            placeholder="e.g. Cleansing Selenite, Aura Amethyst"
-            class="w-full bg-slate-950 border border-slate-850 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500"
-          />
+          <input id="new-gem-name" type="text" placeholder="e.g. Cleansing Selenite, Aura Amethyst" class="w-full bg-slate-950 border border-slate-850 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500" />
         </div>
 
         <div class="space-y-1">
           <label class="block text-slate-400 font-medium">Crystal Mineral Profile</label>
-          <select 
-            id="new-gem-type"
-            onchange="updateNewGemDescription(this.value)"
-            class="w-full bg-slate-950 border border-slate-855 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500"
-          >
+          <select id="new-gem-type" onchange="updateNewGemDescription(this.value)" class="w-full bg-slate-950 border border-slate-855 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500">
             <!-- Generated dynamically -->
           </select>
           <p id="new-gem-desc" class="text-[10px] text-slate-500 mt-1">
@@ -625,10 +474,7 @@
 
         <div class="space-y-1">
           <label class="block text-slate-400 font-medium">Preferred Charging Cycle</label>
-          <select 
-            id="new-gem-phase"
-            class="w-full bg-slate-950 border border-slate-855 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500"
-          >
+          <select id="new-gem-phase" class="w-full bg-slate-950 border border-slate-855 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:border-indigo-500">
             <option value="New Moon">New Moon (Grounding & Beginnings)</option>
             <option value="Waxing Crescent">Waxing Crescent (Hope & Growth)</option>
             <option value="First Quarter">First Quarter (Commitment)</option>
@@ -646,114 +492,36 @@
             <span class="font-semibold text-slate-200 block">Start Charger On Save?</span>
             <span class="text-[10px] text-slate-500">Will start absorbing celestial light instantly on creation.</span>
           </div>
-          <input 
-            id="new-gem-charging"
-            type="checkbox" 
-            checked
-            class="w-5 h-5 accent-indigo-500 cursor-pointer"
-          />
+          <input id="new-gem-charging" type="checkbox" checked class="w-5 h-5 accent-indigo-500 cursor-pointer" />
         </div>
 
         <div class="pt-4 flex space-x-3">
-          <button 
-            type="button" 
-            onclick="closeAddGemModal()"
-            class="flex-1 py-2.5 bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 rounded-xl font-semibold transition-all"
-          >
+          <button type="button" onclick="closeAddGemModal()" class="flex-1 py-2.5 bg-slate-950 border border-slate-800 text-slate-400 hover:text-slate-200 rounded-xl font-semibold transition-all">
             Cancel
           </button>
-          <button 
-            type="submit"
-            class="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-semibold transition-all shadow-lg"
-          >
+          <button type="submit" class="flex-1 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-semibold transition-all shadow-lg">
             Save Crystal
           </button>
         </div>
 
       </form>
-
     </div>
   </div>
-
-  <!-- Mobile Sticky Footer Nav -->
-  <footer class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-950/90 border-t border-slate-850/80 backdrop-blur-md grid grid-cols-3 py-2 text-center z-40">
-    <button onclick="switchTab('dashboard')" class="flex flex-col items-center justify-center space-y-1 text-indigo-400">
-      <span class="text-lg">📊</span>
-      <span class="text-[10px] font-mono">My Vault</span>
-    </button>
-    <button onclick="switchTab('forecast')" class="flex flex-col items-center justify-center space-y-1 text-slate-500">
-      <span class="text-lg">📈</span>
-      <span class="text-[10px] font-mono">Timeline</span>
-    </button>
-    <button onclick="switchTab('oracle')" class="flex flex-col items-center justify-center space-y-1 text-slate-500">
-      <span class="text-lg">🔮</span>
-      <span class="text-[10px] font-mono">Oracle</span>
-    </button>
-  </footer>
 
   <!-- Vanilla state engine controller script -->
   <script>
     // Crystal Profiles definition
     const CRYSTAL_PROFILES = {
-      Moonstone: {
-        name: "Moonstone",
-        ruledBy: "The Moon",
-        rate: 2.0, // Base charging rate multiplier
-        sensitiveToSun: false,
-        color: "from-blue-200 to-indigo-300",
-        glowColor: "shadow-blue-400/50",
-        description: "Highly receptive to the Moon. Drinks up lunar rays twice as fast as other stones."
-      },
-      Selenite: {
-        name: "Selenite",
-        ruledBy: "The Moon",
-        rate: 1.8,
-        sensitiveToSun: false,
-        color: "from-slate-100 to-teal-100",
-        glowColor: "shadow-teal-200/50",
-        description: "A self-cleansing beacon. Acts as a magnifying glass for any planetary light."
-      },
-      Amethyst: {
-        name: "Amethyst",
-        ruledBy: "Jupiter",
-        rate: 1.0,
-        sensitiveToSun: true, // Sun sensitive
-        color: "from-purple-400 to-indigo-600",
-        glowColor: "shadow-purple-500/50",
-        description: "Very spiritual. Highly sensitive to the Sun; will fade and lose color if left in daylight."
-      },
-      RoseQuartz: {
-        name: "Rose Quartz",
-        ruledBy: "Venus",
-        rate: 1.0,
-        sensitiveToSun: true,
-        color: "from-pink-300 to-rose-400",
-        glowColor: "shadow-rose-300/50",
-        description: "The stone of pure love. Sunlight slowly bleaches its beautiful pink tone to clear."
-      },
-      Labradorite: {
-        name: "Labradorite",
-        ruledBy: "Uranus",
-        rate: 1.4,
-        sensitiveToSun: false,
-        color: "from-cyan-700 to-emerald-800",
-        glowColor: "shadow-cyan-500/50",
-        description: "The stone of magic. Loves crescent cycles and dusk/dawn twilight."
-      },
-      Obsidian: {
-        name: "Black Obsidian",
-        ruledBy: "Mars/Pluto",
-        rate: 1.2,
-        sensitiveToSun: false,
-        color: "from-gray-800 to-black",
-        glowColor: "shadow-slate-600/50",
-        description: "Deep protective shield. Clears negative static and loves completely dark sky environments."
-      }
+      Moonstone: { name: "Moonstone", ruledBy: "The Moon", rate: 2.0, sensitiveToSun: false, color: "from-blue-200 to-indigo-300", glowColor: "shadow-blue-400/50", description: "Highly receptive to the Moon. Drinks up lunar rays twice as fast as other stones." },
+      Selenite: { name: "Selenite", ruledBy: "The Moon", rate: 1.8, sensitiveToSun: false, color: "from-slate-100 to-teal-100", glowColor: "shadow-teal-200/50", description: "A self-cleansing beacon. Acts as a magnifying glass for any planetary light." },
+      Amethyst: { name: "Amethyst", ruledBy: "Jupiter", rate: 1.0, sensitiveToSun: true, color: "from-purple-400 to-indigo-600", glowColor: "shadow-purple-500/50", description: "Very spiritual. Highly sensitive to the Sun; will fade and lose color if left in daylight." },
+      RoseQuartz: { name: "Rose Quartz", ruledBy: "Venus", rate: 1.0, sensitiveToSun: true, color: "from-pink-300 to-rose-400", glowColor: "shadow-rose-300/50", description: "The stone of pure love. Sunlight slowly bleaches its beautiful pink tone to clear." },
+      Labradorite: { name: "Labradorite", ruledBy: "Uranus", rate: 1.4, sensitiveToSun: false, color: "from-cyan-700 to-emerald-800", glowColor: "shadow-cyan-500/50", description: "The stone of magic. Loves crescent cycles and dusk/dawn twilight." },
+      Obsidian: { name: "Black Obsidian", ruledBy: "Mars/Pluto", rate: 1.2, sensitiveToSun: false, color: "from-gray-800 to-black", glowColor: "shadow-slate-600/50", description: "Deep protective shield. Clears negative static and loves completely dark sky environments." }
     };
 
-    // State initialization (Starts cleanly empty to respect user's vault request)
+    // State initialization
     const state = {
-      activeTab: 'dashboard',
       gems: [],
       useLiveLocation: true,
       latitude: 37.7749,
@@ -770,35 +538,39 @@
         jupiter: false,
         mars: false
       },
-      simCrystalType: 'Moonstone',
-      chatHistory: [
-        { role: 'assistant', text: "Welcome, Stargazer. I am Lumina's Lunar Oracle. Ask me how to calculate or optimize your local moonlight efficiency, or get custom crystal advice based on tonight's atmospheric factors." }
-      ],
-      toastMessage: null,
-      isFetchingWeather: false
+      simCrystalType: 'Moonstone'
     };
 
-    // Load initial storage sync
+    // Load initial storage sync (Checks for old Lumina data to migrate, or creates new ECCO data)
     function initStorage() {
-      const saved = localStorage.getItem('lumina_gems_v5');
-      if (saved) {
+      const savedEcco = localStorage.getItem('ecco_gems_v1');
+      const savedLumina = localStorage.getItem('lumina_gems_v5');
+      
+      let dataToLoad = savedEcco || savedLumina;
+
+      if (dataToLoad) {
         try {
-          state.gems = JSON.parse(saved);
+          state.gems = JSON.parse(dataToLoad);
+          // If we loaded from legacy lumina, save it into new ecco format and clear old
+          if (!savedEcco && savedLumina) {
+            saveStorage();
+          }
         } catch (e) {
           console.error("Local storage corruption, resetting database.", e);
+          state.gems = [];
+          saveStorage();
         }
       } else {
-        // Vault starts entirely empty now!
         state.gems = [];
         saveStorage();
       }
     }
 
     function saveStorage() {
-      localStorage.setItem('lumina_gems_v5', JSON.stringify(state.gems));
+      localStorage.setItem('ecco_gems_v1', JSON.stringify(state.gems));
     }
 
-    // Mathematical Core
+    // Mathematical Core for Moon Phases and Light Strengths
     function calculateUnifiedEnergy() {
       const knownNewMoon = new Date('2000-01-06T18:14:00Z');
       const msPerDay = 24 * 60 * 60 * 1000;
@@ -875,23 +647,9 @@
       const combinedPower = Math.min(100, Math.max(0, activePowerSum));
 
       return {
-        phaseName,
-        baseIllumination,
-        isNight,
-        isDay,
-        moonAltitude,
-        altitudeModifier,
-        skyClearness,
-        lightsBlockage,
-        moonPower,
-        sunPower,
-        venusPower,
-        jupiterPower,
-        marsPower,
-        isVenusUp,
-        isJupiterUp,
-        isMarsUp,
-        combinedPower
+        phaseName, baseIllumination, isNight, isDay, moonAltitude, altitudeModifier,
+        skyClearness, lightsBlockage, moonPower, sunPower, venusPower, jupiterPower, marsPower,
+        isVenusUp, isJupiterUp, isMarsUp, combinedPower
       };
     }
 
@@ -935,7 +693,7 @@
       }
     }
 
-    // Render / UI Redraw loop to bypass React compiling errors entirely
+    // Main App Renderer
     function renderApp() {
       const astro = calculateUnifiedEnergy();
       
@@ -972,14 +730,9 @@
       updateToggleCard('jupiter', state.skyToggles.jupiter, astro.isJupiterUp ? 'UP' : 'SET', astro.jupiterPower);
       updateToggleCard('mars', state.skyToggles.mars, astro.isMarsUp ? 'UP' : 'SET', astro.marsPower);
 
-      // Render Active Tab Content
-      if (state.activeTab === 'dashboard') {
-        renderVault(astro.combinedPower);
-      } else if (state.activeTab === 'forecast') {
-        renderForecast(astro);
-      } else if (state.activeTab === 'oracle') {
-        renderOracle();
-      }
+      // Render Reliquary & Forecast (since both are now permanently visible on screen)
+      renderVault(astro.combinedPower);
+      renderForecast(astro);
 
       // Sync inputs if user is currently custom override
       document.getElementById('input-lat').value = state.latitude;
@@ -1005,19 +758,20 @@
       }
     }
 
+    // Ethereal Reliquary UI Generator
     function renderVault(combinedPower) {
       const vaultGrid = document.getElementById('vault-grid');
       document.getElementById('gem-count-badge').innerText = `Gems: ${state.gems.length}`;
       
       if (state.gems.length === 0) {
         vaultGrid.innerHTML = `
-          <div class="col-span-1 sm:col-span-2 bg-slate-900/10 border border-slate-800 border-dashed rounded-3xl p-12 text-center flex flex-col items-center justify-center space-y-4">
+          <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-slate-900/10 border border-slate-800 border-dashed rounded-3xl p-12 text-center flex flex-col items-center justify-center space-y-4">
             <span class="text-4xl animate-bounce">🔮</span>
             <div class="space-y-1">
-              <h4 class="text-sm font-semibold text-slate-300">Your Vault is Empty</h4>
-              <p class="text-xs text-slate-500 max-w-xs mx-auto">Register your crystal profiles to monitor how much energy they absorb under the current active planetary chargers.</p>
+              <h4 class="text-sm font-semibold text-slate-300">Your Reliquary is Empty</h4>
+              <p class="text-xs text-slate-500 max-w-sm mx-auto">Register your crystal profiles to monitor how much energy they absorb under the current active planetary chargers.</p>
             </div>
-            <button onclick="openAddGemModal()" class="px-4 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-full text-xs font-bold transition-all">
+            <button onclick="openAddGemModal()" class="px-5 py-2.5 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-full text-xs font-bold transition-all shadow-lg">
               + Register Your First Crystal
             </button>
           </div>
@@ -1177,8 +931,8 @@
       container.innerHTML = timelineData.map(data => `
         <div class="flex items-center justify-between text-xs font-mono bg-slate-950/50 p-2.5 rounded-lg border border-slate-900/80">
           <div class="w-20 text-slate-400 font-semibold">${data.timeString}</div>
-          <div class="flex-1 mx-4 flex items-center space-x-2">
-            <span class="text-[10px] text-slate-500 w-14 text-right">${data.altitude}° altitude</span>
+          <div class="flex-1 mx-3 md:mx-4 flex items-center space-x-2">
+            <span class="text-[10px] text-slate-500 w-14 text-right">${data.altitude}° alt</span>
             <div class="flex-1 h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
               <div class="h-full bg-indigo-500/80 rounded-full transition-all duration-300" style="width: ${data.efficiency}%"></div>
             </div>
@@ -1189,49 +943,9 @@
       `).join('');
     }
 
-    function renderOracle() {
-      const thread = document.getElementById('chat-thread');
-      thread.innerHTML = state.chatHistory.map(msg => `
-        <div class="flex flex-col max-w-[85%] ${msg.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'}">
-          <span class="text-[10px] font-mono text-slate-500 mb-1 uppercase tracking-wider">
-            ${msg.role === 'user' ? 'Stargazer' : 'Lumina Engine'}
-          </span>
-          <div class="p-3 rounded-2xl leading-relaxed ${
-            msg.role === 'user' 
-              ? 'bg-indigo-600/25 border border-indigo-500/20 text-indigo-100 rounded-tr-none' 
-              : 'bg-slate-900 border border-slate-800 text-slate-300 rounded-tl-none'
-          }">
-            ${msg.text}
-          </div>
-        </div>
-      `).join('');
-      thread.scrollTop = thread.scrollHeight;
-    }
-
-    // Tab Switching Controller
-    function switchTab(tab) {
-      state.activeTab = tab;
-      
-      const tabs = ['vault', 'forecast', 'oracle'];
-      tabs.forEach(t => {
-        const btn = document.getElementById(`tab-btn-${t}`);
-        const content = document.getElementById(`tab-content-${t}`);
-        if (t === tab || (tab === 'dashboard' && t === 'vault')) {
-          btn.className = "flex-1 py-2 text-xs rounded-lg transition-all bg-slate-800 text-indigo-300 font-semibold shadow-inner";
-          content.classList.remove('hidden');
-        } else {
-          btn.className = "flex-1 py-2 text-xs rounded-lg transition-all text-slate-400 hover:text-slate-200";
-          content.classList.add('hidden');
-        }
-      });
-
-      renderApp();
-    }
-
-    // Trigger state adjustment actions
+    // Interaction Event Handlers
     function handleToggleSky(body) {
       state.skyToggles[body] = !state.skyToggles[body];
-      showToast(`${body.charAt(0).toUpperCase() + body.slice(1)} Switch Toggled.`);
       renderApp();
     }
 
@@ -1287,125 +1001,6 @@
       renderApp();
     }
 
-    // Dynamic rendering of gems only to avoid input element jump focus during slider drags
-    function renderGemsOnly() {
-      if (state.activeTab !== 'dashboard') return;
-      
-      const container = document.getElementById('vault-grid');
-      const combinedPower = calculateUnifiedEnergy().combinedPower;
-      
-      document.getElementById('gem-count-badge').innerText = `Gems: ${state.gems.length}`;
-      if (state.gems.length === 0) {
-        container.innerHTML = `
-          <div class="col-span-1 sm:col-span-2 bg-slate-900/10 border border-slate-800 border-dashed rounded-3xl p-12 text-center flex flex-col items-center justify-center space-y-4">
-            <span class="text-4xl animate-bounce">🔮</span>
-            <div class="space-y-1">
-              <h4 class="text-sm font-semibold text-slate-300">Your Vault is Empty</h4>
-              <p class="text-xs text-slate-500 max-w-xs mx-auto">Register your crystal profiles to monitor how much energy they absorb under the current active planetary chargers.</p>
-            </div>
-            <button onclick="openAddGemModal()" class="px-4 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 rounded-full text-xs font-bold transition-all">
-              + Register Your First Crystal
-            </button>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = state.gems.map(gem => {
-        const profile = CRYSTAL_PROFILES[gem.type] || CRYSTAL_PROFILES.Moonstone;
-        const stats = getChargeStats(gem, combinedPower);
-        const isComplete = gem.chargeLevel >= 100;
-
-        return `
-          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 ${
-            gem.isCharging ? 'ring-1 ring-indigo-500/40 shadow-lg ' + profile.glowColor : ''
-          }">
-            <div class="space-y-4">
-              
-              <div class="flex justify-between items-start">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-xl bg-gradient-to-br ${profile.color} flex items-center justify-center relative overflow-hidden shadow-inner">
-                    <div class="absolute inset-0 bg-white/20 mix-blend-overlay"></div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
-                      <path d="M12 2L4 12L12 22L20 12L12 2Z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="text-sm font-semibold text-slate-200">${gem.name}</h4>
-                    <p class="text-[10px] text-slate-500 font-mono tracking-wider uppercase">${gem.type}</p>
-                  </div>
-                </div>
-                
-                <button onclick="handleDeleteGem('${gem.id}')" class="text-slate-600 hover:text-rose-400 p-1 text-xs transition-colors">✕</button>
-              </div>
-
-              <div class="flex flex-wrap gap-1.5 text-[9px] font-mono">
-                <span class="bg-slate-950 border border-slate-850 px-2 py-0.5 rounded text-indigo-300">
-                  Absorption Speed: ${profile.rate}x
-                </span>
-                <span class="bg-slate-950 border border-slate-850 px-2 py-0.5 rounded text-slate-400">
-                  Target Phase: ${gem.preferredPhase || "Full Moon"}
-                </span>
-              </div>
-
-              <div class="space-y-2">
-                <div class="flex justify-between items-center text-xs font-mono">
-                  <span class="text-slate-400">Energy Charge</span>
-                  <span class="font-bold text-indigo-300">${gem.chargeLevel.toFixed(2)}%</span>
-                </div>
-                
-                <div class="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-855">
-                  <div class="h-full bg-gradient-to-r ${profile.color} transition-all duration-1000" style="width: ${gem.chargeLevel}%"></div>
-                </div>
-                
-                <div class="flex justify-between items-center text-[10px] font-mono pt-0.5">
-                  <span class="flex items-center space-x-1">
-                    <span class="w-1.5 h-1.5 rounded-full ${
-                      stats.status.includes("Charging") 
-                        ? 'bg-indigo-400 animate-ping' 
-                        : stats.status.includes("Draining") 
-                        ? 'bg-amber-400 animate-pulse' 
-                        : 'bg-slate-700'
-                    }"></span>
-                    <span class="text-slate-400">${stats.status}</span>
-                  </span>
-                  <span class="font-bold text-slate-200 bg-slate-950 px-2 py-0.5 rounded border border-slate-900">${stats.timeText}</span>
-                </div>
-              </div>
-
-              ${profile.sensitiveToSun ? `
-                <div class="text-[10px] text-amber-400 font-mono flex items-center space-x-1 bg-amber-500/5 px-2.5 py-1 rounded-lg border border-amber-500/10">
-                  <span>☀️</span>
-                  <span>Bleaches under high sun. Pause charge in daytime!</span>
-                </div>
-              ` : ''}
-
-            </div>
-
-            <div class="grid grid-cols-2 gap-2 mt-5 border-t border-slate-800/60 pt-4">
-              <button 
-                onclick="toggleGemCharging('${gem.id}', ${gem.isCharging})"
-                ${isComplete ? 'disabled' : ''}
-                class="flex items-center justify-center space-x-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                  isComplete 
-                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed border-transparent'
-                    : gem.isCharging
-                    ? 'bg-indigo-600/10 border border-indigo-500/30 text-indigo-300 hover:bg-indigo-600/20'
-                    : 'bg-slate-950 border border-slate-800 text-slate-300 hover:bg-slate-900'
-                }"
-              >
-                <span>${gem.isCharging ? "⏸️ Pause Charger" : "🌙 Turn Charger ON"}</span>
-              </button>
-
-              <button onclick="handleResetCharge('${gem.id}')" class="bg-slate-950 border border-slate-800 text-xs py-1.5 rounded-lg hover:bg-slate-900 text-slate-400 hover:text-slate-300 font-medium transition-all">
-                Wipe Energy (0%)
-              </button>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
     function handleSliderClouds(val) {
       state.cloudCover = parseInt(val);
       document.getElementById('display-clouds').innerText = `${val}%`;
@@ -1435,48 +1030,7 @@
       renderApp();
     }
 
-    // Oracle Controller
-    function fillOracleQuery(text) {
-      document.getElementById('oracle-input').value = text;
-    }
-
-    function handleOracleKeydown(e) {
-      if (e.key === 'Enter') {
-        askOracle();
-      }
-    }
-
-    async function askOracle() {
-      const input = document.getElementById('oracle-input');
-      const query = input.value.trim();
-      if (!query) return;
-
-      input.value = "";
-      state.chatHistory.push({ role: 'user', text: query });
-      renderOracle();
-
-      state.chatHistory.push({ role: 'assistant', text: "Analyzing atmospheric vectors... Please wait." });
-      renderOracle();
-
-      // Simple physics answer approximation for the local layout to prevent blocking
-      setTimeout(() => {
-        state.chatHistory.pop(); // Remove loader
-        
-        let response = "";
-        if (query.toLowerCase().includes("bortle")) {
-          response = "Municipal light pollution (measured by the Bortle Scale) introduces scattered white light into the atmosphere. This artificial spectrum dilutes the coherent molecular stimulation from pure moonlight, effectively dropping charging speed. Class 1 skies offer 100% absorption, while urban Class 8/9 cores absorb only 10%.";
-        } else if (query.toLowerCase().includes("altitude") || query.toLowerCase().includes("height")) {
-          response = "When the Moon or other planet is close to the horizon, its beams must penetrate a thick wall of atmospheric dust and moisture. As it climbs toward the zenith, the travel path shortens, maximizing the clean light reaching your window sill.";
-        } else {
-          response = "The alignment looks favorable! To maximize charging speeds: place your crystal close to an east-facing window clear of low foliage, minimize surrounding LED light emissions, and ensure the specific planetary switches ruling your gemstone are toggled ON in the top dashboard.";
-        }
-
-        state.chatHistory.push({ role: 'assistant', text: response });
-        renderOracle();
-      }, 1000);
-    }
-
-    // Modal Manager
+    // Modal Managers
     function openExplanationModal() {
       const modal = document.getElementById('explanation-modal');
       const astro = calculateUnifiedEnergy();
@@ -1492,18 +1046,9 @@
 
       modal.classList.remove('hidden');
     }
-
-    function closeExplanationModal() {
-      document.getElementById('explanation-modal').classList.add('hidden');
-    }
-
-    function openAddGemModal() {
-      document.getElementById('add-gem-modal').classList.remove('hidden');
-    }
-
-    function closeAddGemModal() {
-      document.getElementById('add-gem-modal').classList.add('hidden');
-    }
+    function closeExplanationModal() { document.getElementById('explanation-modal').classList.add('hidden'); }
+    function openAddGemModal() { document.getElementById('add-gem-modal').classList.remove('hidden'); }
+    function closeAddGemModal() { document.getElementById('add-gem-modal').classList.add('hidden'); }
 
     function updateNewGemDescription(val) {
       const profile = CRYSTAL_PROFILES[val] || CRYSTAL_PROFILES.Moonstone;
@@ -1518,7 +1063,7 @@
       const isCharging = document.getElementById('new-gem-charging').checked;
 
       if (!name) {
-        showToast("Please enter a custom crystal name.");
+        alert("Please enter a custom crystal name.");
         return;
       }
 
@@ -1537,7 +1082,6 @@
       
       document.getElementById('new-gem-name').value = "";
       closeAddGemModal();
-      showToast(`${type} added successfully!`);
       renderApp();
     }
 
@@ -1546,7 +1090,6 @@
       if (gem) {
         gem.isCharging = !currentStatus;
         saveStorage();
-        showToast(!currentStatus ? "Charging started!" : "Charging paused.");
         renderApp();
       }
     }
@@ -1554,7 +1097,6 @@
     function handleDeleteGem(id) {
       state.gems = state.gems.filter(g => g.id !== id);
       saveStorage();
-      showToast("Crystal removed.");
       renderApp();
     }
 
@@ -1563,12 +1105,11 @@
       if (gem) {
         gem.chargeLevel = 0;
         saveStorage();
-        showToast("Crystal discharged.");
         renderApp();
       }
     }
 
-    // Init values inside forms
+    // Setup initial fields
     function initDropdowns() {
       const crystalSelector = document.getElementById('new-gem-type');
       const simCrystalSelector = document.getElementById('select-sim-crystal');
@@ -1583,61 +1124,10 @@
       updateNewGemDescription(crystalSelector.value);
     }
 
-    // Dynamic Service Worker registration using Blob URL (Single-file PWA pattern)
-    function registerServiceWorker() {
-      if ('serviceWorker' in navigator) {
-        const swCode = `
-          const CACHE_NAME = 'lumina-v1';
-          const urlsToCache = [
-            '/',
-            location.href
-          ];
-          self.addEventListener('install', event => {
-            event.waitUntil(
-              caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-            );
-          });
-          self.addEventListener('fetch', event => {
-            event.respondWith(
-              caches.match(event.request).then(response => response || fetch(event.request))
-            );
-          });
-        `;
-        const blob = new Blob([swCode], { type: 'text/javascript' });
-        const swURL = URL.createObjectURL(blob);
-        
-        navigator.serviceWorker.register(swURL, { scope: '/' })
-          .then(reg => console.log('Inline Service Worker registered successfully.'))
-          .catch(err => console.warn('Service Worker registration skipped due to preview environment constraints.', err));
-      }
-    }
-
-    // PWA Install prompt listener
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const installBtn = document.getElementById('pwa-install-btn');
-      if (installBtn) {
-        installBtn.classList.remove('hidden');
-        installBtn.addEventListener('click', () => {
-          installBtn.classList.add('hidden');
-          deferredPrompt.prompt();
-          deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === 'accepted') {
-              console.log('User accepted the PWA install prompt');
-            }
-            deferredPrompt = null;
-          });
-        });
-      }
-    });
-
     // App Initialization lifecycle
     window.onload = function() {
       initStorage();
       initDropdowns();
-      registerServiceWorker();
       
       // Set current date inside picker
       document.getElementById('input-date').value = state.simulateDate.toISOString().split('T')[0];
@@ -1658,9 +1148,29 @@
 
       renderApp();
 
-      // Tick calculations every 3 seconds to update charges dynamically
+      // Core simulation loop! Runs every 3 seconds to calculate charge speeds over time
       setInterval(() => {
-        renderGemsOnly();
+        const astro = calculateUnifiedEnergy();
+        
+        // Update physics and state
+        state.gems.forEach(gem => {
+          if (gem.chargeLevel >= 100) return;
+
+          if (gem.isCharging && astro.combinedPower > 0) {
+            const profile = CRYSTAL_PROFILES[gem.type] || CRYSTAL_PROFILES.Moonstone;
+            const chargeGained = (astro.combinedPower / 100) * profile.rate * 2.5; // Base addition rate
+            gem.chargeLevel = Math.min(100, gem.chargeLevel + chargeGained);
+          } else if (astro.combinedPower === 0) {
+            // Drain crystal if actively losing charge with 0 sky power
+            const drainRate = 8.0; 
+            gem.chargeLevel = Math.max(0, gem.chargeLevel - (drainRate / 120)); // scale down drain
+          }
+        });
+
+        // We can just call renderVault to efficiently update the DOM without causing slider focus resets
+        renderVault(astro.combinedPower);
+        saveStorage();
+
       }, 3000);
     };
   </script>
