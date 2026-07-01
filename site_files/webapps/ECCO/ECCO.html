@@ -667,7 +667,7 @@
 
       if (combinedPower > 0) {
         const chargeGainedPerInterval = (combinedPower / 100) * profile.rate * 2.5;
-        const hourlyRate = chargeGainedPerInterval * 120; // 3 seconds real tick represents scaled hours
+        const hourlyRate = chargeGainedPerInterval * 1200; // Corrected: 3 seconds real tick represents 1200 intervals per hour
         const hoursLeft = (100 - gem.chargeLevel) / hourlyRate;
 
         const hrs = Math.floor(hoursLeft);
